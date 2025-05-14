@@ -1,0 +1,28 @@
+---
+import "../styles/global.css"
+import Footer from "../components/UI/Footer.vue"
+---
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+		<meta name="generator" content={Astro.generator} />
+		<link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css"
+    />
+		<title>Agdayo</title>
+	</head>
+	<body class="text-zinc-900 flex flex-col min-h-screen">
+		<slot class="flex-grow" />
+		<Footer />
+	</body>
+</html>
