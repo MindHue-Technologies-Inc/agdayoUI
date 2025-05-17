@@ -1,15 +1,19 @@
 <template>
   <div class="flex flex-col gap-1">
-    <label v-if="label" :for="id" class="text-sm font-medium text-zinc-400">
+    <label v-if="label" :for="id" class="ml-6 text-sm font-medium text-zinc-400">
       {{ label }}
     </label>
     <div class="relative flex items-center">
       <!-- Prefix Element -->
       <div 
         v-if="prefix" 
-        class="absolute left-0 pl-3 flex items-center pointer-events-none text-zinc-500 dark:text-zinc-400"
+        class="absolute left-0 pl-6 flex items-center pointer-events-none text-zinc-500 dark:text-zinc-400"
       >
         {{ prefix }}
+      </div>
+
+      <div v-if="prefixIcon" class="absolute left-0 pl-6 flex items-center pointer-events-none text-zinc-500 dark:text-zinc-400">
+        <i :class="prefixIcon"></i>
       </div>
 
       <select
@@ -17,8 +21,9 @@
         :disabled="disabled"
         :class="[
           baseClasses,
-          prefix ? 'pl-8' : '',
-          suffix || suffixIcon ? 'pr-8' : '',
+          prefix ? 'pl-12' : '',
+          prefixIcon ? 'pl-12' : '',
+          suffix || suffixIcon ? 'pr-12' : '',
           disabled ? 'bg-zinc-100 cursor-not-allowed' : '',
           customClass
         ]"
@@ -77,6 +82,10 @@ export default {
       type: String,
       default: '',
     },
+    prefixIcon: {
+      type: String,
+      default: '',
+    },
     suffix: {
       type: String,
       default: '',
@@ -85,10 +94,10 @@ export default {
   computed: {
     baseClasses() {
       return `
-        w-full border border-zinc-300 dark:border-zinc-700 px-3 py-2 text-base
-        text-zinc-800 dark:text-zinc-100
-        bg-white dark:!bg-zinc-900
-        shadow-sm focus:ring-0 focus:outline-none appearance-none
+        w-full px-6 py-2 text-base rounded-full border-secondary-xs
+        text-zinc-800
+        bg-white dark:bg-zinc-900
+        shadow-secondary-sm focus:ring-0 focus:outline-none
       `;
     },
     suffixIcon() {

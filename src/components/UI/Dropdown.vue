@@ -28,7 +28,7 @@
     <transition name="fade">
       <div
         v-if="open"
-        class="absolute mt-2 z-20 w-full shadow-lg bg-white dark:bg-zinc-800 ring-1 ring-zinc-200 dark:ring-zinc-700"
+        class="absolute mt-2 z-20 w-full shadow-secondary-md border-secondary-xs overflow-hidden rounded-2xl bg-white dark:bg-zinc-800 ring-1 ring-zinc-200 dark:ring-zinc-700"
       >
         <ul class="py-1 text-sm text-zinc-700 dark:text-zinc-200">
           <li
@@ -88,27 +88,33 @@ export default {
   },
   computed: {
     baseClasses() {
-      return 'font-medium transition-colors duration-200 cursor-pointer overflow-hidden';
+      return 'font-medium transition-colors duration-200 cursor-pointer overflow-hidden rounded-full';
     },
     sizeClasses() {
       switch (this.size) {
         case 'sm': return 'text-sm px-3 py-1.5';
-        case 'lg': return 'text-lg px-6 py-3';
-        default:   return 'text-base px-4 py-2';
+        case 'lg': return 'text-lg pl-10 pr-8 py-3';
+        default:   return 'text-base pl-8 pr-6 py-2';
       }
     },
     variantClasses() {
       switch (this.variant) {
         case 'primary':
-          return 'bg-zinc-200 text-zinc-800 hover:bg-zinc-300';
+          // Branded peach action
+          return 'bg-peach-500 text-white hover:bg-peach-600 shadow-primary-sm border-primary-xs';
         case 'secondary':
-          return 'bg-zinc-800 text-zinc-200 hover:bg-zinc-700';
+          // Neutral modern tone (grayish)
+          return 'bg-zinc-700 text-white hover:bg-zinc-600';
+        case 'danger':
+          // Softer red tone, not too loud
+          return 'bg-rose-500 text-white hover:bg-rose-600';
         case 'ghost':
-          return 'bg-transparent text-zinc-800 dark:text-zinc-200 border border-zinc-300 dark:border-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-700';
+          // Peach outline/ghost style
+          return 'text-peach-700 border border-peach-500 bg-transparent hover:bg-peach-50';
         default:
           return '';
       }
-    },
+    }
   },
 };
 </script>

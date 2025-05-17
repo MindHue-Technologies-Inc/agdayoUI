@@ -2,7 +2,7 @@
   <div
     class="card-container"
     :class="[
-      'border p-4 flex flex-col gap-4 transition-colors',
+      'border p-6 flex flex-col gap-4 transition-colors',
       backgroundClass,
       borderClass,
       customClass
@@ -35,11 +35,11 @@ export default {
         case 'dotted':
           return 'dotted-bg';
         default:
-          return 'bg-white dark:bg-zinc-950';
+          return 'bg-white dark:bg-zinc-950 shadow-secondary-sm rounded-3xl';
       }
     },
     borderClass() {
-      return 'border-zinc-300 dark:border-zinc-700';
+      return 'border-secondary-xs';
     },
   },
 };

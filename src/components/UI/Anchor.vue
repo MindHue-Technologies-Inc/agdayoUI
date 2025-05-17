@@ -42,8 +42,9 @@ export default {
   computed: {
     baseClasses() {
       return `
-        text-zinc-800 dark:text-zinc-100
+        text-blue-400 dark:text-blue-100
         hover:underline transition-colors duration-200
+        cursor-pointer
       `;
     },
     relAttr() {

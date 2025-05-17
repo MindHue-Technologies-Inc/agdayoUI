@@ -7,8 +7,27 @@
   font-style: normal;
 }
 
+@theme {
+  /* peach scale */
+  --color-peach-50:  #FFF6F3;
+  --color-peach-100: #FFEAE5;
+  --color-peach-200: #FDD3C7;
+  --color-peach-300: #FBB5A3;
+  --color-peach-400: #F59B89;
+  --color-peach-500: #F0A693; /* base */
+  --color-peach-600: #E28D7A;
+  --color-peach-700: #C87063;
+  --color-peach-800: #A45651;
+  --color-peach-900: #7C3D3A;
+  --color-peach-950: #4E2221; /* new */
+}
 
-/* Use the font */
+@custom-variant dark (&:where(.dark, .dark *));
+
+body {
+  background-image: url('/images/light-bg.jpg');
+}
+
 .baybayin {
   font-family: 'Matatas One', sans-serif;
 }
@@ -19,11 +38,96 @@
   font-style: normal;
 }
 
-.zain-regular {
+.zain {
   font-family: "Zain", sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
 }
+
+/* === Peach (Primary) === */
+.shadow-primary-xs   { box-shadow: 1px 1px 0 0 #B77B6C; }
+.shadow-primary-sm   { box-shadow: 2px 2px 0 0 #B77B6C; }
+.shadow-primary-md   { box-shadow: 4px 4px 0 0 #B77B6C; }
+.shadow-primary-lg   { box-shadow: 6px 6px 0 0 #B77B6C; }
+.shadow-primary-xl   { box-shadow: 8px 8px 0 0 #B77B6C; }
+.shadow-primary-inset { box-shadow: inset 2px 2px 0 0 #B77B6C; }
+.shadow-primary-soft { box-shadow: 0 4px 12px rgba(183, 123, 108, 0.25); }
+
+/* === Zinc (Secondary) === */
+.shadow-secondary-xs   { box-shadow: 1px 1px 0 0 #d4d4d8; }
+.shadow-secondary-sm   { box-shadow: 2px 2px 0 0 #d4d4d8; }
+.shadow-secondary-md   { box-shadow: 4px 4px 0 0 #d4d4d8; }
+.shadow-secondary-lg   { box-shadow: 6px 6px 0 0 #d4d4d8; }
+.shadow-secondary-xl   { box-shadow: 8px 8px 0 0 #d4d4d8; }
+.shadow-secondary-inset { box-shadow: inset 2px 2px 0 0 #d4d4d8; }
+.shadow-secondary-soft { box-shadow: 0 4px 12px rgba(63, 63, 70, 0.25); }
+
+/* === Rose (Danger) === */
+.shadow-danger-xs   { box-shadow: 1px 1px 0 0 #E11D48; }
+.shadow-danger-sm   { box-shadow: 2px 2px 0 0 #E11D48; }
+.shadow-danger-md   { box-shadow: 4px 4px 0 0 #E11D48; }
+.shadow-danger-lg   { box-shadow: 6px 6px 0 0 #E11D48; }
+.shadow-danger-xl   { box-shadow: 8px 8px 0 0 #E11D48; }
+.shadow-danger-inset { box-shadow: inset 2px 2px 0 0 #E11D48; }
+.shadow-danger-soft { box-shadow: 0 4px 12px rgba(225, 29, 72, 0.25); }
+
+/* === Emerald (Success) === */
+.shadow-success-xs   { box-shadow: 1px 1px 0 0 #10B981; }
+.shadow-success-sm   { box-shadow: 2px 2px 0 0 #10B981; }
+.shadow-success-md   { box-shadow: 4px 4px 0 0 #10B981; }
+.shadow-success-lg   { box-shadow: 6px 6px 0 0 #10B981; }
+.shadow-success-xl   { box-shadow: 8px 8px 0 0 #10B981; }
+.shadow-success-inset { box-shadow: inset 2px 2px 0 0 #10B981; }
+.shadow-success-soft { box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25); }
+
+/* === Sky (Info) === */
+.shadow-info-xs   { box-shadow: 1px 1px 0 0 #0EA5E9; }
+.shadow-info-sm   { box-shadow: 2px 2px 0 0 #0EA5E9; }
+.shadow-info-md   { box-shadow: 4px 4px 0 0 #0EA5E9; }
+.shadow-info-lg   { box-shadow: 6px 6px 0 0 #0EA5E9; }
+.shadow-info-xl   { box-shadow: 8px 8px 0 0 #0EA5E9; }
+.shadow-info-inset { box-shadow: inset 2px 2px 0 0 #0EA5E9; }
+.shadow-info-soft { box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25); }
+
+/* === Amber (Warning) === */
+.shadow-warning-xs   { box-shadow: 1px 1px 0 0 #F59E0B; }
+.shadow-warning-sm   { box-shadow: 2px 2px 0 0 #F59E0B; }
+.shadow-warning-md   { box-shadow: 4px 4px 0 0 #F59E0B; }
+.shadow-warning-lg   { box-shadow: 6px 6px 0 0 #F59E0B; }
+.shadow-warning-xl   { box-shadow: 8px 8px 0 0 #F59E0B; }
+.shadow-warning-inset { box-shadow: inset 2px 2px 0 0 #F59E0B; }
+.shadow-warning-soft { box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25); }
+
+/* === Peach (Primary) === */
+.border-primary-xs   { border: 1px solid #B77B6C; }
+.border-primary-sm   { border: 2px solid #B77B6C; }
+.border-primary-md   { border: 4px solid #B77B6C; }
+
+/* === Zinc (Secondary) === */
+.border-secondary-xs   { border: 1px solid #d4d4d8; }
+.border-secondary-sm   { border: 2px solid #d4d4d8; }
+.border-secondary-md   { border: 4px solid #d4d4d8; }
+
+/* === Rose (Danger) === */
+.border-danger-xs   { border: 1px solid #E11D48; }
+.border-danger-sm   { border: 2px solid #E11D48; }
+.border-danger-md   { border: 4px solid #E11D48; }
+
+/* === Emerald (Success) === */
+.border-success-xs   { border: 1px solid #10B981; }
+.border-success-sm   { border: 2px solid #10B981; }
+.border-success-md   { border: 4px solid #10B981; }
+
+/* === Sky (Info) === */
+.border-info-xs   { border: 1px solid #0EA5E9; }
+.border-info-sm   { border: 2px solid #0EA5E9; }
+.border-info-md   { border: 4px solid #0EA5E9; }
+
+/* === Amber (Warning) === */
+.border-warning-xs   { border: 1px solid #F59E0B; }
+.border-warning-sm   { border: 2px solid #F59E0B; }
+.border-warning-md   { border: 4px solid #F59E0B; }
+
 
 
 /* Custom Scrollbar Styles */

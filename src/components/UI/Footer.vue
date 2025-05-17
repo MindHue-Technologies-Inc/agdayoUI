@@ -1,7 +1,7 @@
 <template>
   <footer class="bottom-0 w-full text-center text-sm text-zinc-500 py-4">
     <p>
-      &copy; {{ currentYear }} Albert Sobreo. All rights reserved.
+      &copy; {{ currentYear }} MindHue Technologies Inc. All rights reserved.
     </p>
   </footer>
 </template>

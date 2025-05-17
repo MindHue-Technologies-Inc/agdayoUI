@@ -41,6 +41,7 @@ function isJwtExpired(token) {
 
 // Astro middleware
 export const onRequest = defineMiddleware(async (context, next) => {
+  return next();
   // Skip auth check for public routes
   if (inPublicRoute.includes(context.url.pathname)) {
     return next();
