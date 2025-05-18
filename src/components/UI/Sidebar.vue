@@ -23,7 +23,6 @@
               <img src="/images/logo-agdayo-sm.png" width="48" alt="">
             </div>
             <span class="text-zinc-400 text-xs">α{{ version }}</span>
-            <span>{{ useAuth.value.user.full_name }}</span>
           </div>
 
           <button @click="toggleMenu" class="2xl:hidden block text-white fixed top-4 right-4">

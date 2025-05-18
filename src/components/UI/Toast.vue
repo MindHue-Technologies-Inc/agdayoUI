@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="visible"
-    class="z-50 max-w-xs w-full p-4  shadow-lg"
+    class=""
     :class="[
       baseClasses,
       variantClasses,
@@ -51,7 +51,7 @@ export default {
   },
   computed: {
     baseClasses() {
-      return 'transition-all duration-300 ease-out';
+      return 'transition-all duration-300 ease-out z-50 max-w-xs w-full p-4 rounded-xl';
     },
     positionClasses() {
       return 'bottom-4 right-4';
@@ -59,13 +59,13 @@ export default {
     variantClasses() {
       switch (this.variant) {
         case 'success':
-          return 'bg-emerald-500 text-white';
+          return 'bg-emerald-500 text-white shadow-success-dark-md border-success-dark-xs';
         case 'error':
-          return 'bg-red-600 text-white';
+          return 'bg-rose-600 text-white shadow-danger-dark-md border-danger-dark-xs';
         case 'info':
-          return 'bg-blue-500 text-white';
+          return 'bg-sky-500 text-white shadow-info-dark-md border-info-dark-xs';
         case 'warning':
-          return 'bg-yellow-500 text-black';
+          return 'bg-amber-500 text-black shadow-warning-dark-md border-warning-dark-xs';
         default:
           return '';
       }
