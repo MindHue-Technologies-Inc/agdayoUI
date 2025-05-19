@@ -1,6 +1,6 @@
 <template>
   <div class="flex items-center justify-between text-[#BEBEBE] text-[12px]">
-    <span>© MindHue Technologies 2025  </span>
+    <span>© MindHue Technologies {{ year }}  </span>
 
     <!-- CREDITS -->
     <span>{{ credits }}</span>
@@ -13,6 +13,12 @@ export default {
     credits: {
       type: String,
       required: true,
+    }
+  },
+
+  data() {
+    return {
+      year: new Date().getFullYear(),
     }
   }
 }

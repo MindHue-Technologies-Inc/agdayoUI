@@ -3,7 +3,7 @@
     <!-- BACKGROUND IMAGE with fade -->
     <transition-group name="bg-fade" tag="div" class="absolute inset-0 z-0">
       <div
-        v-for="(item, index) in [config[counter]]"
+        v-for="(item) in [config[counter]]"
         :key="item.bg"
         class="absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-700"
         :style="{ backgroundImage: `url('${item.bg}')` }"
