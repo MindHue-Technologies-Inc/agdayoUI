@@ -83,7 +83,7 @@ export default {
   mounted() {
     setInterval(() => {
       this.counter = (this.counter + 1) % this.config.length
-    }, 3000)
+    }, 10000)
   }
 }
 </script>
