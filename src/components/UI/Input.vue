@@ -1,12 +1,12 @@
 <template>
   <div class="flex flex-col gap-1">
-    <label v-if="label" :for="id" class="ml-6 text-sm font-medium text-zinc-400">
+    <label v-if="label" :for="id" class="ml-6 text-sm font-medium text-zinc-900">
       {{ label }}
     </label>
     <div class="relative flex items-center">
       <!-- Prepend/Prefix Element -->
-      <div 
-        v-if="prefix" 
+      <div
+        v-if="prefix"
         class="absolute left-0 pl-6 flex items-center pointer-events-none text-zinc-500 dark:text-zinc-400"
       >
         {{ prefix }}
@@ -14,10 +14,10 @@
       <div v-if="prefixIcon" class="absolute left-0 pl-6 flex items-center pointer-events-none text-zinc-500 dark:text-zinc-400">
         <i :class="prefixIcon"></i>
       </div>
-      
+
       <input
         :id="id"
-        :step="type=='number' ? step : null"
+        :step="type==='number' ? step : null"
         autocomplete="off"
         :type="formatCommas ? 'text' : type"
         :value="displayValue"
@@ -38,10 +38,10 @@
         @keydown="preventInvalidChars"
         @click="selectAllText"
       />
-      
+
       <!-- Suffix/Append Element -->
-      <div 
-        v-if="suffix || suffixIcon" 
+      <div
+        v-if="suffix || suffixIcon"
         class="absolute right-0 pr-3 flex items-center text-zinc-500 dark:text-zinc-400 cursor-default"
         @click="handleSuffixClick"
       >
@@ -117,7 +117,7 @@ export default {
   computed: {
     baseClasses() {
       return `
-        w-full px-6 py-2 text-base rounded-full border-secondary-xs
+        w-full px-6 py-3 text-base rounded-full border-secondary-xs
         text-zinc-800
         bg-white dark:bg-zinc-900
         shadow-secondary-sm focus:ring-0 focus:outline-none
@@ -162,7 +162,7 @@ export default {
 
       if (this.formatCommas) {
         value = value.replace(/,/g, '');
-      
+
         // Only allow numeric characters, optional negative, and one decimal
         if (this.type === 'number') {
           // Prevent multiple dots or multiple minus signs
@@ -170,13 +170,13 @@ export default {
           if (!validPattern.test(value)) return;
         }
       }
-    
+
       this.$emit('update:modelValue', value);
     },
 
     handleBlur() {
       this.focused = false;
-    
+
       if (this.formatCommas && this.modelValue && !isNaN(Number(this.modelValue))) {
         this.$emit('update:modelValue', this.modelValue); // Ensures external model stays updated
       }
@@ -188,13 +188,13 @@ export default {
     addCommas(value) {
       // Convert to string and handle both string and number inputs
       const stringValue = String(Number(value));
-      
+
       // Split by decimal point
       const parts = stringValue.split('.');
-      
+
       // Add commas to the integer part
       parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-      
+
       // Rejoin with decimal part if it exists
       return parts.join('.');
     },
@@ -204,19 +204,19 @@ export default {
 
       // Allow Ctrl+A / Cmd+A
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'a') return;
-        
+
       const allowedKeys = [
         'Backspace', 'Tab', 'Enter', 'Escape', 'ArrowLeft', 'ArrowRight', 'Delete',
         '-', '.', // for negative and decimal
       ];
-        
+
       if (
         (e.key >= '0' && e.key <= '9') ||
         allowedKeys.includes(e.key)
       ) {
         return; // allow
       }
-    
+
       e.preventDefault(); // block everything else
     }
   }
@@ -247,7 +247,7 @@ input[type="number"] {
 }
 
 /* Remove outline for all states */
-input:focus, 
+input:focus,
 input:active {
   outline: none;
 }

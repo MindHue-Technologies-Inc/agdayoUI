@@ -94,7 +94,7 @@ export default {
       switch (this.size) {
         case 'sm': return 'text-sm px-3 py-1.5';
         case 'lg': return 'text-lg pl-10 pr-8 py-3';
-        default:   return 'text-base pl-8 pr-6 py-2';
+        default:   return 'text-base pl-8 pr-6 py-3';
       }
     },
     variantClasses() {

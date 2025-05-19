@@ -13,7 +13,7 @@
     @click="$emit('clicked', $event)"
   >
     <!-- Content layer with text color transition -->
-    <span class="relative flex justify-between items-center gap-2 w-full">
+    <span class="relative flex justify-center items-center gap-2 w-full">
       <slot v-if="!loading" />
       <i v-else class=" animate-spin ph ph-spinner flex items-center justify-center" :class="[{'!text-[28px]': size=='lg'}, {'!text-[24px]': size=='md'}, {'!text-[20px]': size=='sm'}]"></i>
     </span>
@@ -61,11 +61,11 @@ export default {
     sizeClasses() {
       switch (this.size) {
         case 'sm':
-          return 'text-sm px-3 py-1.5';
+          return 'text-sm px-3 py-2';
         case 'lg':
-          return 'text-lg px-6 py-3';
+          return 'text-lg px-6 py-4';
         default: // 'md'
-          return 'text-base px-4 py-2';
+          return 'text-base px-4 py-3';
       }
     },
     

@@ -94,7 +94,7 @@ export default {
   computed: {
     baseClasses() {
       return `
-        w-full px-6 py-2 text-base rounded-full border-secondary-xs
+        w-full px-6 py-3 text-base rounded-full border-secondary-xs
         text-zinc-800
         bg-white dark:bg-zinc-900
         shadow-secondary-sm focus:ring-0 focus:outline-none
