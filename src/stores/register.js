@@ -38,22 +38,16 @@ export function setSpentVacation(spentVacation) {
   })
 }
 
-export function setHeardUsage(heardUsage) {
+export function setHeardUs(heardUs) {
   useRegisterStore.set({
     ...useRegisterStore.get(),
-    heardUsage: heardUsage,
+    heardUs: heardUs,
   })
 }
 
-export function setSpentVacations(spentVacations) {
+export function setHasExperience(hasExperience) {
   useRegisterStore.set({
     ...useRegisterStore.get(),
-  })
-}
-
-export function setHeardUsages(heardUsages) {
-  useRegisterStore.set({
-    ...useRegisterStore.get(),
-    heardUsages: heardUsages,
+    hasExperience: hasExperience,
   })
 }

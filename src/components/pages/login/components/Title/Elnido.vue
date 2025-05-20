@@ -4,7 +4,7 @@
     <span class="outfit text-white">Plan your trip to <span class="baybayin text-[#F2FF67]">El Nido</span></span>
 
     <!-- TITLE -->
-    <span class="text-9xl zain font-black text-[#F2FF67] -mt-4">El Nido</span>
+    <span class="text-9xl zain font-black text-[#F2FF67] my-shadow -mt-4">El Nido</span>
 
     <!-- DESCRIPTION -->
     <div class="w-[36rem] text-zinc-300 ">
@@ -15,3 +15,9 @@
      
   </div>
 </template>
+
+<style scoped>
+.my-shadow {
+  text-shadow: 6px 6px 0 #828c22;
+}
+</style>

@@ -4,7 +4,7 @@
     <span class="outfit text-white">Plan your trip to <span class="baybayin text-[#C6FB9F]">Subic</span></span>
 
     <!-- TITLE -->
-    <span class="text-9xl zain font-black text-[#C6FB9F] -mt-4">Subic</span>
+    <span class="text-9xl zain font-black text-[#C6FB9F] my-shadow -mt-4">Subic</span>
 
     <!-- DESCRIPTION -->
     <div class="w-[36rem] text-zinc-300 ">
@@ -15,3 +15,11 @@
      
   </div>
 </template>
+
+<style scoped>
+.my-shadow {
+  text-shadow: 6px 6px 0 #82ad62;
+}
+</style>
+<script setup lang="ts">
+</script>

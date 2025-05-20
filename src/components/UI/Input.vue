@@ -46,7 +46,6 @@
         @click="handleSuffixClick"
       >
         <span v-if="suffix">{{ suffix }}</span>
-        <i v-else :class="`ph ph-${suffixIcon}`"></i>
       </div>
     </div>
     <p v-if="error" class="text-sm text-red-500">{{ error }}</p>

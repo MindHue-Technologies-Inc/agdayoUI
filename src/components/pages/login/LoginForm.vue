@@ -18,7 +18,7 @@
       <!-- REGISTER BUTTON -->
       <div class="flex flex-col items-center justify-center">
         <span class="text-zinc-400">No account yet?</span>
-        <Anchor href="/">Sign Up</Anchor>
+        <Anchor href="/register">Sign Up</Anchor>
       </div>
     </div>
   </div>

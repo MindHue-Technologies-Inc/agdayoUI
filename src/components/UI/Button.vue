@@ -76,10 +76,10 @@ export default {
           return 'bg-peach-500 text-white hover:bg-peach-600 shadow-primary-sm border-primary-xs';
         case 'secondary':
           // Neutral modern tone (grayish)
-          return 'bg-zinc-700 text-white hover:bg-zinc-600';
+          return 'bg-zinc-700 text-white hover:bg-zinc-600 shadow-secondary-sm border-secondary-xs';
         case 'danger':
           // Softer red tone, not too loud
-          return 'bg-rose-500 text-white hover:bg-rose-600';
+          return 'bg-rose-500 text-white hover:bg-rose-600 shadow-danger-sm border-danger-xs';
         case 'ghost':
           // Peach outline/ghost style
           return 'text-peach-700 border border-peach-500 bg-transparent hover:bg-peach-50';
