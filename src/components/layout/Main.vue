@@ -25,8 +25,7 @@ export default {
   props: {
     loading: {
       type: Boolean,
-      required: true,
-      default: true,
+      default: false,
     },
     customClass: {
       type: String,
