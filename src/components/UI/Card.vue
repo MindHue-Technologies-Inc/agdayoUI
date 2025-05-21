@@ -35,7 +35,7 @@ export default {
         case 'dotted':
           return 'dotted-bg';
         default:
-          return 'bg-white dark:bg-zinc-950 shadow-secondary-sm rounded-3xl';
+          return 'bg-white rounded-3xl';
       }
     },
     borderClass() {

@@ -5,7 +5,7 @@
       <div class=" w-full flex justify-center">
         <div
             v-if="!loading"
-            :class="['mt-0 flex flex-col py-4 lg:w-[60rem] w-screen lg:px-0 px-1', customClass]"
+            :class="['mt-0 flex flex-col py-4 md:w-[60rem] w-screen md:px-0 px-2', customClass]"
         >
           <slot/>
         </div>

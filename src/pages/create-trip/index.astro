@@ -2,12 +2,12 @@
 import Layout from "../../layouts/LayoutWSidebar.astro"
 import Main from "../../components/layout/Main.vue"
 import Topbar from "../../components/UI/Topbar.vue"
-import ActiveTrips from "../../components/pages/active-trips/index.vue"
+import CreateTrip from "../../components/pages/create-trip/index.vue"
 ---
 
 <Layout>
   <Main>
-    <Topbar title="Active Trips" client:visible/>
-    <ActiveTrips client:only/>
+    <Topbar title="Create Trip" client:visible/>
+    <CreateTrip client:only/>
   </Main>
 </Layout>
