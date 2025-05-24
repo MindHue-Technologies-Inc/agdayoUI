@@ -1,10 +1,15 @@
 ---
-import Layout from "../../layouts/Layout.astro"
+import Layout from "../../layouts/LayoutWSidebar.astro"
+import Main from "../../components/layout/Main.vue"
+import Topbar from "../../components/UI/Topbar.vue"
+import TripPage from "../../components/pages/trip/index.vue"
+const { trip } = Astro.params;
 export const prerender = false;
-const { resource, trip } = Astro.params;
 ---
 
 <Layout>
-  {trip}
+  <Main>
+    <Topbar title="Trip" client:visible/>
+    <TripPage client:only/>
+  </Main>
 </Layout>
-
