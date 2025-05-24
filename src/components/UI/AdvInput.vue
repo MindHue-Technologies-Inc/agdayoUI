@@ -2,12 +2,12 @@
   <div :class="[baseClass]">
     <div class="cursor-pointer">
       <!-- Header -->
-      <div @click="toggle" class="flex items-center justify-between">
+      <div @click="toggle" class="flex items-center gap-4 justify-between">
         <div :class="['flex items-center gap-2 text-zinc-900 font-medium header-text', { expanded: isExpanded }]">
           <i :class="['ph', icon]"></i>
           <span>{{ label }}</span>
         </div>
-        <div v-if="!isExpanded">{{ summary }}</div>
+        <div class="text-end">{{ summary }}</div>
       </div>
     </div>
 
