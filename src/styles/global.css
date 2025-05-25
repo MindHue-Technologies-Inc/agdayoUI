@@ -58,6 +58,15 @@ body {
 .shadow-primary-inset { box-shadow: inset 2px 2px 0 0 #B77B6C; }
 .shadow-primary-soft { box-shadow: 0 4px 12px rgba(183, 123, 108, 0.25); }
 
+/* === Peach (LIGHT) === */
+.shadow-primary-light-xs   { box-shadow: 1px 1px 0 0 #F1E3E0; }
+.shadow-primary-light-sm   { box-shadow: 2px 2px 0 0 #F1E3E0; }
+.shadow-primary-light-md   { box-shadow: 4px 4px 0 0 #F1E3E0; }
+.shadow-primary-light-lg   { box-shadow: 6px 6px 0 0 #F1E3E0; }
+.shadow-primary-light-xl   { box-shadow: 8px 8px 0 0 #F1E3E0; }
+.shadow-primary-light-inset { box-shadow: inset 2px 2px 0 0 #F1E3E0; }
+.shadow-primary-light-soft { box-shadow: 0 4px 12px rgba(183, 123, 108, 0.25); }
+
 /* === Zinc (Secondary) === */
 .shadow-secondary-xs   { box-shadow: 1px 1px 0 0 #d4d4d8; }
 .shadow-secondary-sm   { box-shadow: 2px 2px 0 0 #d4d4d8; }
@@ -163,6 +172,11 @@ body {
 .border-primary-xs   { border: 1px solid #B77B6C; }
 .border-primary-sm   { border: 2px solid #B77B6C; }
 .border-primary-md   { border: 4px solid #B77B6C; }
+
+/* === Peach (LIGHT) === */
+.border-primary-light-xs   { border: 1px solid #F1E3E0; }
+.border-primary-light-sm   { border: 2px solid #F1E3E0; }
+.border-primary-light-md   { border: 4px solid #F1E3E0; }
 
 /* === Zinc (Secondary) === */
 .border-secondary-xs   { border: 1px solid #d4d4d8; }

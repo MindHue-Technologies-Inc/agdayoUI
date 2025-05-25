@@ -1,85 +1,106 @@
 <template>
   <div
-      v-if="mode === 'card'"
-      @click="mode = 'full'"
-      class="flex bg-white rounded-3xl shadow-secondary-md border-secondary-xs aspect-square overflow-hidden p-4 cursor-pointer"
+      :class="[
+          baseClasses
+      ]"
+      @click="handleClick"
   >
-    <div class="flex flex-col justify-between items-start grow">
-      <div>Logo</div>
-      <div>Name</div>
+    <div class="flex-shrink-0">
+      <i :class="['ph', iconName, 'text-5xl', iconColorClass]"></i> </div>
+
+    <div class="flex flex-col items-start mt-auto">
+      <Tag :label="tagName" :variant="tagVariant" class="mb-1" />
+
+      <span class="text-base font-semibold text-zinc-800">
+        {{ cardName }}
+      </span>
     </div>
   </div>
-
-  <Transition name="windows-zoom">
-    <div
-        v-if="mode === 'full'"
-        class="flex bg-white absolute inset-0 items-center justify-center rounded-3xl shadow-secondary-md border-secondary-xs"
-    >
-      <div
-          @click="mode = 'card'"
-          class="absolute top-5 right-5 cursor-pointer aspect-square p-2 text-xl items-center justify-center flex"
-      >
-        <i class="ph ph-x"></i>
-      </div>
-      <div class="grow text-center">
-        HELP
-      </div>
-    </div>
-  </Transition>
 </template>
 
 <script>
+import Tag from '../UI/Tag.vue'; // Assuming AppTag.vue is in the same directory or adjust path
+
 export default {
-  data() {
-    return {
-      mode: 'card',
-    };
+  components: {
+    Tag,
+  },
+  props: {
+    // Icon name from Phosphor Icons (e.g., 'ph-map-pin', 'ph-calendar')
+    iconName: {
+      type: String,
+      required: true,
+    },
+    // Color variant for the icon (e.g., 'peach', 'blue', 'green')
+    iconColorVariant: {
+      type: String,
+      validator: (value) =>
+          ['peach', 'blue', 'green', 'red', 'gray', 'purple', 'yellow'].includes(value),
+    },
+    // The main name/title for the card (e.g., 'Destination', 'Budget')
+    cardName: {
+      type: String,
+      required: true,
+    },
+    // The label for the AppTag component (e.g., 'Trip Basics')
+    tagName: {
+      type: String,
+      required: true,
+    },
+    // The variant for the AppTag component (e.g., 'peach', 'blue')
+    tagVariant: {
+      type: String,
+      default: 'peach', // Default tag color
+      validator: (value) =>
+          ['peach', 'blue', 'green', 'red', 'gray', 'purple', 'yellow'].includes(value),
+    },
+  },
+  computed: {
+    baseClasses() {
+      return "flex flex-col justify-between items-start " +
+          "bg-white rounded-4xl shadow-secondary-md border-secondary-xs " +
+          "aspect-square overflow-hidden p-4 cursor-pointer " +
+          "transition-all duration-200 hover:shadow-lg hover:border-peach-400"
+    },
+
+    // Dynamically determines the Tailwind class for the icon color
+    iconColorClass() {
+      switch (this.iconColorVariant) {
+        case 'peach':
+          return 'text-peach-500';
+        case 'blue':
+          return 'text-blue-500';
+        case 'green':
+          return 'text-green-500';
+        case 'red':
+          return 'text-red-500';
+        case 'gray':
+          return 'text-gray-500';
+        case 'purple':
+          return 'text-purple-500';
+        case 'yellow':
+          return 'text-yellow-500';
+        default:
+          return 'text-zinc-900';
+      }
+    },
+  },
+  methods: {
+    // Emits a custom 'card-click' event when the card is clicked
+    handleClick() {
+      this.$emit('card-click', this.cardName); // Emit the card's name for identification
+    },
   },
 };
 </script>
 
 <style scoped>
 /*
- * CSS for the 'windows-zoom' animation, mimicking a Windows-like feel.
- * These classes are automatically added/removed by Vue's <Transition> component.
+ * Note: 'rounded-4xl' is not a standard Tailwind class.
+ * I've used 'rounded-3xl' (24px) as the largest standard option.
+ * If you have a custom Tailwind config with 'rounded-4xl',
+ * ensure it's defined there.
  */
 
-/* Define common transition properties for entering and leaving */
-.windows-zoom-enter-active,
-.windows-zoom-leave-active {
-  /*
-   * Custom cubic-bezier for a "Windows-like" feel:
-   * Starts quickly (0,0 to 0.1,0.9), then decelerates significantly (0.2,1 to 1,1).
-   * This gives it a quick, decisive snap at the beginning and a smooth finish.
-   */
-  transition: opacity 0.25s cubic-bezier(0.1, 0.9, 0.2, 1), /* Shorter duration for quickness */
-  transform .5s cubic-bezier(0.1, 0.9, 0.2, 1);
-
-  /* Ensure the element is positioned absolutely during the transition */
-  /* This prevents layout shifts while it animates */
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-/* Starting state for the entering element (full screen mode) */
-.windows-zoom-enter-from {
-  opacity: 0;
-  transform: scale(0.9); /* Starts slightly zoomed out */
-}
-
-/* Ending state for the leaving element (full screen mode when it closes) */
-.windows-zoom-leave-to {
-  opacity: 0;
-  transform: scale(0.9); /* Fades out and shrinks slightly as it leaves */
-}
-
-/* Final state for entering, and initial state for leaving */
-.windows-zoom-enter-to,
-.windows-zoom-leave-from {
-  opacity: 1;
-  transform: scale(1); /* Ends at full size */
-}
+/* No additional scoped CSS needed if using Tailwind for all styles */
 </style>

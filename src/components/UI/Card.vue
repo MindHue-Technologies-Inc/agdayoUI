@@ -2,9 +2,8 @@
   <div
     class="card-container"
     :class="[
-      'border p-6 flex flex-col gap-4 transition-colors',
+      'p-6 flex flex-col gap-4 transition-colors',
       backgroundClass,
-      borderClass,
       customClass
     ]"
   >

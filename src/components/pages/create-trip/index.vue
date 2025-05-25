@@ -1,7 +1,7 @@
 <template>
   <Transition name="fade" appear>
     <div class="flex flex-col grow py-16">
-      <Card customClass="p-6 rounded-4xl shadow-secondary-lg">
+      <Card customClass="p-6 rounded-4xl border-secondary-xs shadow-secondary-lg">
         <InputTitle placeholder="Enter the Name of the Trip" id="name" />
         <span>You can add preparations, activities, and routes after creating the trip.</span>
         <Destination/>
