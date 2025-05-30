@@ -38,11 +38,11 @@
       <div
           v-for="(day, index) in paddedDays"
           :key="index"
-          class="flex items-center justify-center"
+          class="flex place-content-center"
           @click="selectDate(day)"
       >
         <div
-            class="aspect-square rounded-full w-12 flex items-center justify-center cursor-pointer transition-all duration-200"
+            class="aspect-square rounded-full w-12 flex place-content-center cursor-pointer transition-all duration-200"
             :class="getDayClass(day)"
         >
           {{ day ? day.getDate() : '' }}

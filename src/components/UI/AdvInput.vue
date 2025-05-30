@@ -4,7 +4,12 @@
       <!-- Header -->
       <div @click="toggle" class="flex items-center gap-4 justify-between">
         <div :class="['flex items-center gap-2 text-zinc-900 font-medium header-text', { expanded: isExpanded }]">
-          <i :class="['ph', icon]"></i>
+          <template v-if="icon.includes('ph')">
+            <i :class="['ph', icon]"></i>
+          </template>
+          <template v-else>
+            <span>{{icon}}</span>
+          </template>
           <span>{{ label }}</span>
         </div>
         <div class="text-end">{{ summary }}</div>
@@ -20,8 +25,8 @@
         @leave="leave"
         @after-leave="afterLeave"
     >
-      <div v-show="isExpanded" ref="content" class="overflow-hidden">
-        <div class="mt-2">
+      <div v-show="isExpanded" ref="content" class="">
+        <div class="">
           <div class="w-full">
             <slot/>
           </div>
@@ -72,7 +77,7 @@ export default {
       el.style.height = '0';
       el.style.opacity = '0';
       requestAnimationFrame(() => {
-        el.style.transition = 'height 0.3s ease, opacity 0.3s ease';
+        el.style.transition = 'height 0.3s ease, opacity 0.5s ease';
         el.style.height = el.scrollHeight + 'px';
         el.style.opacity = '1';
       });
@@ -81,7 +86,7 @@ export default {
       el.style.height = 'auto'; // clear height after animation
     },
     leave(el) {
-      el.style.transition = 'height 0.3s ease, opacity 0.3s ease';
+      el.style.transition = 'height 0.3s ease, opacity 0.1s ease';
       el.style.height = el.scrollHeight + 'px';
       el.style.opacity = '1';
 

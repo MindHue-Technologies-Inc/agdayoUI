@@ -23,6 +23,11 @@ export default {
     AdvInput,
     Button,
   },
+  props: {
+    summary: {
+      type: String,
+    }
+  },
   data() {
     return {
       range: {
@@ -43,7 +48,7 @@ export default {
         const end = this.range.end.toLocaleDateString('en-US', options);
         return `${start} - ${end}`;
       }
-      return 'Select your travel dates';
+      return this.summary;
     },
   },
   methods: {

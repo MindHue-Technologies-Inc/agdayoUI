@@ -50,16 +50,14 @@ export default {
     // The variant for the AppTag component (e.g., 'peach', 'blue')
     tagVariant: {
       type: String,
-      default: 'peach', // Default tag color
-      validator: (value) =>
-          ['peach', 'blue', 'green', 'red', 'gray', 'purple', 'yellow'].includes(value),
+      default: 'peach',
     },
   },
   computed: {
     baseClasses() {
       return "flex flex-col justify-between items-start " +
           "bg-white rounded-4xl shadow-secondary-md border-secondary-xs " +
-          "aspect-square overflow-hidden p-4 cursor-pointer " +
+          "min-h-40 min-w-40 overflow-hidden p-4 cursor-pointer " +
           "transition-all duration-200 hover:shadow-lg hover:border-peach-400"
     },
 

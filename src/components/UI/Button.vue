@@ -15,7 +15,7 @@
     <!-- Content layer with text color transition -->
     <span class="relative flex justify-center items-center gap-2 w-full">
       <slot v-if="!loading" />
-      <i v-else class=" animate-spin ph ph-spinner flex items-center justify-center" :class="[{'!text-[28px]': size=='lg'}, {'!text-[24px]': size=='md'}, {'!text-[20px]': size=='sm'}]"></i>
+      <i v-else class=" animate-spin ph ph-spinner flex place-content-center" :class="[{'!text-[28px]': size=='lg'}, {'!text-[24px]': size=='md'}, {'!text-[20px]': size=='sm'}]"></i>
     </span>
   </button>
 </template>

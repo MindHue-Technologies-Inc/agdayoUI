@@ -6,7 +6,6 @@
           variantClasses, // Dynamic color classes
           { 'cursor-pointer': isButtonMode, 'hover:brightness-95 active:brightness-90': isButtonMode } // Button specific styles
     ]"
-      @click="handleClick"
   >
     {{ label }}
   </component>

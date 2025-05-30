@@ -16,7 +16,7 @@
             @click.stop
         >
           <div
-              class="w-full py-2 flex items-center justify-center flex-shrink-0" @touchstart.stop="startDrag" @mousedown.stop="startDrag"
+              class="w-full py-2 flex place-content-center flex-shrink-0" @touchstart.stop="startDrag" @mousedown.stop="startDrag"
           >
             <div
                 v-if="showHandle"
@@ -25,9 +25,10 @@
             </div>
           </div>
 
-          <div class="overflow-y-auto flex-grow"> <div class="p-6">
-            <slot></slot>
-          </div>
+          <div class="overflow-y-auto flex-grow">
+            <div class="">
+              <slot></slot>
+            </div>
           </div>
         </div>
       </Transition>
@@ -84,7 +85,7 @@ export default {
   methods: {
     closeSheet() {
       if (this.closeOnClickOutside) {
-        this.$emit('update:modelValue', false);
+        this.$emit('update:modelValue', {showSheet: false});
       }
     },
     startDrag(event) {
@@ -134,7 +135,7 @@ export default {
 
       // Check if the sheet has been dragged down enough to dismiss
       if (this.dragOffsetY > this.dragThreshold) {
-        this.$emit('update:modelValue', false);
+        this.$emit('update:modelValue', {showSheet: false});
       }
 
       // Reset the offset for the next time it opens, or if it didn't dismiss

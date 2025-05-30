@@ -8,7 +8,7 @@
     </div>
 
     <transition name="fade" mode="out-in">
-      <div :key="activeInput" class="gap-4 sm:w-72 w-full pt-20 flex flex-col items-center justify-center">
+      <div :key="activeInput" class="gap-4 sm:w-72 w-full pt-20 flex flex-col place-content-center">
         <template v-if="activeInput === 'email'">
           <Input
               type="email"

@@ -7,7 +7,10 @@
         <!-- TOP PART -->
         <div class="flex flex-row items-center justify-between">
           <!-- TAG -->
-          <Tag label="upcoming" class="bg-white"/>
+          <div class="flex flex-row gap-2 items-center justify-center">
+            <Tag label="Upcoming" class="bg-white"/>
+            <Tag label="View on Map" variant="green" mode="button" />
+          </div>
 
           <!-- SETTINGS -->
           <span class="text-2xl text-zinc-600 cursor-pointer transition hover:text-zinc-400 active:text-zinc-300"><i class="ph ph-gear-six"></i></span>
@@ -39,71 +42,48 @@
       </div>
 
       <!-- ACTIONS -->
-      <div class="grid md:grid-cols-4 grid-cols-2 gap-4 px-6">
+      <div class="flex flex-row grow gap-4 py-2 w-auto px-6 overflow-y-auto">
         <AdvSquareCard
             iconName="ph-suitcase"
             cardName="Preparations"
             tagName="3 Pending"
             tagVariant="blue"
-            @card-click="showSheet = true" />
+            @card-click="preparation.showSheet = true" />
         <AdvSquareCard
-          iconName="ph-bed"
-          cardName="Accommodations"
-          tagName="2 Booked"
-          tagVariant="orange"
-          @card-click="showSheet = true"
+            iconName="ph-bed"
+            cardName="Accommodations"
+            tagName="2 Booked"
+            tagVariant="orange"
+            @card-click="accommodation.showSheet = true"
         />
         <AdvSquareCard
-          iconName="ph-users"
-          cardName="Companions"
-          tagName="4 Travelers"
-          tagVariant="purple"
-          @card-click="showSheet = true"
+            iconName="ph-users"
+            cardName="Companions"
+            tagName="4 Travelers"
+            tagVariant="purple"
+            @card-click="companions.showSheet = true"
         />
         <AdvSquareCard
-          iconName="ph-wallet"
-          cardName="Budget"
-          tagName="$X Remaining"
-          tagVariant="red"
-          @card-click="showSheet = true"
+            iconName="ph-wallet"
+            cardName="Budget"
+            tagName="$X Remaining"
+            tagVariant="red"
+            @card-click="budget.showSheet = true"
         />
-      </div>
-
-      <div v-auto-animate>
-        <div v-if="showMoreActions" class="grid md:grid-cols-4 grid-cols-2 gap-4 px-6 overflow-hidden pb-1">
-          <AdvSquareCard
-              iconName="ph-suitcase"
-              cardName="Preparations"
-              tagName="3 Pending"
-              tagVariant="blue"
-              @card-click="showSheet = true" />
-          <AdvSquareCard
-              iconName="ph-bed"
-              cardName="Accommodations"
-              tagName="2 Booked"
-              tagVariant="orange"
-              @card-click="showSheet = true"
-          />
-          <AdvSquareCard
-              iconName="ph-users"
-              cardName="Companions"
-              tagName="4 Travelers"
-              tagVariant="purple"
-              @card-click="showSheet = true"
-          />
-          <AdvSquareCard
-              iconName="ph-wallet"
-              cardName="Budget"
-              tagName="$X Remaining"
-              tagVariant="red"
-              @card-click="showSheet = true"
-          />
-        </div>
-      </div>
-
-      <div class="w-full text-center">
-        <Anchor v-if="!showMoreActions" @click="showMoreActions = true" href="javascript:void(0)">Show More</Anchor>
-        <Anchor v-else @click="showMoreActions = false" href="javascript:void(0)">Show Less</Anchor>
+        <AdvSquareCard
+            iconName="ph-bus"
+            cardName="Transportation"
+            tagName="3 Pending"
+            tagVariant="blue"
+            @card-click="transportation.showSheet = true"
+        />
+        <AdvSquareCard
+            iconName="ph-hand-palm"
+            cardName="Roles"
+            tagName="4 Roles"
+            tagVariant="primary"
+            @card-click="roles.showSheet = true"
+        />
       </div>
 
       <!-- DAY PLANS -->
@@ -111,15 +91,15 @@
         <!-- TITLE AND ADD ACTIVITY -->
         <div class="flex items-center justify-between">
           <span class="font-medium text-3xl">Day Plan</span>
-          <Button>+ Add Activity</Button>
+          <Button @click="addActivity.showSheet = true">+ Add Activity</Button>
         </div>
 
         <!-- A DAY PLAN -->
         <div>
           <!-- TITLE -->
           <div class="flex items-center justify-between">
-            <span class="font-semibold text-2xl">Day 1 - May 14, 2025</span>
-            <Tag label="+ Add Note" mode="button"/>
+            <span class="font-semibold text-2xl cursor-pointer" @click="dayNote.showSheet = true">Day 1 - May 14, 2025</span>
+            <Tag @click="dayNote.showSheet = true" label="+ Add Note" mode="button"/>
           </div>
 
           <!-- TIMELINE -->
@@ -317,7 +297,7 @@
 
         </div>
         <div class="w-full text-center">
-          <Tag @click="showAddActivitySheet = true" label="+ Add Activity" mode="button"/>
+          <Tag @click="addActivity.showSheet = true" label="+ Add Activity" mode="button"/>
         </div>
       </div>
 
@@ -326,182 +306,31 @@
 
 
   <!--    SHEETS-->
-  <SheetPreparation v-model="showSheet"/>
+
+  <!--PREPARATIONS-->
+  <SheetPreparation v-model="preparation"/>
+
+  <!--ACCOMMODATIONS-->
+  <SheetAccom v-model="accommodation" />
+
+  <!--COMPANIONS-->
+  <SheetCompanions v-model="companions"/>
+
+  <!--BUDGET-->
+  <SheetBudget v-model="budget"/>
+
+  <!--TRANSPORTATION-->
+  <SheetTransportation v-model="transportation"/>
+
+  <!--ROLES-->
+  <SheetRoles v-model="roles"/>
 
   <!-- ADD ACTIVITY SHEET -->
-  <Sheet v-model="showAddActivitySheet">
-    <div class="flex flex-col h-full bg-white p-6 sm:p-8 rounded-t-3xl overflow-hidden">
-      <div class="flex items-center justify-between pb-6 border-b border-zinc-200">
-        <h2 class="text-3xl font-bold text-zinc-800">Add New Activity</h2>
-        <button class="text-zinc-500 hover:text-zinc-700 transition-colors">
-          <i class="ph ph-x text-2xl"></i>
-        </button>
-      </div>
+  <SheetAddActivity v-model="addActivity"/>
 
-      <div class="flex-grow overflow-y-auto pt-6 pr-2 custom-scrollbar">
-        <div class="flex flex-col gap-6">
+  <!--DAY NOTE-->
+  <SheetDayNote v-model="dayNote"/>
 
-          <div>
-            <label for="activity-title" class="block text-sm font-medium text-zinc-700 mb-2">Activity Name</label>
-            <input
-                type="text"
-                id="activity-title"
-                placeholder="e.g., Explore Mines View Park"
-                class="w-full p-3 border border-zinc-300 rounded-lg focus:ring-peach-500 focus:border-peach-500 transition-colors"
-            />
-          </div>
-
-          <div class="flex flex-col sm:flex-row gap-4">
-            <div class="flex-1">
-              <label for="activity-time" class="block text-sm font-medium text-zinc-700 mb-2">Time</label>
-              <input
-                  type="time"
-                  id="activity-time"
-                  class="w-full p-3 border border-zinc-300 rounded-lg focus:ring-peach-500 focus:border-peach-500 transition-colors"
-              />
-            </div>
-            <div class="flex-1">
-              <label for="activity-date" class="block text-sm font-medium text-zinc-700 mb-2">Date (Optional)</label>
-              <input
-                  type="date"
-                  id="activity-date"
-                  class="w-full p-3 border border-zinc-300 rounded-lg focus:ring-peach-500 focus:border-peach-500 transition-colors"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label for="activity-location" class="block text-sm font-medium text-zinc-700 mb-2">Location</label>
-            <input
-                type="text"
-                id="activity-location"
-                placeholder="e.g., Mines View Park, Baguio City"
-                class="w-full p-3 border border-zinc-300 rounded-lg focus:ring-peach-500 focus:border-peach-500 transition-colors"
-            />
-          </div>
-
-          <div class="flex flex-col sm:flex-row gap-4">
-            <div class="flex-1">
-              <label for="activity-budget" class="block text-sm font-medium text-zinc-700 mb-2">Budget (PHP)</label>
-              <input
-                  type="number"
-                  id="activity-budget"
-                  placeholder="e.g., 150.00"
-                  step="0.01"
-                  class="w-full p-3 border border-zinc-300 rounded-lg focus:ring-peach-500 focus:border-peach-500 transition-colors"
-              />
-            </div>
-            <div class="flex-1">
-              <label for="budget-notes" class="block text-sm font-medium text-zinc-700 mb-2">Budget Notes (Optional)</label>
-              <input
-                  type="text"
-                  id="budget-notes"
-                  placeholder="e.g., per person, entrance fee"
-                  class="w-full p-3 border border-zinc-300 rounded-lg focus:ring-peach-500 focus:border-peach-500 transition-colors"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label for="activity-description" class="block text-sm font-medium text-zinc-700 mb-2">Description (Optional)</label>
-            <textarea
-                id="activity-description"
-                rows="3"
-                placeholder="Add more details about this activity..."
-                class="w-full p-3 border border-zinc-300 rounded-lg focus:ring-peach-500 focus:border-peach-500 transition-colors resize-y"
-            ></textarea>
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-zinc-700 mb-2">Activity Type Icon</label>
-            <div class="flex flex-wrap gap-3">
-              <button
-                  :class="[
-                'p-2 rounded-full border-2 transition-all duration-200',
-                'border-zinc-200 text-zinc-500 hover:border-peach-300 hover:text-peach-500',
-              ]"
-              >
-                <i class="ph ph-bus text-xl"></i>
-              </button>
-              <button
-                  :class="[
-                'p-2 rounded-full border-2 transition-all duration-200',
-                'border-zinc-200 text-zinc-500 hover:border-peach-300 hover:text-peach-500',
-              ]"
-              >
-                <i class="ph ph-coffee text-xl"></i>
-              </button>
-              <button
-                  :class="[
-                'p-2 rounded-full border-2 transition-all duration-200',
-                'border-zinc-200 text-zinc-500 hover:border-peach-300 hover:text-peach-500',
-              ]"
-              >
-                <i class="ph ph-tree text-xl"></i>
-              </button>
-              <button
-                  :class="[
-                'p-2 rounded-full border-2 transition-all duration-200',
-                'border-zinc-200 text-zinc-500 hover:border-peach-300 hover:text-peach-500',
-              ]"
-              >
-                <i class="ph ph-bowl-food text-xl"></i>
-              </button>
-              <button
-                  :class="[
-                'p-2 rounded-full border-2 transition-all duration-200',
-                'border-zinc-200 text-zinc-500 hover:border-peach-300 hover:text-peach-500',
-              ]"
-              >
-                <i class="ph ph-palette text-xl"></i>
-              </button>
-              <button
-                  :class="[
-                'p-2 rounded-full border-2 transition-all duration-200',
-                'border-zinc-200 text-zinc-500 hover:border-peach-300 hover:text-peach-500',
-              ]"
-              >
-                <i class="ph ph-bed text-xl"></i>
-              </button>
-              <button
-                  :class="[
-                'p-2 rounded-full border-2 transition-all duration-200',
-                'border-zinc-200 text-zinc-500 hover:border-peach-300 hover:text-peach-500',
-              ]"
-              >
-                <i class="ph ph-pizza text-xl"></i>
-              </button>
-              <button
-                  :class="[
-                'p-2 rounded-full border-2 transition-all duration-200',
-                'border-zinc-200 text-zinc-500 hover:border-peach-300 hover:text-peach-500',
-              ]"
-              >
-                <i class="ph ph-question text-xl"></i>
-              </button>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <div class="flex flex-col sm:flex-row gap-4 pt-6 border-t border-zinc-200 mt-6">
-        <button
-            class="flex-1 px-6 py-3 bg-white border border-zinc-300 text-zinc-700 rounded-lg
-               hover:bg-zinc-100 transition-colors font-semibold"
-        >
-          Cancel
-        </button>
-        <button
-            class="flex-1 px-6 py-3 bg-peach-500 text-white rounded-lg
-               hover:bg-peach-600 transition-colors font-semibold
-               disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Add Activity
-        </button>
-      </div>
-    </div>
-  </Sheet>
 </template>
 
 <script>
@@ -511,8 +340,15 @@ import Card from "../../UI/Card.vue";
 import Tag from "../../UI/Tag.vue"
 import Anchor from "../../UI/Anchor.vue";
 import Button from "../../UI/Button.vue";
-import SheetPreparation from "./components/SheetPreparation.vue";
 import { vAutoAnimate } from '@formkit/auto-animate'
+import SheetPreparation from "./components/sheets/SheetPreparation.vue";
+import SheetAddActivity from "./components/sheets/SheetAddActivity.vue";
+import SheetAccom from "./components/sheets/SheetAccom.vue";
+import SheetCompanions from "./components/sheets/SheetCompanions.vue";
+import SheetBudget from "./components/sheets/SheetBudget.vue";
+import SheetTransportation from "./components/sheets/SheetTransportation.vue";
+import SheetRoles from "./components/sheets/SheetRoles.vue";
+import SheetDayNote from "./components/sheets/SheetDayNote.vue";
 
 export default {
   components: {
@@ -523,6 +359,13 @@ export default {
     Anchor,
     Button,
     SheetPreparation,
+    SheetAddActivity,
+    SheetAccom,
+    SheetCompanions,
+    SheetBudget,
+    SheetTransportation,
+    SheetRoles,
+    SheetDayNote,
   },
 
   directives: {
@@ -531,8 +374,32 @@ export default {
 
   data() {
     return {
+      preparation: {
+        showSheet: false,
+      },
+      accommodation: {
+        showSheet: false,
+        name: "Hotel Veniz",
+      },
+      companions: {
+        showSheet: false,
+      },
+      budget: {
+        showSheet: false,
+      },
+      transportation: {
+        showSheet: false,
+      },
+      roles: {
+        showSheet: false,
+      },
+      dayNote: {
+        showSheet: false,
+      },
+      addActivity: {
+        showSheet: false,
+      },
       showSheet: false,
-      showMoreActions: false,
       showAddActivitySheet: false,
       activeTab: 'all', // For filtering tasks in the sheet
       newTask: '',

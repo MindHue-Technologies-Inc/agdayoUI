@@ -106,7 +106,7 @@
         </td>
 
         <td v-if="editMode" class="px-2 py-1 border-4 border-black">
-          <div class="w-full h-full flex items-center justify-center">
+          <div class="w-full h-full flex place-content-center">
             <Button
               @clicked="toDelete(tr.id)"
               size="sm"

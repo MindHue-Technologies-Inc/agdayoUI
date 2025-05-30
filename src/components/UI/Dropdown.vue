@@ -13,7 +13,7 @@
       :disabled="disabled"
       @click="toggle()"
     >
-      <span><slot name="trigger">Dropdown</slot></span>
+      <span><slot>Dropdown</slot></span>
       <svg
         class="ml-2 h-4 w-4 transition-transform duration-200"
         :class="{ 'rotate-180': open }"

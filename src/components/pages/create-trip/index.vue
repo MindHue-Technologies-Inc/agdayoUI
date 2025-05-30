@@ -6,9 +6,7 @@
         <span>You can add preparations, activities, and routes after creating the trip.</span>
         <Destination/>
         <Dates/>
-        <Budget/>
-        <InviteCompanions/>
-        <Button>Save</Button>
+        <Button>Start Planning</Button>
       </Card>
     </div>
   </Transition>

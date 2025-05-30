@@ -1,33 +1,32 @@
 <template>
   <div class="flex flex-col justify-between lg:p-9 p-2 grow relative">
-    <!-- BACKGROUND IMAGE with fade -->
     <transition-group name="bg-fade" tag="div" class="absolute inset-0 z-0">
       <div
-        v-for="(item) in [config[counter]]"
-        :key="item.bg"
-        class="absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-700"
-        :style="{ backgroundImage: `url('${item.bg}')` }"
+          v-for="(item) in [config[counter]]"
+          :key="item.bg"
+          class="absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-700"
+          :style="{ backgroundImage: `url('${item.bg}')` }"
       >
-        <!-- Dark overlay -->
         <div class="absolute inset-0 bg-black/20"></div>
       </div>
     </transition-group>
 
-    <!-- HEADER -->
     <Header class="z-10" />
 
-    <!-- TITLE -->
     <transition name="fade" mode="out-in">
-      <div :key="config[counter].title" class="z-10 flex grow w-full items-center justify-center">
+      <div :key="config[counter].title" class="z-10 flex grow w-full items-center justify-between">
+        <div class="w-32 cursor-pointer h-full" @click="previousImage()"></div>
         <Elnido v-if="config[counter].title === 'Elnido'" />
         <Baguio v-if="config[counter].title === 'Baguio'" />
         <Makati v-if="config[counter].title === 'Makati'" />
         <Subic v-if="config[counter].title === 'Subic'" />
-        <!-- Add other title components if needed -->
+        <Cebu v-if="config[counter].title === 'Cebu'" />
+        <Siargao v-if="config[counter].title === 'Siargao'" />
+        <Batanes v-if="config[counter].title === 'Batanes'" />
+        <div class="w-32 cursor-pointer h-full" @click="nextImage()"></div>
       </div>
     </transition>
 
-    <!-- FOOTER -->
     <transition name="fade" mode="out-in">
       <Footer class="z-10" :key="config[counter].credits" :credits="config[counter].credits" />
     </transition>
@@ -41,7 +40,11 @@ import Elnido from "./components/Title/Elnido.vue"
 import Baguio from "./components/Title/Baguio.vue"
 import Makati from "./components/Title/Makati.vue"
 import Subic from "./components/Title/Subic.vue"
+import Cebu from "./components/Title/Cebu.vue"
+import Siargao from "./components/Title/Siargao.vue"
+import Batanes from "./components/Title/Batanes.vue"
 import Footer from "./components/Footer.vue"
+import {Random} from "random-js";
 
 export default {
   components: {
@@ -51,6 +54,9 @@ export default {
     Baguio,
     Makati,
     Subic,
+    Cebu,
+    Siargao,
+    Batanes,
   },
   data() {
     return {
@@ -75,16 +81,74 @@ export default {
           bg: '/images/subic.jpg',
           title: 'Subic',
           credits: 'Subic, Zambales. Photo by pixmike'
+        },
+        {
+          bg: '/images/cebu.jpg',
+          title: 'Cebu',
+          credits: 'Cebu City, Cebu. Photo by Angelyn Sanjorjo'
+        },
+        {
+          bg: '/images/siargao.jpg',
+          title: 'Siargao',
+          credits: 'Guyam Island, Siargao. Photo by Rene Padillo'
+        },
+        {
+          bg: '/images/batanes.jpg',
+          title: 'Batanes',
+          credits: 'Batanes. Photo by JR Padlan'
         }
-      ]
+      ],
+      // Still good practice to keep the intervalId for cleanup
+      intervalId: null
+    }
+  },
+
+  methods: {
+    nextImage() {
+      if (this.counter == this.config.length) {
+        this.counter = -1;
+      }
+      this.counter++
+      this.stopInterval();
+      this.generateInterval();
+    },
+
+    previousImage() {
+      if (this.counter < 0) {
+        this.counter = this.config.length + 1;
+      }
+      this.counter--
+      this.stopInterval();
+      this.generateInterval();
+    },
+
+    generateInterval() {
+      // Set the interval to loop sequentially
+      this.intervalId = setInterval(() => {
+        const random = new Random()
+        this.counter = (random.integer(0, this.config.length*100)) % this.config.length;
+      }, 10000); // Change every 10 seconds
+    },
+
+    stopInterval() {
+      // Clear the interval when the component is unmounted to prevent memory leaks
+      if (this.intervalId) {
+        clearInterval(this.intervalId);
+      }
     }
   },
 
   mounted() {
-    setInterval(() => {
-      this.counter = (this.counter + 1) % this.config.length
-    }, 10000)
-  }
+    // Set the interval to loop sequentially
+    this.generateInterval();
+  },
+
+  beforeUnmount() {
+    // Clear the interval when the component is unmounted to prevent memory leaks
+    this.stopInterval();
+  },
+
+  // Removed the methods section as changeSlideRandomly is no longer needed
 }
 </script>
 
