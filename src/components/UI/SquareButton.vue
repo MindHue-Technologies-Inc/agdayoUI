@@ -12,7 +12,7 @@
     ]"
       :disabled="disabled || loading"
   >
-    <div class="flex flex-col place-content-center gap-1">
+    <div class="flex flex-col items-center justify-center gap-1">
       <span v-if="loading">
         <i class="ph ph-spinner animate-spin" :class="iconSize"></i>
       </span>
@@ -77,7 +77,7 @@ export default {
       return this.modelValue === this.value;
     },
     baseClasses() {
-      return 'flex flex-col place-content-center font-bold duration-100 transition cursor-pointer overflow-hidden group active:scale-95 rounded-3xl text-center';
+      return 'flex flex-col items-center justify-center font-bold duration-100 transition cursor-pointer overflow-hidden group active:scale-95 rounded-3xl text-center';
     },
     sizeClasses() {
       switch (this.size) {

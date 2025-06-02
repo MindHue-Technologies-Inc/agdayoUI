@@ -2,7 +2,7 @@
   <Sheet :model-value="showSheet" @update:modelValue="$emit('update:modelValue', $event)">
     <div class="flex flex-col items-start h-full md:px-6 md:py-8 px-2 py-1">
       <div class="flex items-center justify-between w-full mb-6">
-        <div class="flex gap-2 place-content-center text-3xl text-zinc-800">
+        <div class="flex gap-2 items-center justify-center text-3xl text-zinc-800">
           <i class="ph ph-suitcase"></i> <span class="font-bold">Preparations Checklist</span>
         </div>
         <button @click="$emit('update:modelValue', { ...modelValue, showSheet: false })" class="text-zinc-500 hover:text-zinc-700 transition">

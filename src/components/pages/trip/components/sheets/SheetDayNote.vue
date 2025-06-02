@@ -2,7 +2,7 @@
   <Sheet :model-value="showSheet" @update:modelValue="$emit('update:modelValue', $event)">
     <div class="flex flex-col items-start h-full md:px-6 md:py-8 px-1 py-2">
       <div class="flex items-center justify-between w-full mb-6">
-        <div class="flex gap-2 place-content-center text-3xl text-zinc-800">
+        <div class="flex gap-2 items-center justify-center text-3xl text-zinc-800">
           <i class="ph ph-note-pencil"></i>
           <span class="font-bold">Day Note for {{ formattedDate }}</span>
         </div>

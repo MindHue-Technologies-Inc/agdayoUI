@@ -16,7 +16,7 @@
             @click.stop
         >
           <div
-              class="w-full py-2 flex place-content-center flex-shrink-0" @touchstart.stop="startDrag" @mousedown.stop="startDrag"
+              class="w-full py-2 flex items-center justify-center flex-shrink-0" @touchstart.stop="startDrag" @mousedown.stop="startDrag"
           >
             <div
                 v-if="showHandle"

@@ -3,7 +3,7 @@
     <div class="flex flex-col items-start h-full md:px-6 md:py-8 px-2 py-1">
       <!--HEADERS-->
       <div class="flex items-center justify-between w-full mb-6">
-        <div class="flex gap-2 place-content-center text-3xl text-zinc-800">
+        <div class="flex gap-2 items-center justify-center text-3xl text-zinc-800">
           <i class="ph ph-suitcase"></i> <span class="font-bold">Accommodations</span>
           <Tag label="+ Add More" mode="button"/>
         </div>

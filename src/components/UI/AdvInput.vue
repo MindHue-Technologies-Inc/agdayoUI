@@ -12,7 +12,7 @@
           </template>
           <span>{{ label }}</span>
         </div>
-        <div class="text-end">{{ summary }}</div>
+        <div v-if="!isExpanded" class="text-end md:block hidden">{{ summary }}</div>
       </div>
     </div>
 
@@ -59,7 +59,7 @@ export default {
 
   computed: {
     baseClass() {
-      return 'rounded-[2rem] border-secondary-xs shadow-secondary-md p-6 bg-white transition duration-150 ease-in-out';
+      return 'rounded-[1.5rem] md:rounded-[2rem] border-secondary-xs shadow-secondary-md px-3 py-4 md:p-6 bg-white transition duration-150 ease-in-out';
     },
     hoverClass() {
       return 'hover:bg-zinc-100';

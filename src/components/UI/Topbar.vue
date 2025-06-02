@@ -2,7 +2,7 @@
   <div class="relative flex flex-row justify-center w-full">
     <!-- BACK BUTTON -->
     <div @click="goBack" v-if="!hideBackButton" :class="[
-        'flex place-content-center ',
+        'flex items-center justify-center ',
          'text-2xl transition rounded-full p-1 ',
           'bg-none hover:text-peach-500 cursor-pointer',
           'absolute left-0 inset-y-0'

@@ -2,7 +2,7 @@
   <Sheet :model-value="showSheet" @update:modelValue="$emit('update:modelValue', $event)">
     <div class="flex flex-col items-start h-full md:px-6 md:py-8 px-2 py-1">
       <div class="flex items-center justify-between w-full mb-6">
-        <div class="flex gap-2 place-content-center text-3xl text-zinc-800">
+        <div class="flex gap-2 items-center justify-center text-3xl text-zinc-800">
           <i class="ph ph-users"></i> <span class="font-bold">Trip Companions</span>
           <Tag label="+ Add More" mode="button" @click="addCompanionRow" />
         </div>
@@ -58,7 +58,7 @@
           </div>
         </AdvInput>
 
-        <div v-if="localCompanions.length === 0" class="flex flex-col place-content-center text-zinc-500 p-8 border border-zinc-200 rounded-lg">
+        <div v-if="localCompanions.length === 0" class="flex flex-col items-center justify-center text-zinc-500 p-8 border border-zinc-200 rounded-lg">
           <i class="ph ph-users-three text-4xl mb-2"></i>
           <p class="text-center">No companions added yet. Click '+ Add More' to begin!</p>
           <Button class="mt-4" @click="addCompanionRow">Add First Companion</Button>

@@ -1,9 +1,28 @@
 <template>
   <Transition name="fade" appear>
-    <div class="flex flex-col grow py-16">
-      <Card customClass="p-6 rounded-4xl border-secondary-xs shadow-secondary-lg">
-        <InputTitle placeholder="Enter the Name of the Trip" id="name" />
-        <span>You can add preparations, activities, and routes after creating the trip.</span>
+    <div class="flex flex-col grow place-content-center">
+      <h1 class="text-4xl sm:text-5xl font-extrabold text-zinc-800 mb-8 sm:mb-12 text-center tracking-tight outfit">
+        Plan Your Next Adventure
+      </h1>
+      <Card customClass="rounded-4xl border-secondary-xs shadow-secondary-lg">
+
+        <AdvInput
+
+            label="Trip Name"
+            icon="ph-paper-plane-tilt"
+        >
+          <div class="p-1">
+            <InputTitle
+
+                placeholder="e.g., Island Hopping Palawan"
+                id="name"
+                class="w-full text-2xl font-bold text-zinc-800"
+            />
+            <span class="text-sm text-zinc-500 mt-2 block">
+              You can add preparations, activities, and routes after creating the trip.
+            </span>
+          </div>
+        </AdvInput>
         <Destination/>
         <Dates/>
         <Button>Start Planning</Button>

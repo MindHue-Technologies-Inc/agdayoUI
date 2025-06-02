@@ -3,8 +3,7 @@
     <div class="flex flex-col items-start h-full md:px-6 md:py-8 px-1 py-2">
       <div class="flex items-center justify-between w-full mb-6">
         <div class="flex gap-2 items-center justify-center text-3xl text-zinc-800">
-          <i :class="isEditing ? 'ph ph-pencil-simple' : 'ph ph-plus-circle'"></i>
-          <span class="font-bold">{{ isEditing ? 'Edit Activity' : 'Add New Activity' }}</span>
+          <i class="ph ph-pencil-simple"></i> <span class="font-bold">Edit Activity</span>
         </div>
         <button @click="handleSheetClose" class="text-zinc-500 hover:text-zinc-700 transition">
           <i class="ph ph-x text-2xl"></i>
@@ -78,11 +77,11 @@
       </div>
 
       <div class="flex flex-col sm:flex-row gap-4 pt-6 grow w-full">
-        <Button class="w-full" @click="cancelActivity" variant="secondary">
+        <Button class="w-full" @click="cancelEdit" variant="secondary">
           Cancel
         </Button>
-        <Button class="w-full" @click="saveActivity" :disabled="!localActivity.name">
-          {{ isEditing ? 'Save Changes' : 'Add Activity' }}
+        <Button class="w-full" @click="saveChanges" :disabled="!localActivity.name">
+          Save Changes
         </Button>
       </div>
     </div>
@@ -91,7 +90,6 @@
 
 <script>
 import Sheet from "../../../../UI/Sheet.vue";
-import Tag from "../../../../UI/Tag.vue"; // Keep if used for internal display, not essential for the form
 import Button from "../../../../UI/Button.vue";
 import Input from "../../../../UI/Input.vue";
 import Select from "../../../../UI/Select.vue";
@@ -100,7 +98,6 @@ import AdvInput from "../../../../UI/AdvInput.vue";
 export default {
   components: {
     Sheet,
-    Tag,
     Button,
     Input,
     Select,
@@ -108,21 +105,20 @@ export default {
   },
 
   props: {
-    // modelValue now expects an object: { showSheet: boolean, activity: object | null }
-    // If activity is an object, it's edit mode. If null, it's add mode.
+    // modelValue for editing will always expect an activity object
     modelValue: {
       type: Object,
-      default: () => ({ showSheet: false, activity: null }),
+      default: () => ({ showSheet: false, activity: null }), // activity should ideally always be provided for edit mode
       required: true,
     }
   },
 
-  emits: ['update:modelValue', 'activity-saved'], // Emits 'activity-saved' on successful addition/update
+  emits: ['update:modelValue', 'activity-updated'], // Emits 'activity-updated' on successful save
 
   data() {
     return {
-      // localActivity will be either a new empty object or a copy of the activity being edited
-      localActivity: this.getInitialActivityState(),
+      // localActivity will always be initialized with the activity passed via prop
+      localActivity: {},
       activityIcons: [
         'ph-bus', 'ph-coffee', 'ph-tree', 'ph-bowl-food', 'ph-palette', 'ph-bed',
         'ph-pizza', 'ph-airplane', 'ph-car', 'ph-train', 'ph-bicycle', 'ph-camera',
@@ -140,11 +136,6 @@ export default {
   computed: {
     showSheet() {
       return this.modelValue.showSheet;
-    },
-    // Determines if the component is in "edit" mode
-    isEditing() {
-      // An activity exists and has an ID (meaning it's not a fresh, unsaved activity)
-      return this.modelValue.activity && this.modelValue.activity.id;
     },
     activityDateTimeSummary() {
       const parts = [];
@@ -173,26 +164,33 @@ export default {
       return 'Enter estimated cost';
     },
     selectedIconSummary() {
-      // Replaces 'ph-' prefix for cleaner summary
       const iconText = this.localActivity.icon ? this.localActivity.icon.replace('ph-', '').replace('-', ' ') : 'Choose an icon';
-      // Capitalize first letter of each word
       return iconText.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
     }
   },
 
   watch: {
-    // Watch modelValue.showSheet to reset form or load data when sheet opens/closes
-    'modelValue.showSheet': {
+    // Watch modelValue.activity to load data when sheet opens or if activity prop changes
+    'modelValue.activity': {
       immediate: true, // Run immediately on component mount
+      deep: true,      // Watch for changes within the activity object
+      handler(newActivity) {
+        if (newActivity) {
+          // Create a DEEP copy to avoid direct mutation of the prop
+          this.localActivity = JSON.parse(JSON.stringify(newActivity));
+        } else {
+          // If for some reason activity becomes null, reset to empty state
+          this.localActivity = {}; // Or a more structured empty object if preferred
+        }
+      }
+    },
+    // Watch showSheet to handle initial load when sheet becomes visible
+    'modelValue.showSheet': {
       handler(newVal) {
-        if (newVal) {
-          // If a specific activity object is passed, create a DEEP copy to avoid direct mutation
-          if (this.modelValue.activity) {
-            this.localActivity = JSON.parse(JSON.stringify(this.modelValue.activity));
-          } else {
-            // Otherwise, reset to initial state for a new activity
-            this.localActivity = this.getInitialActivityState();
-          }
+        if (newVal && !this.modelValue.activity) {
+          // This case should ideally not happen if used only for editing,
+          // but as a safeguard, if sheet opens without an activity, reset localActivity.
+          this.localActivity = {}; // Or structured empty object
         }
       }
     }
@@ -202,44 +200,25 @@ export default {
     getLocale() {
       return navigator.language || 'en-US';
     },
-    generateUniqueId() {
-      // Basic ID generation; for a real app, use a UUID library or backend ID
-      return Date.now() + Math.random().toString(36).substring(2, 9);
-    },
-    getInitialActivityState() {
-      // Returns a fresh, empty activity object for adding a new one
-      return {
-        id: this.generateUniqueId(), // Give new activities an ID upfront for consistency
-        name: '',
-        time: '',
-        date: '',
-        location: '',
-        budget: 0,
-        budgetCurrency: 'PHP',
-        budgetNotes: '',
-        description: '',
-        icon: '', // Selected icon class, e.g., 'ph-bus'
-      };
-    },
     selectIcon(iconClass) {
       this.localActivity.icon = iconClass;
     },
+    // Handles closing the sheet, used by both cancel and save
     handleSheetClose() {
-      // Emits the update to close the sheet. Also resets localActivity on close.
       this.$emit('update:modelValue', { ...this.modelValue, showSheet: false });
-      this.localActivity = this.getInitialActivityState(); // Reset form on close
+      // No need to reset localActivity here, as it's reset by the watcher when modelValue.activity changes
     },
-    cancelActivity() {
-      this.handleSheetClose(); // Simply close and reset
+    cancelEdit() {
+      this.handleSheetClose();
     },
-    saveActivity() {
+    saveChanges() {
       if (!this.localActivity.name.trim()) {
-        alert('Activity name is required!'); // Basic validation
+        alert('Activity name is required!');
         return;
       }
-      // Emit the *modified* localActivity object
-      this.$emit('activity-saved', this.localActivity);
-      this.handleSheetClose(); // Close the sheet after saving
+      // Emit the updated activity object
+      this.$emit('activity-updated', this.localActivity);
+      this.handleSheetClose();
     }
   }
 }

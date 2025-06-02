@@ -2,7 +2,7 @@
   <Sheet :model-value="showSheet" @update:modelValue="$emit('update:modelValue', $event)">
     <div class="flex flex-col items-start h-full md:px-6 md:py-8 px-1 py-2">
       <div class="flex items-center justify-between w-full mb-6">
-        <div class="flex gap-2 place-content-center text-3xl text-zinc-800">
+        <div class="flex gap-2 items-center justify-center text-3xl text-zinc-800">
           <i class="ph ph-hand-palm"></i> <span class="font-bold">Trip Roles</span>
           <Tag label="+ Add Role" mode="button" @click="addRoleRow" />
         </div>
@@ -41,7 +41,7 @@
           </div>
         </AdvInput>
 
-        <div v-if="localRoles.length === 0" class="flex flex-col place-content-center text-zinc-500 p-8 border border-zinc-200 rounded-lg">
+        <div v-if="localRoles.length === 0" class="flex flex-col items-center justify-center text-zinc-500 p-8 border border-zinc-200 rounded-lg">
           <i class="ph ph-users-three text-4xl mb-2"></i>
           <p class="text-center">No roles defined yet. Click '+ Add Role' to assign responsibilities!</p>
           <Button class="mt-4" @click="addRoleRow">Add First Role</Button>

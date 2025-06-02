@@ -8,7 +8,7 @@
     </div>
 
     <transition name="fade" mode="out-in">
-      <div :key="activeInput" class="gap-8 pt-20 flex flex-col place-content-center">
+      <div :key="activeInput" class="gap-8 pt-20 flex flex-col items-center justify-center">
 <!--        HOME PROVINCE-->
         <template v-if="activeInput === 'homeProvince'">
           <span class="text-4xl font-bold">
@@ -36,7 +36,7 @@
             Do you have traveling experience?
           </span>
           <div class="flex flex-col sm:w-72 w-full gap-4">
-            <div class="flex flex-row gap-8 place-content-center">
+            <div class="flex flex-row gap-8 items-center justify-center">
               <SquareButton @click="hasExperience = true" v-model="hasExperience" :value="true" size="lg" icon="ph ph-thumbs-up" label="Yes" variant="secondary"/>
               <SquareButton @click="hasExperience = false" v-model="hasExperience" :value="false" size="lg" icon="ph ph-thumbs-down" label="No" variant="secondary"/>
             </div>

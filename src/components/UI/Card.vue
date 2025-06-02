@@ -2,7 +2,7 @@
   <div
     class="card-container"
     :class="[
-      'p-6 flex flex-col gap-4 transition-colors',
+      'py-6 px-3 md:p-6 flex flex-col gap-4 transition-colors',
       backgroundClass,
       customClass
     ]"
@@ -34,7 +34,7 @@ export default {
         case 'dotted':
           return 'dotted-bg';
         default:
-          return 'bg-white rounded-3xl';
+          return 'bg-white rounded-4xl';
       }
     },
     borderClass() {
