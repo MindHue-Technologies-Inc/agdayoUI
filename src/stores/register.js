@@ -26,6 +26,7 @@ function getInitialState() {
     register: false,
     email: '',
     password: '',
+    fullName: '',
     homeProvince: '',
     hasExperience: null,
     spentVacations: [],
@@ -60,6 +61,13 @@ export function setPassword(password) {
   useRegisterStore.set({
     ...useRegisterStore.get(),
     password: password,
+  });
+}
+
+export function setFullName(fullName) {
+  useRegisterStore.set({
+    ...useRegisterStore.get(),
+    fullName: fullName,
   });
 }
 

@@ -8,6 +8,20 @@
 
     <transition name="fade" mode="out-in">
       <div :key="activeInput" class="gap-8 pt-20 flex flex-col items-center justify-center">
+        <template v-if="activeInput === 'fullName'">
+          <span class="text-4xl font-extrabold">
+            Tell us your Name
+          </span>
+          <div class="flex flex-col sm:w-72 w-full gap-4">
+            <Input
+              id="fullName"
+              v-model="fullName"
+              prefixIcon="ph ph-user"
+              placeholder="Enter your Full Name"
+            />
+            <Button @click="validateFullNameAndGoToHomeProvince">Next</Button>
+          </div>
+        </template>
         <template v-if="activeInput === 'homeProvince'">
           <span class="text-4xl font-extrabold">
             Tell us your home province
@@ -93,7 +107,7 @@ import Input from "../../UI/Input.vue";
 import Button from "../../UI/Button.vue";
 import Anchor from "../../UI/Anchor.vue";
 import SquareButton from "../../UI/SquareButton.vue";
-import { useRegisterStore, setHomeProvince, setSpentVacation, setHeardUs, setHasExperience } from "../../../stores/register.js";
+import { useRegisterStore, setFullName, setHomeProvince, setSpentVacation, setHeardUs, setHasExperience } from "../../../stores/register.js";
 import provinces from "philippines/provinces";
 import Select from "../../UI/Select.vue";
 import ToastContainer from "../../UI/ToastContainer.vue";
@@ -114,7 +128,8 @@ export default {
       dangerToast: {
         message: '',
       },
-      activeInput: 'homeProvince',
+      activeInput: 'fullName',
+      fullName: '',
       homeProvince: '',
       hasExperience: false, // Changed to null for clearer "not selected" state
       spentVacations: [],
@@ -132,6 +147,19 @@ export default {
 
     // --- Validation Method Templates ---
 
+    validateFullNameAndGoToHomeProvince() {
+      let isValid = true;
+      if (!this.fullName) {
+        isValid = false;
+        // Display Error
+        this.dangerToast.message = "Please Enter your Name"
+        this.$refs.dangerToast.showToast()
+        return
+      }
+
+      this.setActiveInput('homeProvince')
+    },
+
     validateHomeProvinceAndGoToExperience() {
       // **Your Validation Logic for homeProvince here**
       let isValid = true;
@@ -143,9 +171,7 @@ export default {
         return
       }
 
-      if (isValid) {
-        this.setActiveInput('experience');
-      }
+      this.setActiveInput('experience');
     },
 
     validateExperienceAndGoToVacations() {
@@ -159,9 +185,7 @@ export default {
         return
       }
 
-      if (isValid) {
-        this.setActiveInput('vacations');
-      }
+      this.setActiveInput('vacations');
     },
 
     validateVacationsAndGoToHear() {
@@ -175,9 +199,7 @@ export default {
         return
       }
 
-      if (isValid) {
-        this.setActiveInput('hear');
-      }
+      this.setActiveInput('hear');
     },
 
     validateHearAndBuildProfile() {
@@ -191,23 +213,20 @@ export default {
         return
       }
 
-      if (isValid) {
-        this.buildProfile();
-      }
+      this.buildProfile();
     },
 
     // --- End Validation Method Templates ---
 
     buildProfile() {
       // Your existing logic to set store values
+
+      setFullName(this.fullName);
       setHomeProvince(this.homeProvince);
       setSpentVacation(this.spentVacations);
       setHeardUs(this.heardUs);
       setHasExperience(this.hasExperience);
       // Ensure useRegisterStore is called as a function if it's a Pinia store
-
-      console.log(this.useRegister.value)
-      return
 
       // Final navigation
       window.location.href = '/active-trips'
