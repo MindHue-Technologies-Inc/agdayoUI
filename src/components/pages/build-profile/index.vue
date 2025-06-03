@@ -18,6 +18,7 @@
               v-model="fullName"
               prefixIcon="ph ph-user"
               placeholder="Enter your Full Name"
+              @enter="validateFullNameAndGoToHomeProvince"
             />
             <Button @click="validateFullNameAndGoToHomeProvince">Next</Button>
           </div>

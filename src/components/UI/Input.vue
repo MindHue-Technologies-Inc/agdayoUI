@@ -36,6 +36,7 @@
         @blur="handleBlur"
         @focus="handleFocus"
         @keydown="preventInvalidChars"
+        @keyup.enter="$emit('enter')"
       />
 
       <!-- Suffix/Append Element -->
@@ -146,6 +147,9 @@ export default {
       }
     },
   },
+
+  emits: ['update:modelValue', 'enter'],
+
   methods: {
     selectAllText(event) {
       event.target.select();
