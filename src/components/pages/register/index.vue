@@ -41,6 +41,15 @@
 
 
     <Anchor class="pt-8" href="/login">Go Back to login</Anchor>
+
+    <!--TOAST-->
+    <ToastContainer>
+      <Toast
+          :variant="'error'"
+          ref="dangerToast"
+          :message="dangerToast.message"
+      />
+    </ToastContainer>
   </div>
 </template>
 
@@ -48,6 +57,8 @@
 import Input from "../../UI/Input.vue";
 import Anchor from "../../UI/Anchor.vue";
 import Button from "../../UI/Button.vue";
+import ToastContainer from "../../UI/ToastContainer.vue";
+import Toast from "../../UI/Toast.vue";
 import {useRegisterStore, setEmail, setPassword} from "../../../stores/register.js";
 
 export default {
@@ -55,6 +66,8 @@ export default {
     Input,
     Anchor,
     Button,
+    ToastContainer,
+    Toast,
   },
 
   data() {
@@ -63,6 +76,10 @@ export default {
       activeInput: "email",
       email: '',
       password: '',
+
+      dangerToast: {
+        message: '',
+      }
     }
   },
 
@@ -72,14 +89,36 @@ export default {
     },
 
     goToPassword() {
+      // VALIDATE FIRST THE EMAIL
+      if (this.email == null || this.email === '') {
+        this.dangerToast.message = "Please Enter your email."
+        this.$refs.dangerToast.showToast()
+        return
+      }
+
+      if (!this.email.includes('@')) {
+        this.dangerToast.message = "Not an email format."
+        this.$refs.dangerToast.showToast()
+        return
+      }
+
       this.setActiveInput("password");
       setEmail(this.email);
       this.useRegister = useRegisterStore;
     },
 
     createAccount() {
+      // VALIDATE FIRST
+      if (this.password == null || this.password === '') {
+        this.dangerToast.message = "Please Enter a password.";
+        this.$refs.dangerToast.showToast();
+        return;
+      }
       setPassword(this.password);
-      window.location.href = '/build-profile'
+
+      console.log(this.useRegister.value)
+      setTimeout(()=>{window.location.href = '/build-profile'}, 3000)
+
     }
   }
 }

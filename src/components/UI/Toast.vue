@@ -1,25 +1,27 @@
 <template>
-  <div
-    v-if="visible"
-    class=""
-    :class="[
+  <transition name="toast">
+    <div
+        v-if="visible"
+        class=""
+        :class="[
       baseClasses,
       variantClasses,
       positionClasses,
       customClass,
       { 'opacity-100': visible, 'opacity-0': !visible, 'transition-opacity duration-300 ease-in-out': true }
     ]"
-    @click="hideToast"
-  >
-    <!-- Toast content -->
-    <div class="relative flex justify-between items-center gap-2">
-      <span class="text-white">{{ message }}</span>
+        @click="hideToast"
+    >
+      <!-- Toast content -->
+      <div class="relative flex justify-between items-center gap-2">
+        <span class="text-white">{{ message }}</span>
 
-      <button class="cursor-pointer h-6 w-6" @click="hideToast">
-        <i class="ph ph-x"></i>
-      </button>
+        <button class="cursor-pointer h-6 w-6" @click="hideToast">
+          <i class="ph ph-x"></i>
+        </button>
+      </div>
     </div>
-  </div>
+  </transition>
 </template>
 
 <script>
@@ -28,7 +30,6 @@ export default {
   props: {
     message: {
       type: String,
-      required: true,
     },
     variant: {
       type: String,
@@ -46,12 +47,12 @@ export default {
   },
   data() {
     return {
-      visible: true,
+      visible: false,
     };
   },
   computed: {
     baseClasses() {
-      return 'transition-all duration-300 ease-out z-50 max-w-xs w-full p-4 rounded-xl';
+      return 'transition-all duration-300 ease-out z-50 max-w-xs w-full p-4 rounded-3xl';
     },
     positionClasses() {
       return 'bottom-4 right-4';
@@ -72,23 +73,16 @@ export default {
     },
   },
   methods: {
-    hideToast() {
-      this.visible = false;
-      setTimeout(() => this.$emit('closed'), 300); // Emit closed event after the fade out
+    hideToast(duration) {
+      setTimeout(() => this.visible = false, duration); // Emit closed event after the fade out
     },
+    showToast() {
+      this.visible = true
+      this.hideToast(this.duration)
+    }
   },
   mounted() {
     setTimeout(this.hideToast, this.duration);
   },
 };
 </script>
-
-<style scoped>
-/* Toast entry and exit animation */
-.toast-enter-active, .toast-leave-active {
-  transition: opacity 0.3s ease;
-}
-.toast-enter, .toast-leave-to /* .toast-leave-active in <2.1.8 */ {
-  opacity: 0;
-}
-</style>

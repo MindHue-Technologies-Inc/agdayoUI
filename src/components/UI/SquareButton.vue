@@ -37,7 +37,6 @@ export default {
     type: {
       type: String,
       default: 'button',
-      validator: val => ['button', 'submit', 'reset'].includes(val),
     },
     icon: {
       type: String,
@@ -49,12 +48,10 @@ export default {
     size: {
       type: String,
       default: 'md',
-      validator: val => ['sm', 'md', 'lg'].includes(val),
     },
     variant: {
       type: String,
       default: 'primary',
-      validator: val => ['primary', 'secondary', 'danger', 'ghost'].includes(val),
     },
     disabled: {
       type: Boolean,

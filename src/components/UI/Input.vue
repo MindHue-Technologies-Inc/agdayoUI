@@ -36,7 +36,6 @@
         @blur="handleBlur"
         @focus="handleFocus"
         @keydown="preventInvalidChars"
-        @click="selectAllText"
       />
 
       <!-- Suffix/Append Element -->

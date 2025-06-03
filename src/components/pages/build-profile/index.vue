@@ -1,6 +1,5 @@
 <template>
   <div class="flex flex-col items-center relative pt-20 px-8 grow">
-    <!--    LOGO-->
     <div class="flex flex-col items-center gap-4">
       <span class="text-zinc-400 font-bold">Start your travels in</span>
       <img class="w-48" src="/images/logo-agdayo-lg.png" alt="">
@@ -9,9 +8,8 @@
 
     <transition name="fade" mode="out-in">
       <div :key="activeInput" class="gap-8 pt-20 flex flex-col items-center justify-center">
-<!--        HOME PROVINCE-->
         <template v-if="activeInput === 'homeProvince'">
-          <span class="text-4xl font-bold">
+          <span class="text-4xl font-extrabold">
             Tell us your home province
           </span>
           <div class="flex flex-col sm:w-72 w-full gap-4">
@@ -25,14 +23,13 @@
                 v-model="homeProvince"
                 :options="provinces"
             />
-            <Button @click="setActiveInput('experience')">Next</Button>
+            <Button @click="validateHomeProvinceAndGoToExperience">Next</Button>
           </div>
 
         </template>
 
-<!--        TRAVELING EXPERIENCE-->
         <template v-if="activeInput === 'experience'">
-          <span class="text-4xl font-bold">
+          <span class="text-4xl font-extrabold">
             Do you have traveling experience?
           </span>
           <div class="flex flex-col sm:w-72 w-full gap-4">
@@ -40,14 +37,13 @@
               <SquareButton @click="hasExperience = true" v-model="hasExperience" :value="true" size="lg" icon="ph ph-thumbs-up" label="Yes" variant="secondary"/>
               <SquareButton @click="hasExperience = false" v-model="hasExperience" :value="false" size="lg" icon="ph ph-thumbs-down" label="No" variant="secondary"/>
             </div>
-            <Button @click="setActiveInput('vacations')">Next</Button>
+            <Button @click="validateExperienceAndGoToVacations">Next</Button>
           </div>
           <Anchor href="javascript:void('')" @click="setActiveInput('homeProvince')">Back</Anchor>
         </template>
 
-<!--        SPEND VACATIONS-->
         <template v-if="activeInput === 'vacations'">
-          <span class="text-4xl font-bold">
+          <span class="text-4xl font-extrabold text-center">
             Where do you usually spend your vacations?
           </span>
           <div class="grid grid-cols-3 gap-6">
@@ -58,14 +54,13 @@
             <SquareButton @click="addSpentVacation('province')" v-model="spentVacations" value="province" size="lg" icon="ph ph-farm" label="Province" variant="secondary"/>
             <SquareButton @click="addSpentVacation('others')" v-model="spentVacations" value="others" size="lg" label="Others" variant="secondary"/>
           </div>
-          <Button @click="setActiveInput('hear')">Next</Button>
+          <Button @click="validateVacationsAndGoToHear">Next</Button>
           <Anchor href="javascript:void('')" @click="setActiveInput('experience')">Back</Anchor>
         </template>
 
 
-<!--        HEAR-->
         <template v-if="activeInput === 'hear'">
-          <span class="text-4xl font-bold">
+          <span class="text-4xl font-extrabold text-center">
             Where did you hear about us?
           </span>
           <div class="grid grid-cols-3 gap-6">
@@ -73,7 +68,7 @@
             <SquareButton @click="heardUs = 'friends'" v-model="heardUs" value="friends" size="lg" icon="ph ph-person" label="Friends" variant="secondary"/>
             <SquareButton @click="heardUs = 'others'" v-model="heardUs" value="others" size="lg" label="Others" variant="secondary"/>
           </div>
-          <Button @click="buildProfile">Build Profile</Button>
+          <Button @click="validateHearAndBuildProfile">Build Profile</Button>
           <Anchor href="javascript:void('')" @click="setActiveInput('vacations')">Back</Anchor>
         </template>
 
@@ -82,6 +77,15 @@
 
     <Anchor class="pt-8" href="/">Skip All</Anchor>
   </div>
+
+  <!--TOAST-->
+  <ToastContainer>
+    <Toast
+        :variant="'error'"
+        ref="dangerToast"
+        :message="dangerToast.message"
+    />
+  </ToastContainer>
 </template>
 
 <script>
@@ -92,14 +96,27 @@ import SquareButton from "../../UI/SquareButton.vue";
 import { useRegisterStore, setHomeProvince, setSpentVacation, setHeardUs, setHasExperience } from "../../../stores/register.js";
 import provinces from "philippines/provinces";
 import Select from "../../UI/Select.vue";
+import ToastContainer from "../../UI/ToastContainer.vue";
+import Toast from "../../UI/Toast.vue";
 
 export default {
-  components: {Select, SquareButton, Anchor, Button, Input},
+  components: {
+    Select,
+    SquareButton,
+    Anchor,
+    Button,
+    Input,
+    ToastContainer,
+    Toast,
+  },
   data() {
     return {
+      dangerToast: {
+        message: '',
+      },
       activeInput: 'homeProvince',
       homeProvince: '',
-      hasExperience: false,
+      hasExperience: false, // Changed to null for clearer "not selected" state
       spentVacations: [],
       heardUs: '',
       useRegister: useRegisterStore,
@@ -110,20 +127,95 @@ export default {
   methods: {
     setActiveInput(newInput) {
       this.activeInput = newInput;
+      // You might want to clear previous step's errors here if you implement error messages
     },
 
+    // --- Validation Method Templates ---
+
+    validateHomeProvinceAndGoToExperience() {
+      // **Your Validation Logic for homeProvince here**
+      let isValid = true;
+      if (!this.homeProvince) {
+        isValid = false;
+        // Display error message for homeProvince (e.g., this.errors.homeProvince = 'Please select a province.')
+        this.dangerToast.message = "Please Enter your Home Province"
+        this.$refs.dangerToast.showToast()
+        return
+      }
+
+      if (isValid) {
+        this.setActiveInput('experience');
+      }
+    },
+
+    validateExperienceAndGoToVacations() {
+      // **Your Validation Logic for hasExperience here**
+      let isValid = true;
+      if (this.hasExperience === null) { // Check for null to ensure a choice was made
+        isValid = false;
+        // Display error message for experience (e.g., this.errors.experience = 'Please select an option.')
+        this.dangerToast.message = 'Please indicate if you have traveling experience.'
+        this.$refs.dangerToast.showToast()
+        return
+      }
+
+      if (isValid) {
+        this.setActiveInput('vacations');
+      }
+    },
+
+    validateVacationsAndGoToHear() {
+      // **Your Validation Logic for spentVacations here**
+      let isValid = true;
+      if (this.spentVacations.length === 0) {
+        isValid = false;
+        // Display error message for spentVacations (e.g., this.errors.vacations = 'Please select at least one.')
+        this.dangerToast.message = 'Please select at least one type of vacation you usually spend.'
+        this.$refs.dangerToast.showToast()
+        return
+      }
+
+      if (isValid) {
+        this.setActiveInput('hear');
+      }
+    },
+
+    validateHearAndBuildProfile() {
+      // **Your Validation Logic for heardUs here**
+      let isValid = true;
+      if (!this.heardUs) {
+        isValid = false;
+        // Display error message for heardUs (e.g., this.errors.heardUs = 'Please tell us where you heard about us.')
+        this.dangerToast.message = 'Please tell us where you heard about us.'
+        this.$refs.dangerToast.showToast()
+        return
+      }
+
+      if (isValid) {
+        this.buildProfile();
+      }
+    },
+
+    // --- End Validation Method Templates ---
+
     buildProfile() {
+      // Your existing logic to set store values
       setHomeProvince(this.homeProvince);
       setSpentVacation(this.spentVacations);
       setHeardUs(this.heardUs);
       setHasExperience(this.hasExperience);
-      this.useRegister = useRegisterStore;
-      console.log(this.useRegister.value);
+      // Ensure useRegisterStore is called as a function if it's a Pinia store
+
+      console.log(this.useRegister.value)
+      return
+
+      // Final navigation
+      window.location.href = '/active-trips'
     },
 
     addSpentVacation(vacation) {
       if (vacation.length === 0) {
-        return;
+        return; // Should not happen with your buttons, but good check
       }
 
       const indexOf = this.spentVacations.indexOf(vacation);
@@ -134,5 +226,32 @@ export default {
       }
     }
   },
+  // You might want to add watchers here to clear individual errors
+  // as the user types/selects, e.g.:
+  // watch: {
+  //   homeProvince() {
+  //     // Clear error for homeProvince
+  //   },
+  //   hasExperience() {
+  //     // Clear error for experience
+  //   }
+  // }
 }
 </script>
+
+<style scoped>
+/* Fade animation for content */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity .3s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+/* Baybayin text styling - ensure your font is imported and available */
+.baybayin {
+  font-family: 'Baybayin Bato', sans-serif; /* Replace with your actual Baybayin font file import if needed */
+}
+</style>

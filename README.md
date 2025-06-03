@@ -16,3 +16,32 @@ Pull requests are welcome! For major changes, please open an issue first to disc
 ## 📜 License
 
 MIT License © 2025 MindHue Technologies Incorporated
+
+## Payload
+
+### /login
+```
+{
+    email: String,
+    password: String,
+    rememberMe: Boolean, // not needed
+}
+```
+
+### /register
+```
+{
+    email: String,
+    password: String,
+}
+```
+
+### /build-profile
+```
+{
+    homeProvince: String,
+    hasExperience: Boolean,
+    spentVacations: Array of Strings,
+    heardUs: String,
+}
+```
