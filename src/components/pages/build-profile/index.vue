@@ -154,7 +154,6 @@ export default {
         isValid = false;
         // Display Error
         this.dangerToast.message = "Please Enter your Name"
-        this.$refs.dangerToast.showToast()
         return
       }
 
@@ -168,7 +167,6 @@ export default {
         isValid = false;
         // Display error message for homeProvince (e.g., this.errors.homeProvince = 'Please select a province.')
         this.dangerToast.message = "Please Enter your Home Province"
-        this.$refs.dangerToast.showToast()
         return
       }
 
@@ -182,7 +180,6 @@ export default {
         isValid = false;
         // Display error message for experience (e.g., this.errors.experience = 'Please select an option.')
         this.dangerToast.message = 'Please indicate if you have traveling experience.'
-        this.$refs.dangerToast.showToast()
         return
       }
 
@@ -196,7 +193,6 @@ export default {
         isValid = false;
         // Display error message for spentVacations (e.g., this.errors.vacations = 'Please select at least one.')
         this.dangerToast.message = 'Please select at least one type of vacation you usually spend.'
-        this.$refs.dangerToast.showToast()
         return
       }
 
@@ -210,7 +206,6 @@ export default {
         isValid = false;
         // Display error message for heardUs (e.g., this.errors.heardUs = 'Please tell us where you heard about us.')
         this.dangerToast.message = 'Please tell us where you heard about us.'
-        this.$refs.dangerToast.showToast()
         return
       }
 
@@ -230,7 +225,7 @@ export default {
       // Ensure useRegisterStore is called as a function if it's a Pinia store
 
       // Final navigation
-      window.location.href = '/active-trips'
+      window.location.href = '/active-trip'
     },
 
     addSpentVacation(vacation) {

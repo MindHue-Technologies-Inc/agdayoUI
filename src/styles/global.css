@@ -65,7 +65,7 @@ body {
 .shadow-primary-light-lg   { box-shadow: 6px 6px 0 0 #F1E3E0; }
 .shadow-primary-light-xl   { box-shadow: 8px 8px 0 0 #F1E3E0; }
 .shadow-primary-light-inset { box-shadow: inset 2px 2px 0 0 #F1E3E0; }
-.shadow-primary-light-soft { box-shadow: 0 4px 12px rgba(183, 123, 108, 0.25); }
+.shadow-primary-light-soft { box-shadow: 0 4px 12px rgba(183, 123, 108, 0.25); } /* Note: Soft shadow usually uses the base color for consistent feel */
 
 /* === Zinc (Secondary) === */
 .shadow-secondary-xs   { box-shadow: 1px 1px 0 0 #d4d4d8; }
@@ -76,6 +76,15 @@ body {
 .shadow-secondary-inset { box-shadow: inset 2px 2px 0 0 #d4d4d8; }
 .shadow-secondary-soft { box-shadow: 0 4px 12px rgba(63, 63, 70, 0.25); }
 
+/* === Zinc (LIGHT) === */
+.shadow-secondary-light-xs   { box-shadow: 1px 1px 0 0 #F2F2F4; } /* Lighter zinc */
+.shadow-secondary-light-sm   { box-shadow: 2px 2px 0 0 #F2F2F4; }
+.shadow-secondary-light-md   { box-shadow: 4px 4px 0 0 #F2F2F4; }
+.shadow-secondary-light-lg   { box-shadow: 6px 6px 0 0 #F2F2F4; }
+.shadow-secondary-light-xl   { box-shadow: 8px 8px 0 0 #F2F2F4; }
+.shadow-secondary-light-inset { box-shadow: inset 2px 2px 0 0 #F2F2F4; }
+.shadow-secondary-light-soft { box-shadow: 0 4px 12px rgba(212, 212, 216, 0.25); } /* Soft shadow usually uses the base color for consistency */
+
 /* === Rose (Danger) === */
 .shadow-danger-xs   { box-shadow: 1px 1px 0 0 #E11D48; }
 .shadow-danger-sm   { box-shadow: 2px 2px 0 0 #E11D48; }
@@ -85,6 +94,15 @@ body {
 .shadow-danger-inset { box-shadow: inset 2px 2px 0 0 #E11D48; }
 .shadow-danger-soft { box-shadow: 0 4px 12px rgba(225, 29, 72, 0.25); }
 
+/* === Rose (LIGHT) === */
+.shadow-danger-light-xs   { box-shadow: 1px 1px 0 0 #FDE9ED; } /* Lighter rose */
+.shadow-danger-light-sm   { box-shadow: 2px 2px 0 0 #FDE9ED; }
+.shadow-danger-light-md   { box-shadow: 4px 4px 0 0 #FDE9ED; }
+.shadow-danger-light-lg   { box-shadow: 6px 6px 0 0 #FDE9ED; }
+.shadow-danger-light-xl   { box-shadow: 8px 8px 0 0 #FDE9ED; }
+.shadow-danger-light-inset { box-shadow: inset 2px 2px 0 0 #FDE9ED; }
+.shadow-danger-light-soft { box-shadow: 0 4px 12px rgba(225, 29, 72, 0.15); } /* Soft shadow based on base color, but possibly lighter for 'light' */
+
 /* === Emerald (Success) === */
 .shadow-success-xs   { box-shadow: 1px 1px 0 0 #10B981; }
 .shadow-success-sm   { box-shadow: 2px 2px 0 0 #10B981; }
@@ -93,6 +111,15 @@ body {
 .shadow-success-xl   { box-shadow: 8px 8px 0 0 #10B981; }
 .shadow-success-inset { box-shadow: inset 2px 2px 0 0 #10B981; }
 .shadow-success-soft { box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25); }
+
+/* === Emerald (LIGHT) === */
+.shadow-success-light-xs   { box-shadow: 1px 1px 0 0 #E6FAF2; } /* Lighter emerald */
+.shadow-success-light-sm   { box-shadow: 2px 2px 0 0 #E6FAF2; }
+.shadow-success-light-md   { box-shadow: 4px 4px 0 0 #E6FAF2; }
+.shadow-success-light-lg   { box-shadow: 6px 6px 0 0 #E6FAF2; }
+.shadow-success-light-xl   { box-shadow: 8px 8px 0 0 #E6FAF2; }
+.shadow-success-light-inset { box-shadow: inset 2px 2px 0 0 #E6FAF2; }
+.shadow-success-light-soft { box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15); } /* Soft shadow based on base color, possibly lighter for 'light' */
 
 /* === Emerald (Success) - Dark === */
 .shadow-success-dark-xs    { box-shadow: 1px 1px 0 0 #047857; }
@@ -113,6 +140,15 @@ body {
 .shadow-info-inset { box-shadow: inset 2px 2px 0 0 #0EA5E9; }
 .shadow-info-soft { box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25); }
 
+/* === Sky (LIGHT) === */
+.shadow-info-light-xs   { box-shadow: 1px 1px 0 0 #E0F2FE; } /* Lighter sky */
+.shadow-info-light-sm   { box-shadow: 2px 2px 0 0 #E0F2FE; }
+.shadow-info-light-md   { box-shadow: 4px 4px 0 0 #E0F2FE; }
+.shadow-info-light-lg   { box-shadow: 6px 6px 0 0 #E0F2FE; }
+.shadow-info-light-xl   { box-shadow: 8px 8px 0 0 #E0F2FE; }
+.shadow-info-light-inset { box-shadow: inset 2px 2px 0 0 #E0F2FE; }
+.shadow-info-light-soft { box-shadow: 0 4px 12px rgba(14, 165, 233, 0.15); } /* Soft shadow based on base color, possibly lighter for 'light' */
+
 /* === Amber (Warning) === */
 .shadow-warning-xs   { box-shadow: 1px 1px 0 0 #F59E0B; }
 .shadow-warning-sm   { box-shadow: 2px 2px 0 0 #F59E0B; }
@@ -121,6 +157,15 @@ body {
 .shadow-warning-xl   { box-shadow: 8px 8px 0 0 #F59E0B; }
 .shadow-warning-inset { box-shadow: inset 2px 2px 0 0 #F59E0B; }
 .shadow-warning-soft { box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25); }
+
+/* === Amber (LIGHT) === */
+.shadow-warning-light-xs   { box-shadow: 1px 1px 0 0 #FEF3C7; } /* Lighter amber */
+.shadow-warning-light-sm   { box-shadow: 2px 2px 0 0 #FEF3C7; }
+.shadow-warning-light-md   { box-shadow: 4px 4px 0 0 #FEF3C7; }
+.shadow-warning-light-lg   { box-shadow: 6px 6px 0 0 #FEF3C7; }
+.shadow-warning-light-xl   { box-shadow: 8px 8px 0 0 #FEF3C7; }
+.shadow-warning-light-inset { box-shadow: inset 2px 2px 0 0 #FEF3C7; }
+.shadow-warning-light-soft { box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15); } /* Soft shadow based on base color, possibly lighter for 'light' */
 
 /* === Peach (Primary) - Dark === */
 .shadow-primary-dark-xs    { box-shadow: 1px 1px 0 0 #995F52; }
@@ -183,15 +228,30 @@ body {
 .border-secondary-sm   { border: 2px solid #d4d4d8; }
 .border-secondary-md   { border: 4px solid #d4d4d8; }
 
+/* === Zinc (LIGHT) === */
+.border-secondary-light-xs { border: 1px solid #F2F2F4; } /* Lighter zinc */
+.border-secondary-light-sm { border: 2px solid #F2F2F4; }
+.border-secondary-light-md { border: 4px solid #F2F2F4; }
+
 /* === Rose (Danger) === */
 .border-danger-xs   { border: 1px solid #E11D48; }
 .border-danger-sm   { border: 2px solid #E11D48; }
 .border-danger-md   { border: 4px solid #E11D48; }
 
+/* === Rose (LIGHT) === */
+.border-danger-light-xs { border: 1px solid #FDE9ED; } /* Lighter rose */
+.border-danger-light-sm { border: 2px solid #FDE9ED; }
+.border-danger-light-md { border: 4px solid #FDE9ED; }
+
 /* === Emerald (Success) === */
 .border-success-xs   { border: 1px solid #10B981; }
 .border-success-sm   { border: 2px solid #10B981; }
 .border-success-md   { border: 4px solid #10B981; }
+
+/* === Emerald (LIGHT) === */
+.border-success-light-xs { border: 1px solid #E6FAF2; } /* Lighter emerald */
+.border-success-light-sm { border: 2px solid #E6FAF2; }
+.border-success-light-md { border: 4px solid #E6FAF2; }
 
 /* === Emerald (Success) - Dark === */
 .border-success-dark-xs { border: 1px solid #047857; }
@@ -204,10 +264,20 @@ body {
 .border-info-sm   { border: 2px solid #0EA5E9; }
 .border-info-md   { border: 4px solid #0EA5E9; }
 
+/* === Sky (LIGHT) === */
+.border-info-light-xs { border: 1px solid #E0F2FE; } /* Lighter sky */
+.border-info-light-sm { border: 2px solid #E0F2FE; }
+.border-info-light-md { border: 4px solid #E0F2FE; }
+
 /* === Amber (Warning) === */
 .border-warning-xs   { border: 1px solid #F59E0B; }
 .border-warning-sm   { border: 2px solid #F59E0B; }
 .border-warning-md   { border: 4px solid #F59E0B; }
+
+/* === Amber (LIGHT) === */
+.border-warning-light-xs { border: 1px solid #FEF3C7; } /* Lighter amber */
+.border-warning-light-sm { border: 2px solid #FEF3C7; }
+.border-warning-light-md { border: 4px solid #FEF3C7; }
 
 /* === Peach (Primary) - Dark === */
 .border-primary-dark-xs { border: 1px solid #995F52; } /* ~Peach 700 */

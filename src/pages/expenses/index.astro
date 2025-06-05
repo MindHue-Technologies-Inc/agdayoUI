@@ -1,0 +1,14 @@
+---
+import Layout from "../../layouts/LayoutWSidebar.astro"
+import Main from "../../components/layout/Main.vue"
+import Topbar from "../../components/UI/Topbar.vue"
+---
+
+<Layout>
+  <Main>
+    <Topbar title="Expenses" client:visible/>
+    <div class="flex flex-col items-center justify-center w-full h-full">
+      <span class="text-2xl font-bold">We're still working on it!</span>
+    </div>
+  </Main>
+</Layout>

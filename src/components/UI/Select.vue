@@ -186,6 +186,7 @@ export default {
             option[this.optionLabel].toLowerCase().includes(lowerCaseSearchTerm)
         );
       }
+      this.$emit('update:modelValue', this.searchTerm)
     },
     selectOption(option) {
       this.searchTerm = option[this.optionLabel];

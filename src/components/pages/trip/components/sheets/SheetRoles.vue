@@ -22,7 +22,7 @@
             removable
         >
           <div class="flex flex-col gap-4 p-1">
-            <Input v-model="role.name" placeholder="e.g., Driver, Photographer, Payer" label="Role Name" />
+            <Input :id="index + 'name'" v-model="role.name" placeholder="e.g., Driver, Photographer, Payer" label="Role Name" />
 
             <Select
                 v-model="role.assigneeId"
@@ -31,7 +31,7 @@
                 :options="assigneeOptions"
             />
 
-            <Input v-model="role.notes" placeholder="e.g., responsible for navigation, handles all payments" label="Notes (Optional)" />
+            <Input :id="index + 'notes'" v-model="role.notes" placeholder="e.g., responsible for navigation, handles all payments" label="Notes (Optional)" />
 
             <div class="flex justify-end mt-2">
               <Button v-if="localRoles.length > 1" @click="removeRoleRow(role.id)" variant="ghost">

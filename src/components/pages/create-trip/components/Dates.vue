@@ -4,6 +4,7 @@
       label="Dates"
       icon="ph ph-calendar"
       :summary="formattedDateRange"
+      ref="advInput"
   >
     <div class="flex flex-col p-1 gap-2">
       <DateRangePicker v-model:range="range" />
@@ -26,16 +27,32 @@ export default {
   props: {
     summary: {
       type: String,
+    },
+
+    modelValue: {
+      type: Object,
+      default: () => ({
+        range: {
+          start: '',
+          end: '',
+        }
+      })
     }
   },
   data() {
     return {
-      range: {
-        start: null, // Stores the start Date object
-        end: null,   // Stores the end Date object
-      },
+      range: { ...this.modelValue },
     };
   },
+
+  watch: {
+    range: {
+      handler(newRange) {
+        this.$emit('update:modelValue', newRange)
+      }
+    }
+  },
+
   computed: {
     /**
      * Formats the selected date range for the AdvInput summary.
@@ -58,13 +75,18 @@ export default {
      */
     proceedNext() {
       if (this.range.start && this.range.end) {
-        console.log('Selected Date Range:', this.range.start.toISOString(), 'to', this.range.end.toISOString());
-        // Example: this.$emit('dates-selected', this.range);
-        // Navigate to the next step, etc.
+        this.$emit('next')
       } else {
-        console.warn('Please select both start and end dates.');
       }
     },
+
+    expand() {
+      this.$refs.advInput.expand()
+    },
+
+    collapse() {
+      this.$refs.advInput.collapse()
+    }
   },
 };
 </script>

@@ -92,13 +92,11 @@ export default {
       // VALIDATE FIRST THE EMAIL
       if (this.email == null || this.email === '') {
         this.dangerToast.message = "Please Enter your email."
-        this.$refs.dangerToast.showToast()
         return
       }
 
       if (!this.email.includes('@')) {
         this.dangerToast.message = "Not an email format."
-        this.$refs.dangerToast.showToast()
         return
       }
 
@@ -110,8 +108,7 @@ export default {
     createAccount() {
       // VALIDATE FIRST
       if (this.password == null || this.password === '') {
-        this.dangerToast.message = "Please Enter a password.";
-        this.$refs.dangerToast.showToast();
+        this.dangerToast.message = "Please Enter a password.";;
         return;
       }
       setPassword(this.password);

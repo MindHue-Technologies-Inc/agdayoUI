@@ -1,5 +1,6 @@
 <template>
-  <Sheet :model-value="showSheet" @update:modelValue="$emit('update:modelValue', $event)">
+  <Sheet :model-value="showSheet" @update:modelValue="$emit('update:modelValue', { ...this.modelValue, showSheet: false })">
+    {{localConfig}}
     <div class="flex flex-col items-start h-full md:px-6 md:py-8 px-2 py-1">
       <!--HEADERS-->
       <div class="flex items-center justify-between w-full mb-6">
@@ -7,7 +8,7 @@
           <i class="ph ph-suitcase"></i> <span class="font-bold">Accommodations</span>
           <Tag label="+ Add More" mode="button"/>
         </div>
-        <button @click="$emit('update:modelValue', { ...modelValue, showSheet: false })" class="text-zinc-500 hover:text-zinc-700 transition">
+        <button @click="$emit('update:modelValue', { ...this.modelValue, showSheet: false })" class="text-zinc-500 hover:text-zinc-700 transition">
           <i class="ph ph-x text-2xl"></i>
         </button>
       </div>
@@ -18,11 +19,12 @@
         <AdvInput :summary="modelValue.name" label="Accommodation Name" icon="ph-article">
           <div class="flex flex-col gap-4 p-1">
             <div class="grid grid-cols-4 gap-4">
-              <Input class="col-span-3" placeholder="Enter the name of Accommodation" label="Name"/>
-              <Select id="accommodation-type" label="Type" :options="[
+              <Input v-model="localConfig.name" id="accommodation-name" class="col-span-3" placeholder="Enter the name of Accommodation" label="Name"/>
+              <Select v-model="localConfig.type" id="accommodation-type" label="Type" :options="[
                  { label: 'Hotel', value: 'Hotel' },
                  { label: 'AirBnb', value: 'AirBnb' },
-                 { label: 'Transient', value: 'Transient' }
+                 { label: 'Transient', value: 'Transient' },
+                 { label: 'Other', value: 'Other' }
                ]"
               />
             </div>
@@ -31,45 +33,45 @@
         </AdvInput>
 
         <!--LOCATION-->
-        <AdvInput :summary="modelValue.location" label="Location" icon="ph-map-pin">
+        <AdvInput :summary="localConfig.location" label="Location" icon="ph-map-pin">
           <div class="flex flex-col gap-4 p-1">
-            <Input placeholder="Enter name of location" label="Name" />
+            <Input v-model="localConfig.location" id="accommodation-location" placeholder="Enter name of location" label="Name" />
             <Button>Next</Button>
           </div>
         </AdvInput>
 
         <!--DATES-->
-        <Dates summary="Select your Dates"/>
+        <Dates v-model="localConfig.dates" summary="Select your Dates"/>
 
         <!--ROOMS-->
-        <AdvInput :summary="modelValue.roomsSummary || 'Add details for rooms & guests'" label="Rooms & Guests" icon="ph-users">
+        <AdvInput :summary="`${localConfig.numberOfRooms}` || 'Add details for rooms & guests'" label="Rooms & Guests" icon="ph-users">
           <div class="flex flex-col gap-4 p-1">
-            <Input type="number" placeholder="Number of Rooms" label="Rooms" min="1" />
-            <Input type="number" placeholder="Number of Adults" label="Adults" min="1" />
-            <Input type="number" placeholder="Number of Children (optional)" label="Children" min="0" />
+            <Input v-model="localConfig.numberOfRooms" id="number-numbers" type="number" placeholder="Number of Rooms" label="Rooms" min="1" />
+            <!--<Input id="adult-numbers" type="number" placeholder="Number of Adults" label="Adults" min="1" />-->
+            <!--<Input id="children-numbers" type="number" placeholder="Number of Children (optional)" label="Children" min="0" />-->
             <Button>Next</Button>
           </div>
         </AdvInput>
 
         <!--COST-->
-        <AdvInput :summary="modelValue.costSummary || 'Enter estimated cost'" label="Cost" icon="₱">
+        <AdvInput :summary="localConfig.totalCost || 'Enter estimated cost'" label="Cost" icon="₱">
           <div class="flex flex-col gap-4 p-1">
-            <Input type="number" placeholder="Estimated total cost" label="Total Cost" prefix="₱" min="0" />
+            <Input v-model="localConfig.totalCost" id="cost" type="number" :formatCommas="true" placeholder="Estimated total cost" label="Total Cost" prefix="₱" min="0" />
             <Button>Next</Button>
           </div>
         </AdvInput>
 
         <!--CHECK IN / OUT-->
-        <AdvInput :summary="modelValue.timesSummary || 'Set check-in/out times'" label="Check-in/out Times" icon="ph-clock">
+        <AdvInput :summary="`${localConfig.checkInTime} | ${localConfig.checkOutTime}` || 'Set check-in/out times'" label="Check-in/out Times" icon="ph-clock">
           <div class="flex flex-col gap-4 p-1">
-            <Input type="time" label="Check-in Time" />
-            <Input type="time" label="Check-out Time" />
+            <Input v-model="localConfig.checkInTime" id="check-in" type="time" label="Check-in Time" />
+            <Input v-model="localConfig.checkOutTime" id="check-out" type="time" label="Check-out Time" />
             <Button>Next</Button>
           </div>
         </AdvInput>
 
         <!--NEXT BUTTON-->
-        <Button>Next</Button>
+        <Button>Save Accommodations</Button>
 
       </div>
     </div>
@@ -105,51 +107,51 @@ export default {
   props: {
     modelValue: {
       type: Object,
-      default: () => ({showSheet: false}), // Use a factory function for object defaults
+      default: () => ({
+        showSheet: false,
+        name: '',
+        type: '',
+
+        location: '',
+        numberOfRooms: 1,
+        totalCost: 0,
+        // currency: 'PHP', // If you plan to make currency selectable or dynamic
+
+        checkInTime: new Date('15:00').getTime(), // Common default check-in time
+        checkOutTime: '12:00', // Common default check-out time
+
+        dates: {
+          start: '', // Get it from start date of the trip
+          end: '', // Get it from end date of the trip
+        }
+      }), // Use a factory function for object defaults
       required: true,
+    }
+  },
+
+  data() {
+    return {
+      localConfig: {...this.modelValue}
+    }
+  },
+
+  watch: {
+    'modelValue': {
+      handler(newValue) {
+        this.localConfig = newValue
+      },
+      immediate: true,
+      deep: true,
     }
   },
 
   emits: ['update:modelValue'],
 
-  data() {
-    return {
-      // You'll likely want to add local state here for the new inputs
-      // For example, to store the current values for rooms, cost, times
-      // Example:
-      // rooms: 1,
-      // adults: 1,
-      // children: 0,
-      // totalCost: 0,
-      // currency: 'PHP',
-      // checkInTime: '15:00', // Default check-in time
-      // checkOutTime: '11:00' // Default check-out time
-    }
-  },
-
   computed: {
     showSheet() {
       return this.modelValue.showSheet;
     },
-    // You might want to add computed properties for the AdvInput summaries:
-    // roomsSummary() {
-    //   if (this.rooms && this.adults) {
-    //     return `${this.rooms} Room${this.rooms > 1 ? 's' : ''}, ${this.adults} Adult${this.adults > 1 ? 's' : ''}`;
-    //   }
-    //   return 'Add details for rooms & guests';
-    // },
-    // costSummary() {
-    //   if (this.totalCost > 0) {
-    //     return `${this.currency} ${this.totalCost.toLocaleString()}`; // Formats number
-    //   }
-    //   return 'Enter estimated cost';
-    // },
-    // timesSummary() {
-    //   if (this.checkInTime && this.checkOutTime) {
-    //     return `Check-in: ${this.checkInTime} / Check-out: ${this.checkOutTime}`;
-    //   }
-    //   return 'Set check-in/out times';
-    // }
+
   }
 }
 </script>

@@ -69,6 +69,12 @@ export default {
     toggle() {
       this.isExpanded = !this.isExpanded;
     },
+    expand(){
+      this.isExpanded = true;
+    },
+    collapse(){
+      this.isExpanded = false;
+    },
     beforeEnter(el) {
       el.style.height = '0';
       el.style.opacity = '0';

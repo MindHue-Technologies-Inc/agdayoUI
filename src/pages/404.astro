@@ -1,12 +1,52 @@
 ---
-import Layout from '../layouts/Layout.astro';
-export const prerender = false
+import Layout from "../layouts/LayoutWSidebar.astro"
+import Main from "../components/layout/Main.vue"
+import Topbar from "../components/UI/Topbar.vue"
+import Button from "../components/UI/Button.vue"; // Assuming you have a Button component
+import Anchor from "../components/UI/Anchor.vue"; // Assuming you have an Anchor component
 ---
 
 <Layout>
-  <div class="flex flex-col justify-center items-center py-20 h-[95vh]">
-    <h1 class="text-8xl font-bold">404</h1>
-    <p class="text-xl mt-4">Page not found</p>
-    <a href="/login" class="mt-6 inline-block text-blue-500 hover:underline">Go back</a>
-  </div>
+  <Main>
+    <div class="flex flex-col items-center justify-center w-full h-full min-h-[calc(100vh-theme(spacing.20))] px-4 py-16 text-center">
+      <h1 class="text-9xl font-extrabold text-zinc-300 dark:text-zinc-700 select-none">
+        404
+      </h1>
+      <h2 class="text-4xl font-bold text-zinc-800 dark:text-zinc-100 mt-4 mb-6">
+        Page Not Found
+      </h2>
+      <p class="text-lg text-zinc-600 dark:text-zinc-300 max-w-prose mb-8">
+        Oops! It looks like the page you're looking for doesn't exist. It might have been moved or deleted.
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-4 items-center">
+        <Button onclick="window.history.back()" variant="primary">
+          Go Back
+        </Button>
+        <Anchor href="/active-trip" variant="secondary">
+          Go to Homepage
+        </Anchor>
+      </div>
+
+    </div>
+  </Main>
 </Layout>
+
+<style is:global>
+    /* Optional: Add some basic fade-in or subtle animations for a smoother feel */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1, h2, p, .flex-row {
+        animation: fadeIn 0.8s ease-out forwards;
+        opacity: 0; /* Start invisible */
+    }
+
+    h1 { animation-delay: 0.1s; }
+    h2 { animation-delay: 0.2s; }
+    p { animation-delay: 0.3s; }
+    .flex-row { animation-delay: 0.4s; }
+    /* img { animation-delay: 0.5s; } */
+</style>

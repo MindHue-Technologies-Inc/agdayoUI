@@ -93,12 +93,11 @@ export default {
       // Access the current form data directly from `this.localLoginData`
       // This data is reactive and comes from the parent's v-model.
 
-      window.location.href='/register'
+      window.location.href='/active-trip'
 
       // --- Optional: Basic client-side validation ---
       if (!this.loginData.email || !this.loginData.password) {
         this.dangerToast.message = "Please Enter both Email and Password."
-        this.$refs.dangerToast.showToast()
         return; // Stop if validation fails
       }
 

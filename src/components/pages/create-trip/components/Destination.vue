@@ -3,6 +3,7 @@
       id="b0ss"
       label="Destination"
       icon="ph ph-map-pin"
+      ref="advInput"
       :summary="selectedDestination ? selectedDestination.name : 'Select your destination'"
   >
     <div class="flex flex-col p-1 gap-2">
@@ -12,6 +13,7 @@
           prefixIcon="ph ph-magnifying-glass"
           v-model="searchQuery"
           @keyup.enter="searchDestination"
+          @input="$emit('update:modelValue', {name:searchQuery})"
       />
       <span class="text-sm text-zinc-400">
         {{ searchQuery.trim() === '' ? 'Suggested Locations' : 'Search results for cities in the Philippines' }}
@@ -50,7 +52,7 @@
         </div>
       </Transition>
 
-      <Button class="w-full" @click="proceedNext" :disabled="!selectedDestination">Next</Button>
+      <Button class="w-full" @click="proceedNext" :disabled="!selectedDestination && !searchQuery">Next</Button>
     </div>
   </AdvInput>
 </template>
@@ -68,6 +70,13 @@ export default {
     Input,
     Button,
   },
+  props: {
+    modelValue: {
+      type: Object,
+      require: true,
+    }
+  },
+
   data() {
     return {
       searchQuery: '',
@@ -119,6 +128,7 @@ export default {
         };
       }
       this.searchQuery = item.name;
+      this.$emit('update:modelValue', this.selectedDestination)
       console.log('Selected destination:', this.selectedDestination.name);
     },
 
@@ -153,12 +163,21 @@ export default {
     },
 
     proceedNext() {
+      this.selectedDestination = {name:this.searchQuery}
       if (this.selectedDestination) {
-        console.log('Proceeding with final destination:', this.selectedDestination);
+        this.$emit('next')
       } else {
         console.warn('Please select or enter a destination before proceeding.');
       }
     },
+
+    expand() {
+      this.$refs.advInput.expand()
+    },
+
+    collapse() {
+      this.$refs.advInput.collapse()
+    }
   },
 };
 </script>

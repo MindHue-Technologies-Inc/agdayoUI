@@ -1,29 +1,47 @@
 <template>
-  <Sheet :model-value="showSheet" @update:modelValue="$emit('update:modelValue', $event)">
+  <Sheet :model-value="showSheet" @update:modelValue="$emit('update:modelValue', { ...modelValue, showSheet: false })">
     <div class="flex flex-col items-start h-full md:px-6 md:py-8 px-2 py-1">
       <div class="flex items-center justify-between w-full mb-6">
         <div class="flex gap-2 items-center justify-center text-3xl text-zinc-800">
           <i class="ph ph-suitcase"></i> <span class="font-bold">Preparations Checklist</span>
+          <div class="flex items-center justify-center">
+          </div>
         </div>
         <button @click="$emit('update:modelValue', { ...modelValue, showSheet: false })" class="text-zinc-500 hover:text-zinc-700 transition">
           <i class="ph ph-x text-2xl"></i>
         </button>
       </div>
 
-      <div class="flex gap-2 mb-6 flex-wrap">
+      <div class="flex gap-2 mb-6 flex-wrap items-center w-full">
         <Tag label="All Tasks" mode="button" :variant="activeTab === 'all' ? 'peach' : 'gray'" @click="activeTab = 'all'" />
+        <Tag label="Completed" mode="button" :variant="activeTab === 'Completed' ? 'peach' : 'gray'" @click="activeTab = 'Completed'" />
+        <Tag label="Not Completed" mode="button" :variant="activeTab === 'Not Completed' ? 'peach' : 'gray'" @click="activeTab = 'Not Completed'" />
         <Tag v-for="(category, index) in categories" :label="category" :key="index" mode="button" :variant="activeTab === `${category}` ? 'peach' : 'gray'" @click="activeTab = `${category}`"/>
+
+        <div class="ml-auto text-2xl flex place-content-center">
+          <Tag @click="toggleEditMode" :label="'Edit ' + `${editMode ? 'On' : 'Off'}`" mode="button" :variant="'blue'"/>
+        </div>
       </div>
 
       <div class="flex-grow w-full pr-2 flex flex-col gap-3 custom-scrollbar">
-        <Card v-for="item in filteredChecklist" :key="item.id"
+        <Card v-for="(item, index) in filteredChecklist" :key="item.id"
               class="shadow-secondary-sm border-secondary-xs flex-row!"
         >
           <Checkbox :id="`task-${item.id}`"
                     v-model="item.completed"
                     :label="item.task"
+
           />
-          <span v-if="item.notes" class="ml-auto text-sm text-zinc-400">{{ item.notes }}</span>
+          <div class="ml-auto flex items-center justify-center gap-2">
+            <span v-if="item.notes" class="text-sm text-zinc-400">{{ item.notes }}</span>
+            <div
+                @click="deleteTask(item)"
+                v-if="editMode"
+                class="ml-auto flex"
+            >
+              <i class="ph ph-trash cursor-pointer"></i>
+            </div>
+          </div>
         </Card>
 
         <div v-if="filteredChecklist.length === 0" class="text-center text-zinc-500 p-8">
@@ -47,7 +65,6 @@
           v-model="newTask.category"
           placeholder="Select or Enter a Category"
           label="Category"
-
         />
 
         <Input
@@ -92,17 +109,19 @@ export default {
   props: {
     modelValue: {
       type: Object,
-      default: {showSheet: false},
+      default: {
+        showSheet: false,
+        preparationChecklist: [],
+      },
       required: true,
     }
   },
 
-  emits: ['update:modelValue'],
-
   data() {
     return {
+      editMode: false,
       activeTab: 'all',
-      // newTask is now an object to hold all new task details
+
       newTask: {
         name: '',
         category: '',
@@ -116,22 +135,19 @@ export default {
         { label: 'For Albert', value: 'For Albert' },
       ],
 
-      preparationsChecklist: [
-        { id: 1, task: 'Renew Passport', category: 'Documents', completed: false, notes: 'Expires Aug 2025' },
-        { id: 2, task: 'Book Accommodation', category: 'Essentials', completed: true, notes: 'The Manor' },
-        { id: 3, task: 'Buy Travel Insurance', category: 'Documents', completed: false },
-        { id: 4, task: 'Pack Clothes for Cold Weather', category: 'Packing', completed: false },
-        { id: 5, task: 'Prepare Itinerary for Day 1', category: 'Essentials', completed: false },
-        { id: 6, task: 'Charge all devices', category: 'Packing', completed: true },
-        { id: 7, task: 'Download offline maps', category: 'Essentials', completed: false },
-        { id: 8, task: 'Jacket ni Albert', category: 'For Albert', completed: false }, // Fixed duplicate ID
-      ],
+      preparationsChecklist: [...this.modelValue.preparationsChecklist],
     }
   },
   computed: {
     filteredChecklist() {
       if (this.activeTab === 'all') {
         return this.preparationsChecklist;
+      }
+      if (this.activeTab === 'Not Completed') {
+        return this.preparationsChecklist.filter(task=>!task.completed)
+      }
+      if (this.activeTab === 'Completed') {
+        return this.preparationsChecklist.filter(task=>task.completed)
       }
       return this.preparationsChecklist.filter(item => item.category === this.activeTab);
     },
@@ -144,10 +160,28 @@ export default {
       return this.modelValue.showSheet
     }
   },
+  watch: {
+    preparationsChecklist: {
+      handler(newInput){
+        this.$emit('update:modelValue', { ...this.modelValue, preparationsChecklist: this.preparationsChecklist })
+      },
+      deep: true,
+      immediate: true,
+    }
+  },
   methods: {
     b0ss(item) {
       this.newTask.category = item
     },
+    toggleEditMode(){
+      this.editMode = !this.editMode
+    },
+
+    deleteTask(item){
+      const index = this.preparationsChecklist.indexOf(item)
+      this.preparationsChecklist.splice(index, 1)
+    },
+
     addTask() {
       // Ensure task name is not empty
       if (this.newTask.name.trim() === '') return;
@@ -166,6 +200,7 @@ export default {
         category: '', // Reset to default
         notes: ''
       };
+      // this.$emit('update:modelValue', { ...this.modelValue, preparationsChecklist: this.preparationsChecklist })
     }
   }
 }

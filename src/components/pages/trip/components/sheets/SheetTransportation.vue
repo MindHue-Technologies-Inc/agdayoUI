@@ -38,23 +38,23 @@
               ]"
             />
 
-            <Input v-model="transport.departureLocation" placeholder="e.g., NAIA Terminal 3" label="Departure Location" />
+            <Input :id="index + 'location-departure'" v-model="transport.departureLocation" placeholder="e.g., NAIA Terminal 3" label="Departure Location" />
             <div class="grid grid-cols-2 gap-4">
-              <Input v-model="transport.departureDate" type="date" label="Departure Date" />
-              <Input v-model="transport.departureTime" type="time" label="Departure Time" />
+              <Input :id="index + 'date-departure'" v-model="transport.departureDate" type="date" label="Departure Date" />
+              <Input :id="index + 'time-departure'" v-model="transport.departureTime" type="time" label="Departure Time" />
             </div>
 
-            <Input v-model="transport.arrivalLocation" placeholder="e.g., Baguio City Terminal" label="Arrival Location" />
+            <Input :id="index + 'location-arrival'" v-model="transport.arrivalLocation" placeholder="e.g., Baguio City Terminal" label="Arrival Location" />
             <div class="grid grid-cols-2 gap-4">
-              <Input v-model="transport.arrivalDate" type="date" label="Arrival Date (Optional)" />
-              <Input v-model="transport.arrivalTime" type="time" label="Arrival Time (Optional)" />
+              <Input :id="index + 'date-arrival'" v-model="transport.arrivalDate" type="date" label="Arrival Date (Optional)" />
+              <Input :id="index + 'time-arrival'" v-model="transport.arrivalTime" type="time" label="Arrival Time (Optional)" />
             </div>
 
-            <Input v-model="transport.bookingRef" placeholder="e.g., ABC123DEF" label="Booking Reference (Optional)" />
-            <Input v-model="transport.seatNumber" placeholder="e.g., 12A" label="Seat/Vehicle Number (Optional)" />
+            <Input :id="index + 'booking-reference'" v-model="transport.bookingRef" placeholder="e.g., ABC123DEF" label="Booking Reference (Optional)" />
+            <Input :id="index + 'seat-number'" v-model="transport.seatNumber" placeholder="e.g., 12A" label="Seat/Vehicle Number (Optional)" />
 
             <div class="grid grid-cols-2 gap-4">
-              <Input v-model.number="transport.cost" type="number" placeholder="Cost" label="Cost" prefix="₱" min="0" />
+              <Input :id="index + 'cost'" v-model.number="transport.cost" type="number" placeholder="Cost" label="Cost" prefix="₱" min="0" />
               <Select
                   v-model="transport.currency"
                   :id="`transport-currency-${transport.id}`"
@@ -67,7 +67,7 @@
               />
             </div>
 
-            <Input v-model="transport.notes" placeholder="Any specific notes for this segment..." label="Notes (Optional)" />
+            <Input :id="index + 'notes'" v-model="transport.notes" placeholder="Any specific notes for this segment..." label="Notes (Optional)" />
 
             <div class="flex justify-end mt-2">
               <Button v-if="localTransports.length > 1" @click="removeTransportRow(transport.id)" variant="ghost">

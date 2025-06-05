@@ -50,6 +50,14 @@ export default {
       visible: false,
     };
   },
+
+  watch: {
+    message() {
+      this.visible = true
+      this.hideToast(this.duration)
+    }
+  },
+
   computed: {
     baseClasses() {
       return 'transition-all duration-300 ease-out z-50 max-w-xs w-full p-4 rounded-3xl';

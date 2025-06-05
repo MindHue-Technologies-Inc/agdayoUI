@@ -15,10 +15,10 @@
 
           <!-- NAVIGATION -->
           <div class="flex lg:flex-col gap-4 lg:justify-center justify-around lg:w-fit w-full items-center text-2xl">
-            <a href="/active-trips" class="sidebar-buttons" :class="{'text-peach-500!': pathname.includes('active-trips')}" ><i class="ph ph-house"></i></a>
-            <a href="" class="sidebar-buttons" :class="{'text-peach-500!': pathname.includes('my-trips')}" ><i class="ph ph-island"></i></a>
+            <a href="/active-trip" class="sidebar-buttons" :class="{'text-peach-500!': pathname.includes('active-trip')}" ><i class="ph ph-house"></i></a>
+            <a href="/trips" class="sidebar-buttons" :class="{'text-peach-500!': pathname.includes('trips')}" ><i class="ph ph-island"></i></a>
             <a href="/create-trip" class="sidebar-buttons bg-white h-8 w-8 flex items-center justify-center rounded-xl" :class="{'text-peach-500!': pathname.includes('create-trip')}" ><i class="ph ph-plus"></i></a>
-            <a href="" class="sidebar-buttons" :class="{'text-peach-500!': pathname.includes('expense')}" ><i class="ph ph-coins"></i></a>
+            <a href="/expenses" class="sidebar-buttons" :class="{'text-peach-500!': pathname.includes('expenses')}" ><i class="ph ph-coins"></i></a>
             <a href="" class="sidebar-buttons" :class="{'text-peach-500!': pathname.includes('profile')}" ><i class="ph ph-user"></i></a>
             <!--<a href="/reports" class="sidebar-buttons" :class="{'active': this.pathname.includes('reports')}">Reports</a>-->
 
