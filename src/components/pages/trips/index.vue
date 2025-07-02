@@ -1,7 +1,7 @@
 <template>
   <transition name="fade" appear>
     <div class="grow mt-8 md:mt-16">
-      <div class="max-w-4xl mx-auto px-4 sm:px-6 md:px-8">
+      <div class="max-w-4xl ">
         <div class="flex items-center justify-between mb-8">
           <h1 class="font-extrabold text-4xl sm:text-5xl text-zinc-800 tracking-tight outfit leading-tight">
             My Trips
@@ -13,7 +13,7 @@
 
         <div class="flex flex-col gap-6">
 
-          <Card customClass="w-full p-0! overflow-hidden rounded-4xl border-primary-light-sm shadow-primary-light-md bg-white hover:shadow-lg transition-shadow duration-200 cursor-pointer">
+          <Card class="fadeIn" customClass="w-full p-0! overflow-hidden rounded-4xl border-primary-light-sm shadow-primary-light-md bg-white hover:shadow-lg transition-shadow duration-200 cursor-pointer">
             <a href="/trips/1" class="block">
               <div class="flex flex-col gap-3 bg-peach-50 p-4 sm:p-6 md:p-8">
                 <div class="flex flex-row items-center justify-between">
@@ -38,7 +38,7 @@
                 <div class="flex flex-row flex-wrap items-center gap-x-6 gap-y-2 text-zinc-600 font-medium text-sm mt-2">
                   <div class="flex gap-1 items-center">
                     <i class="ph ph-calendar-dots text-peach-500 text-base"></i>
-                    <span>May 14 - 16, 2025</span>
+                    <span>Jun 6 - 9, 2025</span>
                   </div>
 
                   <div class="flex gap-1 items-center">
@@ -50,7 +50,7 @@
             </a>
           </Card>
 
-          <Card customClass="w-full p-0! overflow-hidden rounded-4xl border-info-light-sm shadow-info-light-md bg-white hover:shadow-lg transition-shadow duration-200 cursor-pointer">
+          <Card class="fadeIn fadeIn-1" customClass="w-full p-0! overflow-hidden rounded-4xl border-info-light-sm shadow-info-light-md bg-white hover:shadow-lg transition-shadow duration-200 cursor-pointer">
             <a href="/trip/cebu-island-hopping" class="block">
               <div class="flex flex-col gap-3 bg-blue-50 p-4 sm:p-6 md:p-8">
                 <div class="flex flex-row items-center justify-between">
@@ -87,7 +87,7 @@
             </a>
           </Card>
 
-          <Card customClass="w-full p-0! overflow-hidden rounded-4xl border-warning-light-sm shadow-warning-light-md bg-white hover:shadow-lg transition-shadow duration-200 cursor-pointer">
+          <Card class="fadeIn fadeIn-2" customClass="w-full p-0! overflow-hidden rounded-4xl border-warning-light-sm shadow-warning-light-md bg-white hover:shadow-lg transition-shadow duration-200 cursor-pointer">
             <a href="/trip/batanes-exploration" class="block">
               <div class="flex flex-col gap-3 bg-yellow-50 p-4 sm:p-6 md:p-8">
                 <div class="flex flex-row items-center justify-between">

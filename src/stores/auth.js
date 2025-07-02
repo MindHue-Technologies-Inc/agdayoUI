@@ -39,7 +39,7 @@ export function login({ user, token }) {
 }
 
 export function logout() {
-  document.cookie = 'auth=; Max-Age=0; path=/';
+  document.cookies.delete('Authentication');
   localStorage.removeItem('auth');
   useAuthStore.set({
     user: null,

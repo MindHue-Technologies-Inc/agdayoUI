@@ -1,9 +1,49 @@
 <template>
   <transition name="fade" appear>
     <div class="grow mt-8 md:mt-16">
-      <Card customClass="max-w-4xl mx-auto p-0! overflow-hidden rounded-4xl border-primary-light-sm shadow-primary-light-md bg-white">
-        <div class="flex flex-col gap-3 bg-peach-50 p-4 md:p-6 sm:p-8">
-          <div class="flex flex-row items-center justify-between">
+      <!--<div class="absolute right-0 border w-[24rem] text-wrap top-0">-->
+      <!--  <pre>tripConfig</pre>-->
+      <!--  <pre>{{tripConfig}}</pre>-->
+
+      <!--  <pre>settings</pre>-->
+      <!--  <pre>{{settings}}</pre>-->
+
+      <!--  <pre>preparation</pre>-->
+      <!--  <pre>{{preparation}}</pre>-->
+
+      <!--  <pre>accommodation</pre>-->
+      <!--  <pre>{{accommodation}}</pre>-->
+
+      <!--  <pre>companions</pre>-->
+      <!--  <pre>{{companions}}</pre>-->
+
+      <!--  <pre>budget</pre>-->
+      <!--  <pre>{{budget}}</pre>-->
+
+      <!--  <pre>transportation</pre>-->
+      <!--  <pre>{{transportation}}</pre>-->
+
+      <!--  <pre>roles</pre>-->
+      <!--  <pre>{{roles}}</pre>-->
+
+      <!--  <pre>dayNote</pre>-->
+      <!--  <pre>{{dayNote}}</pre>-->
+
+      <!--  <pre>addActivity</pre>-->
+      <!--  <pre>{{addActivity}}</pre>-->
+
+      <!--  <pre>editActivity</pre>-->
+      <!--  <pre>{{editActivity}}</pre>-->
+
+      <!--  <pre>selectedActivity</pre>-->
+      <!--  <pre>{{selectedActivity}}</pre>-->
+
+      <!--  <pre>planningProgress</pre>-->
+      <!--  <pre>{{planningProgress}}</pre>-->
+      <!--</div>-->
+      <Card :customClass='cardClass + " max-w-4xl mx-auto p-0! overflow-hidden rounded-4xl bg-white"'>
+        <div :class="['flex flex-col gap-3 p-4 md:p-6 sm:p-8', headerClass]">
+          <div class="fadeIn flex flex-row items-center justify-between">
             <div class="flex flex-row gap-2 items-center">
               <Tag label="Upcoming" class="bg-white border-primary-light-xs"/>
               <Tag label="View on Map" variant="green" mode="button" icon="ph-map-trifold" />
@@ -14,26 +54,27 @@
             </button>
           </div>
 
-          <div>
+          <div class="fadeIn fadeIn-1">
             <h2 class="font-extrabold text-4xl sm:text-5xl text-zinc-800 tracking-tight outfit leading-tight">{{tripConfig.name}}</h2>
           </div>
 
-          <div class="mt-2">
+          <div class="mt-2 fadeIn fadeIn-2">
             <span class="text-zinc-600 font-semibold">Planning Progress:</span>
             <div class="w-full bg-zinc-200 rounded-full h-2 mt-1">
-              <div class="bg-peach-500 h-2 rounded-full" :style="{ width: `${(planningProgress.completed / planningProgress.total) * 100}%` }"></div>
+
+              <div :class="['h-2 rounded-full transition-all ease', progressClass]" :style="{ width: `${(planningProgress.completed / planningProgress.total) * 100}%` }"></div>
             </div>
             <span class="text-sm text-zinc-500 mt-1 block">{{ planningProgress.completed }}/{{ planningProgress.total }} Sections Complete</span>
           </div>
 
-          <div class="flex flex-row items-center gap-6 text-zinc-600 font-medium mt-2">
+          <div class="fadeIn fadeIn-3 flex flex-row items-center gap-6 text-zinc-600 font-medium mt-2">
             <div class="flex gap-2 items-center">
-              <i class="ph ph-calendar-dots text-peach-500 text-xl"></i>
+              <i :class="['ph ph-calendar-dots text-xl', textClass]"></i>
               <span>{{formatDateRange(tripConfig.date.start, tripConfig.date.end)}}</span>
             </div>
 
             <div class="flex gap-2 items-center">
-              <i class="ph ph-map-pin text-peach-500 text-xl"></i>
+              <i :class="['ph ph-map-pin text-xl', textClass]"></i>
               <span>{{tripConfig.location}}</span>
             </div>
           </div>
@@ -218,7 +259,7 @@
   </transition>
 
 
-  <SheetTripSettings v-model="settings" @save="console.log($event)"/>
+  <SheetTripSettings v-model="settings" @save="saveSettings"/>
   <SheetPreparation v-model="preparation"/>
   <SheetAccom v-model="accommodation" />
   <SheetCompanions v-model="companions"/>
@@ -301,8 +342,8 @@ export default {
           location: "Baguio City",
           theme: 'peach',
           date: {
-            start: new Date().toISOString(),
-            end: new Date().toISOString(),
+            start: new Date(),
+            end: new Date(),
           },
         }
       },
@@ -316,7 +357,6 @@ export default {
           { id: 5, task: 'Prepare Itinerary for Day 1', category: 'Essentials', completed: false },
           { id: 6, task: 'Charge all devices', category: 'Packing', completed: true },
           { id: 7, task: 'Download offline maps', category: 'Essentials', completed: false },
-          { id: 8, task: 'Jacket ni Albert', category: 'For Albert', completed: false }, // Fixed duplicate ID
         ],
       },
       accommodation: {
@@ -356,6 +396,64 @@ export default {
       addActivity: {
         showSheet: false,
       },
+      activities: [
+        {
+          datetime: '2025-05-14T09:00:00',
+          iconName: 'ph-bus',
+          title: 'Arrival At Bus Terminal',
+          location: 'Victory Liner Terminal, Baguio City',
+          cost: 540.0,
+          costNote: '/ Person Ticket',
+        },
+        {
+          datetime: '2025-05-14T09:30:00',
+          iconName: 'ph-coffee',
+          title: 'Breakfast at Oh My Gulay!',
+          location: 'Session Road, Baguio City',
+          cost: 300.0,
+          costNote: '/ Person (Est.)',
+        },
+        {
+          datetime: '2025-05-14T10:45:00',
+          iconName: 'ph-tree',
+          title: 'Explore Burnham Park',
+          location: 'G. Perfecto St, Baguio City',
+          cost: 100.0,
+          costNote: '(Boat Rental Est.)',
+        },
+        {
+          datetime: '2025-05-14T12:30:00',
+          iconName: 'ph-bowl-food',
+          title: 'Lunch at Good Taste Cafe & Restaurant',
+          location: 'Otek St, Baguio City',
+          cost: 250.0,
+          costNote: '/ Person (Est.)',
+        },
+        {
+          datetime: '2025-05-14T14:00:00',
+          iconName: 'ph-palette',
+          title: 'Visit BenCab Museum',
+          location: 'Km 6 Asin Rd, Tuba, Benguet',
+          cost: 150.0,
+          costNote: '/ Person (Entrance Fee)',
+        },
+        {
+          datetime: '2025-05-14T16:30:00',
+          iconName: 'ph-bed',
+          title: 'Hotel Check-in & Rest',
+          location: 'The Manor at Camp John Hay, Baguio City',
+          cost: 'Included',
+          costNote: 'in Accommodation',
+        },
+        {
+          datetime: '2025-05-14T19:00:00',
+          iconName: 'ph-pizza',
+          title: 'Dinner at Cafe by the Ruins',
+          location: 'Shuntug Rd, Baguio City',
+          cost: 400.0,
+          costNote: '/ Person (Est.)',
+        },
+      ],
       editActivity: {
         showSheet: false,
       },
@@ -377,13 +475,71 @@ export default {
 
       // Data for the progress bar
       planningProgress: {
-        completed: 4, // Example: based on 4/7 sections complete
+        completed: 1, // Example: based on 4/7 sections complete
         total: 7,
       },
     }
   },
   computed: {
+    cardClass() {
+      switch (this.tripConfig.theme) {
+        case 'peach':
+          return 'border-primary-light-sm shadow-primary-light-md';
+        case 'blue':
+          return 'border-info-light-sm shadow-info-light-md';
+        case 'amber':
+          return 'border-warning-light-sm shadow-warning-light-md';
+        case 'emerald':
+          return 'border-success-light-sm shadow-success-light-md';
+        default:
+          return 'border-primary-light-sm shadow-primary-light-md';
+      }
+    },
 
+    headerClass() {
+      switch (this.tripConfig.theme) {
+        case 'peach':
+          return 'bg-peach-50';
+        case 'blue':
+          return 'bg-sky-50';
+        case 'amber':
+          return 'bg-amber-50';
+        case 'emerald':
+          return 'bg-emerald-50';
+        default:
+          return 'bg-peach-50';
+      }
+    },
+
+    progressClass() {
+      switch (this.tripConfig.theme) {
+        case 'peach':
+          return 'bg-peach-500';
+        case 'blue':
+          return 'bg-sky-500';
+        case 'amber':
+          return 'bg-amber-500';
+        case 'emerald':
+          return 'bg-emerald-500';
+        default:
+          return 'bg-peach-500';
+      }
+    },
+
+    textClass() {
+      switch (this.tripConfig.theme) {
+        case 'peach':
+          return 'text-peach-500';
+        case 'blue':
+          return 'text-sky-500';
+        case 'amber':
+          return 'text-amber-500';
+        case 'emerald':
+          return 'text-emerald-500';
+        default:
+          return 'text-peach-500';
+      }
+    }
   },
   methods: {
     formatDateRange(startDateIso, endDateIso) {
@@ -431,6 +587,31 @@ export default {
       }
     },
 
+    formatIsoDateToTime(value){
+      let date = new Date(value)
+
+      let hours = date.getHours()
+      const minutes = date.getMinutes()
+
+      const ampm = hours >= 12 ? 'PM' : 'AM'
+
+      hours = hours % 12;
+      hours = hours ? hours : 12
+
+      const formattedMinutes = minutes < 10 ? '0' + minutes: minutes;
+
+      return `${hours}:${formattedMinutes} ${ampm}`;
+    },
+
+    formatIsoDateToDate(value) {
+      const date = new Date(value);
+      return new Intl.DateTimeFormat('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      }).format(date)
+    },
+
     hasPayload(payload) {
       return payload === null || typeof payload === 'undefined'
     },
@@ -456,6 +637,31 @@ export default {
       } catch (err) {
         alert(err)
       }
+    },
+
+    initSettings(payload) {
+      this.settings.trip.name = payload.trip.name
+      this.settings.trip.date = { start:payload.trip.start_date, end:payload.trip.end_date }
+      this.settings.trip.theme = payload.trip.theme
+      this.settings.trip.location = payload.trip.location
+    },
+
+    saveSettings(payload){
+      console.log(payload)
+      try {
+        this.tripConfig.name = payload.name ?? this.tripConfig.name;
+        this.tripConfig.location = payload.location ?? this.tripConfig.location;
+        this.tripConfig.theme = payload.theme ?? this.tripConfig.theme;
+
+        // More explicit update for date object, especially if it could be partial
+        if (payload.date) { // Only update if payload.date is not null/undefined
+          this.tripConfig.date.start = payload.date.start ?? this.tripConfig.date.start;
+          this.tripConfig.date.end = payload.date.end ?? this.tripConfig.date.end;
+        }
+        console.log('No Error Saving Settings')
+      } catch (err) {
+        console.error('Error at Saving Settings', err)
+      }
     }
   },
 
@@ -464,8 +670,8 @@ export default {
     const payload = {
       trip: {
         name: 'Summer in Baguio City',
-        start_date: new Date('2025-06-06'),
-        end_date: new Date('2025-06-09'),
+        start_date: new Date('2025-06-26'),
+        end_date: new Date('2025-06-28'),
         status: '',
         budget: 0,
         location: 'Baguio City',
@@ -476,6 +682,7 @@ export default {
 
     this.initTripConfig(payload)
     this.initAccommodation(payload)
+    this.initSettings(payload)
   }
 }
 </script>

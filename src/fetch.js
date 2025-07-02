@@ -14,6 +14,7 @@ export const apiRequest = async ({ method = 'GET', url, params = {}, body = null
       headers: headers ? headers : {
         'Content-Type': 'application/json',
       },
+      credentials: 'include',
       body: (method === 'POST' || method === 'PUT') ? JSON.stringify(body) : null,
     });
 

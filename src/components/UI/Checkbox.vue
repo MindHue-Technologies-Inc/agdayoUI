@@ -21,6 +21,7 @@
         v-if="label"
         :for="id"
         class="text-sm text-zinc-700 dark:text-zinc-300 cursor-pointer select-none"
+        :class="labelClass"
     >
       {{ label }}
     </label>
@@ -45,6 +46,10 @@ export default {
     label: {
       type: String,
       default: '',
+    },
+    labelClass: {
+      type: String,
+      default: ''
     },
     // Whether the checkbox is disabled
     disabled: {

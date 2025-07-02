@@ -43,7 +43,7 @@
         >
           <div class="flex flex-col gap-4 p-1">
             <Input :id="`category-name-${index}`" v-model="category.name" placeholder="e.g., Flights, Food, Activities" label="Category Name" />
-            <Input :id="`category-amount-${index}`" v-model.number="category.amount" type="number" placeholder="Budget for this category" label="Amount" :prefix="localBudget.currency === 'PHP' ? '₱' : localBudget.currency === 'USD' ? '$' : '€'" min="0" />
+            <Input :id="`category-amount-${index}`" v-model.number="category.amount" type="number" placeholder="Budget for this category" label="Amount" prefix="₱" />
             <div class="flex justify-end mt-2">
               <Button v-if="localBudget.categories.length > 1" @click="removeCategoryRow(category.id)" variant="danger">
                 Delete Category

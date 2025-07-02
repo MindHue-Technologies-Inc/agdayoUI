@@ -1,6 +1,5 @@
 <template>
   <Sheet :model-value="showSheet" @update:modelValue="$emit('update:modelValue', { ...this.modelValue, showSheet: false })">
-    {{localConfig}}
     <div class="flex flex-col items-start h-full md:px-6 md:py-8 px-2 py-1">
       <!--HEADERS-->
       <div class="flex items-center justify-between w-full mb-6">
@@ -71,7 +70,7 @@
         </AdvInput>
 
         <!--NEXT BUTTON-->
-        <Button>Save Accommodations</Button>
+        <Button @click="save">Save Accommodations</Button>
 
       </div>
     </div>
@@ -145,7 +144,12 @@ export default {
     }
   },
 
-  emits: ['update:modelValue'],
+  methods: {
+    save() {
+      this.$emit('update:modelValue', {...this.modelValue, showSheet:false})
+      this.$emit('save')
+    }
+  },
 
   computed: {
     showSheet() {

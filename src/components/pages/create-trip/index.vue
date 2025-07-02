@@ -3,7 +3,7 @@
     <!--BODY-->
     <div class="flex flex-col grow place-content-center">
       <!--HEADER-->
-      <h1 class="text-4xl sm:text-5xl font-extrabold text-zinc-800 mb-8 sm:mb-12 text-center tracking-tight outfit">
+      <h1 class="fadeIn text-4xl sm:text-5xl font-extrabold text-zinc-800 mb-8 sm:mb-12 text-center tracking-tight outfit">
         Plan Your Next Adventure
       </h1>
 
@@ -97,7 +97,7 @@ export default {
         start: null,
         end: null,
       },
-      location: {},
+      location: '',
       btnLoading: false,
     }
   },
@@ -113,7 +113,7 @@ export default {
     },
 
     validateLocation() {
-      if (!this.location.name) {
+      if (!this.location) {
         this.warningToast.message = "Please Enter a Location";
         this.$refs.destination.expand();
         return false;

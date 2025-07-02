@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col items-center relative pt-20 px-8 grow">
-<!--    LOGO-->
+    <!--    LOGO-->
     <div class="flex flex-col items-center gap-4">
       <span class="text-zinc-400 font-bold">Start your travels in</span>
       <img class="w-48" src="/images/logo-agdayo-lg.png" alt="">
@@ -9,32 +9,18 @@
 
     <transition name="fade" mode="out-in">
       <div :key="activeInput" class="gap-4 sm:w-72 w-full pt-20 flex flex-col items-center justify-center">
-        <template v-if="activeInput === 'email'">
-          <Input
-              type="email"
-              class="w-full"
-              id="email"
-              label="Please Enter your email"
-              placeholder="Email"
-              prefix-icon="ph ph-user"
-              v-model="email"
+        <div class="flex flex-col items-center justify-center gap-4">
+          Enter your one-time password
+          <OTPInput
+              v-model="otpCode"
+              :length="6"
+              placeholder=" "
+              :disabled="false"
+              @complete="createAccount"
           />
-          <Button @click="goToPassword" class="w-full">Next</Button>
-        </template>
-
-        <template v-else-if="activeInput === 'password'">
-          <Input
-              type="password"
-              class="w-full"
-              id="password"
-              label="Please Enter your password"
-              placeholder="Password"
-              prefix-icon="ph ph-lock"
-              v-model="password"
-          />
-          <Button @click="createAccount" :loading="isLoading" class="w-full">Create Account</Button>
-          <Anchor @click="setActiveInput('email')" href="javascript:void('')">Go Back to email</Anchor>
-        </template>
+          <Anchor @click="resendCode" href="javascript:void(0)">Resend Code</Anchor>
+          <Button @click="createAccount" class="w-full">Submit</Button>
+        </div>
       </div>
     </transition>
 
@@ -58,6 +44,7 @@ import Input from "../../UI/Input.vue";
 import Anchor from "../../UI/Anchor.vue";
 import Button from "../../UI/Button.vue";
 import ToastContainer from "../../UI/ToastContainer.vue";
+import OTPInput from "../../UI/OTPInput.vue";
 import Toast from "../../UI/Toast.vue";
 import {apiRequest} from "../../../fetch.js";
 import {useRegisterStore, setEmail, setPassword} from "../../../stores/register.js";
@@ -69,6 +56,7 @@ export default {
     Button,
     ToastContainer,
     Toast,
+    OTPInput
   },
 
   data() {
@@ -76,8 +64,9 @@ export default {
       isLoading: false,
       useRegister: useRegisterStore,
       activeInput: "email",
-      email: 'albertcorpmail@gmail.com',
-      password: '1234',
+      otpCode: '',
+      email: '',
+      password: '',
 
       dangerToast: {
         message: '',
@@ -107,28 +96,36 @@ export default {
       this.useRegister = useRegisterStore;
     },
 
-    async createAccount() {
-      this.isLoading = true;
-      // VALIDATE FIRST
-      if (this.password == null || this.password === '') {
-        this.dangerToast.message = "Please Enter a password.";;
-        return;
-      }
-      setPassword(this.password);
-
-      console.log(this.useRegister.value)
-
+    async resendCode() {
       const res = await apiRequest({
-        method: 'POST',
+        method: "POST",
         headers: {
           'Content-Type': 'application/json',
         },
-        url: '/auth/signup',
+        url: '/auth/signup/resend-otp',
         body: {
-          email: this.email,
-          password: this.password,
+          email: this.useRegister.value.email,
         }
       })
+
+      console.log(await res.json())
+    },
+
+    async createAccount() {
+      console.log(typeof this.otpCode)
+      console.log(typeof this.useRegister.value.email)
+      // setTimeout(()=>{window.location.href = '/build-profile'}, 1000)
+      const res = await apiRequest({
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        url: '/auth/signup/confirm-email',
+        body: {
+          email: this.useRegister.value.email,
+          code: this.otpCode,
+        }
+      });
 
       if (!res.ok) {
         this.dangerToast.message = 'Something went wrong'
@@ -136,10 +133,36 @@ export default {
       }
 
       console.log(await res.json())
-      window.location.href='/register/otp'
-      this.isLoading = false
-      // setTimeout(()=>{window.location.href = '/register/otp'}, 1000)
+      await this.handleLogin()
 
+      // LOGIN THE USER
+    },
+
+    async handleLogin(){
+      const response = await apiRequest({
+        method: "POST",
+        url: '/auth/signin',
+        // Headers are optional here because your apiRequest sets 'Content-Type: application/json'
+        // by default for POST/PUT if no headers are provided.
+        body: {
+          email: this.useRegister.value.email,
+          password: this.useRegister.value.password,
+        },
+      });
+
+      // IF RESPONSE IS FAILED
+      if (!response.ok) {
+        const errorData = await response.json(); // Parse the error response body
+        this.dangerToast.message = errorData.message || "Login failed. Please check your credentials.";
+        return;
+      }
+
+      // IF RESPONSE IS SUCCESS
+      const data = await response.json();
+      window.location.href='/build-profile'
+
+      // Emit a 'success' event, possibly with user data or a signal to navigate
+      this.$emit('login-success', data);
     }
   }
 }

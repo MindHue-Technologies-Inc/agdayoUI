@@ -49,6 +49,10 @@ export default {
       type: [Number, String], // Can be a number or a string like "Included"
       default: 0 // Default to 0 or empty string if no cost
     },
+    currency: {
+      type: String,
+      default: 'PHP'
+    },
     costNote: {
       type: String,
       default: '' // e.g., "/ Person Ticket", "(Est.)"
@@ -68,7 +72,7 @@ export default {
     formattedCost() {
       if (typeof this.cost === 'number') {
         // Format as currency if it's a number
-        return new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(this.cost);
+        return new Intl.NumberFormat('en-PH', { style: 'currency', currency: this.currency }).format(this.cost);
       }
       return this.cost; // Return as is if it's a string (e.g., "Included")
     }

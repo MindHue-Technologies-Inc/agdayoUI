@@ -17,6 +17,7 @@
       <div :key="config[counter].title" class="z-10 flex grow w-full items-center justify-between">
         <div class="w-32 cursor-pointer h-full" @click="previousImage()"></div>
         <Elnido v-if="config[counter].title === 'Elnido'" />
+        <Manila v-if="config[counter].title === 'Manila'" />
         <Baguio v-if="config[counter].title === 'Baguio'" />
         <Makati v-if="config[counter].title === 'Makati'" />
         <Subic v-if="config[counter].title === 'Subic'" />
@@ -37,6 +38,7 @@
 <script>
 import Header from "./components/Header.vue"
 import Elnido from "./components/Title/Elnido.vue"
+import Manila from "./components/Title/Manila.vue";
 import Baguio from "./components/Title/Baguio.vue"
 import Makati from "./components/Title/Makati.vue"
 import Subic from "./components/Title/Subic.vue"
@@ -52,6 +54,7 @@ export default {
     Elnido,
     Footer,
     Baguio,
+    Manila,
     Makati,
     Subic,
     Cebu,
@@ -66,6 +69,11 @@ export default {
           bg: '/images/elnido.jpg',
           title: 'Elnido',
           credits: 'El Nido, Palawan. Photo by Eibner Saliba'
+        },
+        {
+          bg: '/images/manila.jpg',
+          title: 'Manila',
+          credits: 'Manila. Photo by Michael Buillerey'
         },
         {
           bg: '/images/baguio.jpg',

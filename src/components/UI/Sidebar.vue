@@ -34,6 +34,7 @@
 <script>
 import { logout, useAuthStore } from '../../stores/auth';
 import { version } from '../../../package.json'
+import {apiRequest} from "../../fetch.js";
 
 export default {
   data() {
@@ -49,8 +50,17 @@ export default {
       this.showMenu = !this.showMenu;
     },
     async logoutUser() {
-      await fetch('/api/logout', { method: 'POST' });
-      logout();
+      const res = await apiRequest({
+        method: 'DELETE',
+        url: "/auth/signout"
+      })
+
+      if (!res.ok){
+        console.log('RES IS NOT OK')
+        return
+      }
+
+      await res.json()
       window.location.href = "/login";
     }
   },

@@ -13,7 +13,7 @@
           prefixIcon="ph ph-magnifying-glass"
           v-model="searchQuery"
           @keyup.enter="searchDestination"
-          @input="$emit('update:modelValue', {name:searchQuery})"
+          @input="$emit('update:modelValue', searchQuery)"
       />
       <span class="text-sm text-zinc-400">
         {{ searchQuery.trim() === '' ? 'Suggested Locations' : 'Search results for cities in the Philippines' }}
@@ -46,9 +46,9 @@
               </span>
             </div>
           </div>
-          <div v-else class="py-2 text-center text-zinc-400">
-            No cities found matching "{{ searchQuery }}". You can press Enter to add "{{ searchQuery }}" as a custom destination.
-          </div>
+          <!--<div v-else class="py-2 text-center text-zinc-400">-->
+          <!--  No cities found matching "{{ searchQuery }}". You can press Enter to add "{{ searchQuery }}" as a custom destination.-->
+          <!--</div>-->
         </div>
       </Transition>
 
@@ -72,7 +72,7 @@ export default {
   },
   props: {
     modelValue: {
-      type: Object,
+      type: String,
       require: true,
     }
   },
@@ -114,22 +114,9 @@ export default {
   },
   methods: {
     selectLocation(item) {
-      if (item.province) {
-        this.selectedDestination = {
-          name: item.name,
-          description: item.province ? `${item.province}${item.zip_code ? ' - ' + item.zip_code : ''}` : item.zip_code,
-          fullData: item
-        };
-      } else {
-        this.selectedDestination = {
-          name: item.name,
-          description: item.description,
-          fullData: item
-        };
-      }
+      this.selectedDestination = item.name;
       this.searchQuery = item.name;
       this.$emit('update:modelValue', this.selectedDestination)
-      console.log('Selected destination:', this.selectedDestination.name);
     },
 
     searchDestination() {
@@ -163,7 +150,7 @@ export default {
     },
 
     proceedNext() {
-      this.selectedDestination = {name:this.searchQuery}
+      this.selectedDestination = this.searchQuery
       if (this.selectedDestination) {
         this.$emit('next')
       } else {

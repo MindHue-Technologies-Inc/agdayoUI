@@ -3,7 +3,7 @@
       id="travel-dates"
       label="Dates"
       icon="ph ph-calendar"
-      :summary="formattedDateRange"
+
       ref="advInput"
   >
     <div class="flex flex-col p-1 gap-2">

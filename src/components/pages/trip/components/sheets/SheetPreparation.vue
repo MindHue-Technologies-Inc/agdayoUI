@@ -30,6 +30,7 @@
           <Checkbox :id="`task-${item.id}`"
                     v-model="item.completed"
                     :label="item.task"
+                    labelClass="!text-base font-medium"
 
           />
           <div class="ml-auto flex items-center justify-center gap-2">

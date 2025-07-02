@@ -1,0 +1,14 @@
+---
+import Layout from "../../layouts/Layout.astro"
+import Main from "../../components/layout/Main.vue"
+import Topbar from "../../components/UI/Topbar.vue"
+import TicTacToe from "../../components/pages/games/TicTacToe.vue"
+export const prerender = false;
+---
+
+<Layout>
+  <Main loading={false}>
+    <Topbar title="Games" client:visible/>
+    <TicTacToe client:visible/>
+  </Main>
+</Layout>

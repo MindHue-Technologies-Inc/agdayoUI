@@ -28,7 +28,7 @@
           </div>
         </AdvInput>
 
-        <Destination v-model="internalTrip.location"/>
+        <Destination v-model="internalTrip.location" :summary="internalTrip.location"/>
         <Dates v-model="internalTrip.date"/>
 
         <div>

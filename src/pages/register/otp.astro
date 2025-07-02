@@ -1,0 +1,13 @@
+---
+import Layout from "../../layouts/Layout.astro"
+import Main from "../../components/layout/Main.vue"
+import Topbar from "../../components/UI/Topbar.vue"
+import OTP from "../../components/pages/register/otp.vue"
+---
+
+<Layout>
+  <Main loading={false}>
+    <Topbar title="Register" client:visible/>
+    <OTP client:visible/>
+  </Main>
+</Layout>
