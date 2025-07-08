@@ -105,10 +105,6 @@ import Toast from "../../UI/Toast.vue";
 import ToastContainer from "../../UI/ToastContainer.vue";
 import TimelineDot from "../trip/components/timeline/TimelineDot.vue";
 import CardActivity from "../trip/components/timeline/CardActivity.vue";
-import {GoogleGenAI} from "@google/genai";
-
-
-const ai = new GoogleGenAI({apiKey: 'AIzaSyAcPq79nQuqhbmGrwKXI9jpOnmVgMaYHCM'});
 
 export default {
   components: {
@@ -138,13 +134,14 @@ export default {
   },
 
   computed: {
+    // ------------------------------ CREATES SET OF DAYS FROM DATETIME IN ACTIVITES
     days() {
       let x = this.activities.map(activity=>{
         return activity.datetime.split('T')[0]
       })
       return [...new Set(x)]
     },
-
+    // ------------------------------ ADD STATE OF DAY AND DAY NUMBER ON ACTIVITES TO EASILY LOOP ON THE DOM
     groupedActivities() {
       const result = [];
       let currentDay = null;
@@ -212,7 +209,7 @@ export default {
   },
 
   methods: {
-    // ------------------------------ CONVERS ISO DATETIME TO TIME
+    // ------------------------------ CONVERTS ISO DATETIME TO TIME
     formatIsoDateToTime(value) {
       let date = new Date(value)
 
