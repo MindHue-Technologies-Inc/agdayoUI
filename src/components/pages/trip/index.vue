@@ -49,7 +49,7 @@
               <Tag label="View on Map" variant="green" mode="button" icon="ph-map-trifold" />
             </div>
 
-            <button @click="settings.showSheet = true" class="flex justify-center items-center text-2xl text-zinc-600 cursor-pointer transition hover:text-peach-500 active:text-peach-600 focus:outline-none focus:ring-2 focus:ring-peach-300 rounded-full p-1 -mr-1">
+            <button @click="settingsShowSheet = true" class="flex justify-center items-center text-2xl text-zinc-600 cursor-pointer transition hover:text-peach-500 active:text-peach-600 focus:outline-none focus:ring-2 focus:ring-peach-300 rounded-full p-1 -mr-1">
               <i class="ph ph-gear-six"></i>
             </button>
           </div>
@@ -60,7 +60,7 @@
 
           <div class="mt-2 fadeIn fadeIn-2">
             <span class="text-zinc-600 font-semibold">Planning Progress:</span>
-            <div class="w-full bg-zinc-200 rounded-full h-2 mt-1">
+            <div :class="progressBgClass" class="w-full rounded-full h-2 mt-1">
 
               <div :class="['h-2 rounded-full transition-all ease', progressClass]" :style="{ width: `${(planningProgress.completed / planningProgress.total) * 100}%` }"></div>
             </div>
@@ -85,191 +85,146 @@
           <AdvSquareCard
               iconName="ph-suitcase"
               cardName="Preparations"
-              tagName="3 Pending"
+              :tagName="`${preparation.preparationsChecklist.length} Tasks`"
               tagVariant="blue"
-              @card-click="preparation.showSheet = true" />
+              @card-click="preparationShowSheet = true" />
           <AdvSquareCard
               iconName="ph-bed"
               cardName="Accommodations"
-              tagName="2 Booked"
+              :tagName="`${accommodation.numberOfRooms} ${accommodation.numberOfRooms > 1 ? 'Rooms' : 'Room'}`"
               tagVariant="orange"
-              @card-click="accommodation.showSheet = true"
+              @card-click="accommodationShowSheet = true"
+          />
+          <AdvSquareCard
+              iconName="ph-wallet"
+              cardName="Budget"
+              :tagName="`${formatCurrency(budget.totalBudget)} Budget`"
+              tagVariant="red"
+              @card-click="budgetShowSheet = true"
           />
           <AdvSquareCard
               iconName="ph-users"
               cardName="Companions"
               tagName="4 Travelers"
               tagVariant="purple"
-              @card-click="companions.showSheet = true"
-          />
-          <AdvSquareCard
-              iconName="ph-wallet"
-              cardName="Budget"
-              tagName="$X Remaining"
-              tagVariant="red"
-              @card-click="budget.showSheet = true"
+              @card-click="companionsShowSheet = true"
           />
           <AdvSquareCard
               iconName="ph-bus"
               cardName="Transportation"
               tagName="3 Pending"
               tagVariant="blue"
-              @card-click="transportation.showSheet = true"
+              @card-click="transportationShowSheet = true"
           />
           <AdvSquareCard
               iconName="ph-hand-palm"
               cardName="Roles"
               tagName="4 Roles"
               tagVariant="primary"
-              @card-click="roles.showSheet = true"
+              @card-click="rolesShowSheet = true"
           />
         </div>
 
-        <div class="flex flex-col gap-8 p-4 md:p-6 sm:p-8">
+        <div class="flex flex-col gap-0 p-4 md:p-6 sm:p-8">
           <div class="flex items-center justify-between">
             <h3 class="font-bold text-3xl sm:text-4xl text-zinc-800 outfit">Day Plan</h3>
-            <Button @click="addActivity.showSheet = true">+ Add Activity</Button>
+            <Button @click="addActivityShowSheet = true">+ Add Activity</Button>
           </div>
 
           <div>
-            <div class="flex items-center justify-between mb-4">
-              <button
-                  @click="dayNote.showSheet = true"
-                  class="flex items-center gap-2 text-left p-2 -ml-2 rounded-lg hover:bg-zinc-100 transition-colors focus:outline-none focus:ring-2 focus:ring-peach-500"
-              >
-                <span class="font-semibold text-2xl text-zinc-800">Day 1 - May 14, 2025</span>
-              </button>
-              <Tag @click="dayNote.showSheet = true" label="+ Add Note" mode="button"/>
-            </div>
-
-            <div class="flex flex-col gap-4">
-              <div class="relative flex items-center justify-center my-3">
-                <div class="absolute w-full border-t border-dashed border-zinc-300"></div>
-                <span class="relative z-10 px-4 bg-white text-zinc-500 text-sm font-semibold uppercase">Morning</span>
+            <template v-if="groupedActivities.length <= 0">
+              <div class="py-8 text-center flex flex-col items-center justify-center">
+                <i class="ph ph-note-pencil text-4xl text-zinc-300 mb-2"></i> <span class="text-zinc-500 font-medium text-lg">No Activities Yet</span>
+                <p class="text-zinc-400 text-sm mt-1">Start by adding your first activity.</p>
               </div>
+            </template>
+            <template v-else v-for="(item, index) in groupedActivities" :key="index">
+              <div :class="[
+                  'fadeIn',
+                  `fadeIn-${index}`
+              ]">
+                <div :key="'top-' + index" class="flex items-center justify-between">
+                  <button
+                      @click="dayNoteShowSheet = true"
+                      class="flex items-center gap-2 text-left p-2 -ml-2 rounded-lg hover:bg-zinc-100 transition-colors focus:outline-none focus:ring-2 focus:ring-peach-500"
+                  >
+                    <span v-if="item.type === 'day'" class="font-semibold text-2xl text-zinc-800 my-4">Day {{days.indexOf(item.iso) + 1}} - {{ item.label }}</span>
+                  </button>
+                  <Tag v-if="item.type === 'day'" @click="dayNoteShowSheet = true" label="+ Add Note" mode="button"/>
+                </div>
 
-              <div class="flex flex-row gap-2 md:gap-4">
-                <TimelineDot time="9:00 AM" :isLast="false" />
-                <CardActivity
-                    @click="selectedActivity.showSheet = true"
-                    iconName="ph-bus"
-                    title="Arrival At Bus Terminal"
-                    location="Victory Liner Terminal, Baguio City"
-                    :cost="540.00"
-                    costNote="/ Person Ticket"
-                />
-              </div>
+                <div :key="'mid' + index" v-if="item.type === 'tag'" class="relative flex items-center justify-center">
+                  <div class="absolute w-full border-t border-dashed border-zinc-300"></div>
+                  <span class="relative z-10 px-4 bg-white text-zinc-500 text-sm font-semibold uppercase">{{ item.label }}</span>
+                </div>
 
-              <div class="flex flex-row gap-2 md:gap-4">
-                <TimelineDot time="9:30 AM" :isLast="false" />
-                <CardActivity
-                    @click="selectedActivity.showSheet = true"
-                    iconName="ph-coffee"
-                    title="Breakfast at Oh My Gulay!"
-                    location="Session Road, Baguio City"
-                    :cost="300.00"
-                    costNote="/ Person (Est.)"
-                />
+                <div
+                    :key="'bot' + index"
+                    v-else-if="item.type === 'activity'"
+                    class="flex flex-row gap-2 md:gap-4"
+                >
+                  <TimelineDot :time="formatIsoDateToTime(item.data.datetime)" :isLast="false" />
+                  <CardActivity
+                      @click="showViewActivitySheet(item.data)"
+                      :iconName="item.data.iconName"
+                      :title="item.data.title"
+                      :location="item.data.location"
+                      :cost="item.data.cost"
+                      :costNote="item.data.costNote"
+                      :currency="item.data.currency"
+                  />
+                </div>
               </div>
-
-              <div class="flex flex-row gap-2 md:gap-4">
-                <TimelineDot time="10:45 AM" :isLast="false" />
-                <CardActivity
-                    @click="selectedActivity.showSheet = true"
-                    iconName="ph-tree"
-                    title="Explore Burnham Park"
-                    location="G. Perfecto St, Baguio City"
-                    :cost="100.00"
-                    costNote="(Boat Rental Est.)"
-                />
-              </div>
-
-              <div class="relative flex items-center justify-center my-3">
-                <div class="absolute w-full border-t border-dashed border-zinc-300"></div>
-                <span class="relative z-10 px-4 bg-white text-zinc-500 text-sm font-semibold uppercase">Noon</span>
-              </div>
-
-              <div class="flex flex-row gap-2 md:gap-4">
-                <TimelineDot time="12:30 PM" :isLast="false" />
-                <CardActivity
-                    @click="selectedActivity.showSheet = true"
-                    iconName="ph-bowl-food"
-                    title="Lunch at Good Taste Cafe & Restaurant"
-                    location="Otek St, Baguio City"
-                    :cost="250.00"
-                    costNote="/ Person (Est.)"
-                />
-              </div>
-
-              <div class="relative flex items-center justify-center my-3">
-                <div class="absolute w-full border-t border-dashed border-zinc-300"></div>
-                <span class="relative z-10 px-4 bg-white text-zinc-500 text-sm font-semibold uppercase">Afternoon</span>
-              </div>
-
-              <div class="flex flex-row gap-2 md:gap-4">
-                <TimelineDot time="2:00 PM" :isLast="false" />
-                <CardActivity
-                    @click="selectedActivity.showSheet = true"
-                    iconName="ph-palette"
-                    title="Visit BenCab Museum"
-                    location="Km 6 Asin Rd, Tuba, Benguet"
-                    :cost="150.00"
-                    costNote="/ Person (Entrance Fee)"
-                />
-              </div>
-
-              <div class="flex flex-row gap-2 md:gap-4">
-                <TimelineDot time="4:30 PM" :isLast="false" />
-                <CardActivity
-                    @click="selectedActivity.showSheet = true"
-                    iconName="ph-bed"
-                    title="Hotel Check-in & Rest"
-                    location="The Manor at Camp John Hay, Baguio City"
-                    cost="Included"
-                    costNote="in Accommodation"
-                />
-              </div>
-
-              <div class="relative flex items-center justify-center my-3">
-                <div class="absolute w-full border-t border-dashed border-zinc-300"></div>
-                <span class="relative z-10 px-4 bg-white text-zinc-500 text-sm font-semibold uppercase">Evening</span>
-              </div>
-
-              <div class="flex flex-row gap-2 md:gap-4">
-                <TimelineDot time="7:00 PM" :isLast="true" />
-                <CardActivity
-                    @click="selectedActivity.showSheet = true"
-                    iconName="ph-pizza"
-                    title="Dinner at Cafe by the Ruins"
-                    location="Shuntug Rd, Baguio City"
-                    :cost="400.00"
-                    costNote="/ Person (Est.)"
-                />
-              </div>
-            </div>
+            </template>
           </div>
-          <div class="w-full text-center mt-4">
-            <Button @click="addActivity.showSheet = true" variant="secondary" class="border border-zinc-200 hover:border-peach-400 w-full">
+          <div class="w-full text-center mt-8">
+            <Button @click="addActivityShowSheet = true" variant="secondary" class="border border-zinc-200 hover:border-peach-400 w-full">
               <i class="ph ph-plus text-lg mr-1"></i> Add Activity
             </Button>
           </div>
         </div>
       </Card>
+      <!--TOAST-->
+      <ToastContainer>
+        <Toast
+            :variant="'error'"
+            ref="dangerToast"
+            :message="dangerToast.message"
+        />
+      </ToastContainer>
+      <!--TOAST-->
+      <ToastContainer>
+        <Toast
+            :variant="'success'"
+            ref="successToast"
+            :message="successToast.message"
+        />
+      </ToastContainer>
     </div>
   </transition>
 
 
-  <SheetTripSettings v-model="settings" @save="saveSettings"/>
-  <SheetPreparation v-model="preparation"/>
-  <SheetAccom v-model="accommodation" />
-  <SheetCompanions v-model="companions"/>
-  <SheetBudget v-model="budget"/>
-  <SheetTransportation v-model="transportation"/>
-  <SheetRoles v-model="roles"/>
-  <SheetAddActivity v-model="addActivity"/>
-  <SheetEditActivity v-model="editActivity"/>
-  <SheetViewActivity v-model="selectedActivity" @edit-activity="editActivity.showSheet = true"/>
-  <SheetDayNote v-model="dayNote"/>
+  <SheetTripSettings v-model:showSheet="settingsShowSheet" v-model="settings" @save="saveSettings"/>
+  <SheetPreparation v-model:showSheet="preparationShowSheet" v-model="preparation"/>
+  <SheetAccom v-model:showSheet="accommodationShowSheet" @update:showSheet="accommodationShowSheet" v-model="accommodation" />
+  <SheetCompanions v-model:showSheet="companionsShowSheet" v-model="companions"/>
+  <SheetBudget v-model:showSheet="budgetShowSheet" v-model="budget"/>
+  <SheetTransportation v-model:showSheet="transportationShowSheet" v-model="transportation"/>
+  <SheetRoles v-model:showSheet="rolesShowSheet" v-model="roles"/>
+  <SheetAddActivity v-model:showSheet="addActivityShowSheet" :dateRange="tripConfig.date" v-model="addActivity" @activity-saved="addNewActivity"/>
+  <SheetEditActivity
+      v-model:showSheet="editActivityShowSheet"
+      :dateRange="tripConfig.date"
+      v-model="editActivity"
+      @activity-saved="updateActivity"
+  />
+  <SheetViewActivity
+      v-model:showSheet="selectedActivityShowSheet"
+      v-model="selectedActivity"
+      @edit-activity="editSelectedActivity"
+      @delete-activity="deleteActivity"
+  />
+  <SheetDayNote v-model:showSheet="dayNoteShowSheet" v-model="dayNote"/>
 
 </template>
 
@@ -278,6 +233,26 @@ import AdvSquareCard from "../../UI/AdvSquareCard.vue"
 import Card from "../../UI/Card.vue";
 import Tag from "../../UI/Tag.vue"
 import Button from "../../UI/Button.vue";
+import ToastContainer from "../../UI/ToastContainer.vue";
+import Toast from "../../UI/Toast.vue";
+import {
+    useDbStore,
+    addEmptyTrip,
+    setName,
+    setLocation,
+    setDate,
+    setTheme,
+    setPreparation,
+    setCompanions,
+    setAccommodation,
+    setBudget,
+    setTransportation,
+    setRoles,
+    setActivities,
+    setPlanningProgress,
+    removeTrip
+
+} from "../../../stores/db.js";
 
 
 // Sheets
@@ -317,6 +292,8 @@ export default {
     SheetDayNote,
     CardActivity,
     TimelineDot,
+    ToastContainer,
+    Toast,
   },
 
   directives: {
@@ -324,8 +301,113 @@ export default {
     // autoAnimate: vAutoAnimate
   },
 
+  props: {
+    index: {
+      type: Number,
+      required: true,
+    }
+  },
+
+  watch: {
+    //--------------------------------------------- Watcher for 'preparation'
+    preparation: {
+      handler(newValue) {
+        if (!newValue) return
+
+        setPreparation(this.index, newValue)
+      },
+      deep: true,
+      immediate: true,
+    },
+
+    //--------------------------------------------- Watcher for 'accommodation'
+    accommodation: {
+      handler(newValue) {
+        if (newValue !== undefined && newValue !== null && newValue.name !== '') {
+          setAccommodation(this.index, newValue);
+        }
+      },
+      deep: true,
+      immediate: true,
+    },
+
+    //--------------------------------------------- Watcher for 'companions'
+    companions: {
+      handler(newValue) {
+        if (newValue !== undefined && newValue !== null) {
+          setCompanions(this.index, newValue);
+        }
+      },
+      deep: true,
+      immediate: true,
+    },
+
+    //--------------------------------------------- Watcher for 'budget'
+    budget: {
+      handler(newValue) {
+        if (newValue !== undefined && newValue !== null) {
+          setBudget(this.index, newValue);
+        }
+      },
+      deep: true,
+      immediate: true,
+    },
+
+    //--------------------------------------------- Watcher for 'transportation'
+    transportation: {
+      handler(newValue) {
+        if (newValue !== undefined && newValue !== null) {
+          setTransportation(this.index, newValue);
+        }
+      },
+      deep: true,
+      immediate: true,
+    },
+
+    //--------------------------------------------- Watcher for 'roles'
+    roles: {
+      handler(newValue) {
+        if (newValue !== undefined && newValue !== null) {
+          setRoles(this.index, newValue);
+        }
+      },
+      deep: true,
+      immediate: true,
+    },
+
+    //--------------------------------------------- Watcher for 'activities'
+    // activities: {
+    //   handler(newValue) {
+    //     if (newValue !== undefined && newValue !== null) {
+    //       setActivities(this.index, newValue);
+    //     }
+    //   },
+    //   deep: true,
+    //   immediate: true,
+    // },
+
+    //--------------------------------------------- Watcher for 'planningProgress'
+    planningProgress: {
+      handler(newValue) {
+        if (newValue !== undefined && newValue !== null) {
+          setPlanningProgress(this.index, newValue);
+        }
+      },
+      deep: true,
+      immediate: true,
+    },
+  },
+
   data() {
     return {
+      dangerToast: {
+        message: '',
+      },
+      successToast: {
+        message: '',
+      },
+      useDb: useDbStore.get(), // Initialize with the current state
+      unsubscribeFromDbStore: null, // 2. Property to hold the unsubscribe function
       tripConfig: {
         name: '',
         location: '',
@@ -335,6 +417,17 @@ export default {
           end: new Date,
         },
       },
+      settingsShowSheet: false,
+      preparationShowSheet: false,
+      accommodationShowSheet: false,
+      companionsShowSheet: false,
+      budgetShowSheet: false,
+      transportationShowSheet: false,
+      rolesShowSheet: false,
+      dayNoteShowSheet: false,
+      addActivityShowSheet: false,
+      editActivityShowSheet: false,
+      selectedActivityShowSheet: false,
       settings: {
         showSheet: false,
         trip: {
@@ -349,15 +442,7 @@ export default {
       },
       preparation: {
         showSheet: false,
-        preparationsChecklist: [
-          { id: 1, task: 'Renew Passport', category: 'Documents', completed: false, notes: 'Expires Aug 2025' },
-          { id: 2, task: 'Book Accommodation', category: 'Essentials', completed: true, notes: 'The Manor' },
-          { id: 3, task: 'Buy Travel Insurance', category: 'Documents', completed: false },
-          { id: 4, task: 'Pack Clothes for Cold Weather', category: 'Packing', completed: false },
-          { id: 5, task: 'Prepare Itinerary for Day 1', category: 'Essentials', completed: false },
-          { id: 6, task: 'Charge all devices', category: 'Packing', completed: true },
-          { id: 7, task: 'Download offline maps', category: 'Essentials', completed: false },
-        ],
+        preparationsChecklist: [],
       },
       accommodation: {
         showSheet: false,
@@ -383,6 +468,9 @@ export default {
       },
       budget: {
         showSheet: false,
+        totalBudget: null,
+        currency: 'PHP', // Default currency
+        categories: []
       },
       transportation: {
         showSheet: false,
@@ -397,62 +485,6 @@ export default {
         showSheet: false,
       },
       activities: [
-        {
-          datetime: '2025-05-14T09:00:00',
-          iconName: 'ph-bus',
-          title: 'Arrival At Bus Terminal',
-          location: 'Victory Liner Terminal, Baguio City',
-          cost: 540.0,
-          costNote: '/ Person Ticket',
-        },
-        {
-          datetime: '2025-05-14T09:30:00',
-          iconName: 'ph-coffee',
-          title: 'Breakfast at Oh My Gulay!',
-          location: 'Session Road, Baguio City',
-          cost: 300.0,
-          costNote: '/ Person (Est.)',
-        },
-        {
-          datetime: '2025-05-14T10:45:00',
-          iconName: 'ph-tree',
-          title: 'Explore Burnham Park',
-          location: 'G. Perfecto St, Baguio City',
-          cost: 100.0,
-          costNote: '(Boat Rental Est.)',
-        },
-        {
-          datetime: '2025-05-14T12:30:00',
-          iconName: 'ph-bowl-food',
-          title: 'Lunch at Good Taste Cafe & Restaurant',
-          location: 'Otek St, Baguio City',
-          cost: 250.0,
-          costNote: '/ Person (Est.)',
-        },
-        {
-          datetime: '2025-05-14T14:00:00',
-          iconName: 'ph-palette',
-          title: 'Visit BenCab Museum',
-          location: 'Km 6 Asin Rd, Tuba, Benguet',
-          cost: 150.0,
-          costNote: '/ Person (Entrance Fee)',
-        },
-        {
-          datetime: '2025-05-14T16:30:00',
-          iconName: 'ph-bed',
-          title: 'Hotel Check-in & Rest',
-          location: 'The Manor at Camp John Hay, Baguio City',
-          cost: 'Included',
-          costNote: 'in Accommodation',
-        },
-        {
-          datetime: '2025-05-14T19:00:00',
-          iconName: 'ph-pizza',
-          title: 'Dinner at Cafe by the Ruins',
-          location: 'Shuntug Rd, Baguio City',
-          cost: 400.0,
-          costNote: '/ Person (Est.)',
-        },
       ],
       editActivity: {
         showSheet: false,
@@ -481,6 +513,72 @@ export default {
     }
   },
   computed: {
+    days() {
+      let x = this.activities.map(activity=>{
+        return activity.datetime.split('T')[0]
+      })
+      return [...new Set(x)]
+    },
+
+    groupedActivities() {
+      const result = [];
+      let currentDay = null;
+      let hasMorning = false;
+      let hasNoon = false;
+      let hasAfternoon = false;
+      let hasEvening = false;
+      let hasDay = false;
+
+      this.activities?.sort((a, b) => {
+            // Convert datetime strings to Date objects for accurate comparison
+            // Or, for ISO strings, direct string comparison often works too for chronological order.
+            // Using Date objects is generally safer, especially if you deal with varying levels of precision.
+            const dateA = new Date(a.datetime);
+            const dateB = new Date(b.datetime);
+
+            // Compare the Date objects
+            // Returns a negative value if a comes before b
+            // Returns a positive value if a comes after b
+            // Returns 0 if they are the same
+            return dateA - dateB;
+          })
+          .forEach((activity, index) => {
+        const activityDate = new Date(activity.datetime)
+        const activityDay = activity.datetime.split('T')[0]
+        const activityHour = activityDate.getHours();
+
+        if(activityDay !== currentDay) {
+          currentDay = activityDay;
+          hasMorning = false;
+          hasNoon = false;
+          hasAfternoon = false;
+          hasEvening = false;
+          hasDay = false;
+        }
+
+        if (!hasDay) {
+          hasDay = true;
+          result.push({type: 'day', label: this.formatIsoDateToDate(activityDate), iso: activity.datetime.split('T')[0]})
+        }
+
+        if (activityHour >= 0 && activityHour < 12 && !hasMorning) {
+          result.push({ type: 'tag', label: 'Morning' });
+          hasMorning = true;
+        } else if (activityHour >= 12 && activityHour < 13 && !hasNoon) {
+          result.push({ type: 'tag', label: 'Noon' });
+          hasNoon = true;
+        } else if (activityHour >= 13 && activityHour < 18 && !hasAfternoon) {
+          result.push({ type: 'tag', label: 'Afternoon' });
+          hasAfternoon = true;
+        } else if (activityHour >= 18 && activityHour < 23 && !hasEvening) { // Evening from 8 PM to 5 AM next day
+          result.push({ type: 'tag', label: 'Evening' });
+          hasEvening = true;
+        }
+        result.push({ type: 'activity', data: activity });
+      })
+      return result
+    },
+
     cardClass() {
       switch (this.tripConfig.theme) {
         case 'peach':
@@ -526,6 +624,21 @@ export default {
       }
     },
 
+    progressBgClass() {
+      switch (this.tripConfig.theme) {
+        case 'peach':
+          return 'bg-peach-200'
+        case 'blue':
+          return 'bg-sky-200';
+        case 'amber':
+          return 'bg-amber-200';
+        case 'emerald':
+          return 'bg-emerald-200';
+        default:
+          return 'bg-peach-200';
+      }
+    },
+
     textClass() {
       switch (this.tripConfig.theme) {
         case 'peach':
@@ -542,6 +655,51 @@ export default {
     }
   },
   methods: {
+    showViewActivitySheet(activity) {
+      this.selectedActivityShowSheet = true
+      this.selectedActivity.activity = activity
+    },
+
+    formatCurrency(cost) {
+      const formatter = new Intl.NumberFormat(navigator.language, {
+        style: 'currency',
+        currency: this.budget.currency,
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      });
+      return formatter.format(this.budget.totalBudget);
+    },
+
+    updateActivity(activity) {
+      // -- FIND THE ACTIVITY TO BE UPDATED
+      let activityToUpdate = this.activities.find(act=>act.id === activity.id)
+
+      // -- SET THE NEW ACTIVITY TO THE ACTIVITY FOUND
+      activityToUpdate = activity
+
+      // -- UPDATE THE LOCALSTORAGE WITH NEW ACTIVITY
+      setActivities(this.index, this.activities)
+    },
+
+    editSelectedActivity(activity) {
+      this.editActivityShowSheet = true
+      this.editActivity = {activity: activity}
+    },
+
+    deleteActivity(id) {
+      this.activities = this.activities.filter(activity=>activity.id !== id)
+      setActivities(this.index, this.activities)
+    },
+
+    addNewActivity(activity) {
+      try {
+        this.activities.push(activity)
+        this.successToast.message = 'Activity Added'
+        setActivities(this.index, this.activities)
+      } catch (e) {
+        this.dangerToast.message = `${e}`
+      }
+    },
     formatDateRange(startDateIso, endDateIso) {
       if (!startDateIso || !endDateIso) return '';
 
@@ -625,17 +783,26 @@ export default {
         this.tripConfig.date.end = payload.trip.end_date
         this.tripConfig.theme = payload.trip.theme
       } catch (err) {
-        alert(err)
+        console.error(err)
+      }
+    },
+
+    initBudget(payload) {
+      try {
+        this.budget = payload.trip.budget;
+      } catch (err) {
+        console.error(err)
       }
     },
 
     initAccommodation(payload) {
       if (this.hasPayload(payload)) return;
       try {
+        this.accommodation = payload?.trip?.accommodation ? payload.trip.accommodation : this.accommodation
         this.accommodation.location = payload.trip.location
         this.accommodation.dates = { start:payload.trip.start_date, end:payload.trip.end_date }
       } catch (err) {
-        alert(err)
+        console.error(err)
       }
     },
 
@@ -646,8 +813,20 @@ export default {
       this.settings.trip.location = payload.trip.location
     },
 
+    initPreparation(payload) {
+      if (this.hasPayload(payload)) return;
+      try {
+        this.preparation = payload.trip.preparation
+      } catch (e) {
+        console.error(e)
+      }
+    },
+
+    initActivities(payload) {
+      this.activities = payload.trip.activities
+    },
+
     saveSettings(payload){
-      console.log(payload)
       try {
         this.tripConfig.name = payload.name ?? this.tripConfig.name;
         this.tripConfig.location = payload.location ?? this.tripConfig.location;
@@ -658,7 +837,11 @@ export default {
           this.tripConfig.date.start = payload.date.start ?? this.tripConfig.date.start;
           this.tripConfig.date.end = payload.date.end ?? this.tripConfig.date.end;
         }
-        console.log('No Error Saving Settings')
+
+        setName(this.index, this.tripConfig.name)
+        setLocation(this.index, this.tripConfig.location)
+        setTheme(this.index, this.tripConfig.theme)
+        setDate(this.index, this.tripConfig.date)
       } catch (err) {
         console.error('Error at Saving Settings', err)
       }
@@ -666,23 +849,37 @@ export default {
   },
 
   mounted() {
+    // SUBSCRIBE TO NANOTSTORES
+    this.unsubscribeFromDbStore = useDbStore.listen(newValue => {
+      // Update the component's reactive data property with the new store value
+      this.useDb = newValue;
+    });
+
     // SIMULATE API CALL
     const payload = {
       trip: {
-        name: 'Summer in Baguio City',
-        start_date: new Date('2025-06-26'),
-        end_date: new Date('2025-06-28'),
+        name: this.useDb.trips[this.index].name,
+        start_date: new Date(this.useDb.trips[this.index].date.start),
+        end_date: new Date(this.useDb.trips[this.index].date.end),
         status: '',
-        budget: 0,
-        location: 'Baguio City',
+        location: this.useDb.trips[this.index].location,
         created_by: 'Albert Sobreo',
-        theme: "peach"
+        theme: this.useDb.trips[this.index].theme,
+        preparation: this.useDb.trips[this.index].preparation,
+        budget: this.useDb.trips[this.index].budget,
+        activities: this.useDb.trips[this.index].activities,
+        accommodation: this.useDb.trips[this.index].accommodation,
       },
     }
+
+
 
     this.initTripConfig(payload)
     this.initAccommodation(payload)
     this.initSettings(payload)
+    this.initPreparation(payload)
+    this.initBudget(payload)
+    this.initActivities(payload)
   }
 }
 </script>
@@ -690,21 +887,5 @@ export default {
 <style scoped>
 
 /* Custom scrollbar for horizontal actions */
-.custom-scrollbar::-webkit-scrollbar {
-  height: 6px; /* Adjust thickness */
-}
 
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: #f0f0f0; /* Light gray track */
-  border-radius: 10px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #ccc; /* Darker gray thumb */
-  border-radius: 10px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #999; /* Even darker on hover */
-}
 </style>

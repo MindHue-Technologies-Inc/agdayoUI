@@ -10,6 +10,6 @@ export const prerender = false;
 <Layout>
   <Main>
     <Topbar title="Trip" client:visible/>
-    <TripPage client:only/>
+    <TripPage index={Number(trip)} client:only/>
   </Main>
 </Layout>

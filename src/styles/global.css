@@ -353,6 +353,24 @@ body {
   background: #666;
 }
 
+.custom-scrollbar::-webkit-scrollbar {
+  height: 6px; /* Adjust thickness */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f0f0f0; /* Light gray track */
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #ccc; /* Darker gray thumb */
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #999; /* Even darker on hover */
+}
+
 .fade-enter-active,
 .fade-leave-active,
 .fade-appear-active {

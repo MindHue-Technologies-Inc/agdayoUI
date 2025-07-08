@@ -1,21 +1,18 @@
 <template>
-  <Sheet :model-value="showSheet" @update:modelValue="$emit('update:modelValue', { ...this.modelValue, showSheet: false })">
+  <Sheet :model-value="showSheet" @update:modelValue="closeSheetViaProp">
     <div class="flex flex-col items-start h-full md:px-6 md:py-8 px-2 py-1">
-      <!--HEADERS-->
       <div class="flex items-center justify-between w-full mb-6">
         <div class="flex gap-2 items-center justify-center text-3xl text-zinc-800">
           <i class="ph ph-suitcase"></i> <span class="font-bold">Accommodations</span>
-          <Tag label="+ Add More" mode="button"/>
+          <!--<Tag label="+ Add More" mode="button"/>-->
         </div>
-        <button @click="$emit('update:modelValue', { ...this.modelValue, showSheet: false })" class="text-zinc-500 hover:text-zinc-700 transition">
+        <button @click="closeSheetViaProp" class="text-zinc-500 hover:text-zinc-700 transition">
           <i class="ph ph-x text-2xl"></i>
         </button>
       </div>
 
-      <!--INPUTS-->
       <div class="flex flex-col gap-4 w-full">
-        <!--ACCOMMODATION NAME-->
-        <AdvInput :summary="modelValue.name" label="Accommodation Name" icon="ph-article">
+        <AdvInput :summary="localConfig.name" label="Accommodation Name" icon="ph-article">
           <div class="flex flex-col gap-4 p-1">
             <div class="grid grid-cols-4 gap-4">
               <Input v-model="localConfig.name" id="accommodation-name" class="col-span-3" placeholder="Enter the name of Accommodation" label="Name"/>
@@ -31,7 +28,6 @@
           </div>
         </AdvInput>
 
-        <!--LOCATION-->
         <AdvInput :summary="localConfig.location" label="Location" icon="ph-map-pin">
           <div class="flex flex-col gap-4 p-1">
             <Input v-model="localConfig.location" id="accommodation-location" placeholder="Enter name of location" label="Name" />
@@ -39,28 +35,22 @@
           </div>
         </AdvInput>
 
-        <!--DATES-->
-        <Dates v-model="localConfig.dates" summary="Select your Dates"/>
+        <Dates v-model="localConfig.dates" :summary="formatDateRange(localConfig.dates.start, localConfig.dates.end)"/>
 
-        <!--ROOMS-->
-        <AdvInput :summary="`${localConfig.numberOfRooms}` || 'Add details for rooms & guests'" label="Rooms & Guests" icon="ph-users">
+        <AdvInput :summary="`${localConfig.numberOfRooms} Room(s)` || 'Add details for rooms & guests'" label="Rooms & Guests" icon="ph-users">
           <div class="flex flex-col gap-4 p-1">
             <Input v-model="localConfig.numberOfRooms" id="number-numbers" type="number" placeholder="Number of Rooms" label="Rooms" min="1" />
-            <!--<Input id="adult-numbers" type="number" placeholder="Number of Adults" label="Adults" min="1" />-->
-            <!--<Input id="children-numbers" type="number" placeholder="Number of Children (optional)" label="Children" min="0" />-->
             <Button>Next</Button>
           </div>
         </AdvInput>
 
-        <!--COST-->
-        <AdvInput :summary="localConfig.totalCost || 'Enter estimated cost'" label="Cost" icon="₱">
+        <AdvInput :summary="formatCost(localConfig.totalCost)" label="Cost" icon="₱">
           <div class="flex flex-col gap-4 p-1">
             <Input v-model="localConfig.totalCost" id="cost" type="number" :formatCommas="true" placeholder="Estimated total cost" label="Total Cost" prefix="₱" min="0" />
             <Button>Next</Button>
           </div>
         </AdvInput>
 
-        <!--CHECK IN / OUT-->
         <AdvInput :summary="`${localConfig.checkInTime} | ${localConfig.checkOutTime}` || 'Set check-in/out times'" label="Check-in/out Times" icon="ph-clock">
           <div class="flex flex-col gap-4 p-1">
             <Input v-model="localConfig.checkInTime" id="check-in" type="time" label="Check-in Time" />
@@ -69,7 +59,6 @@
           </div>
         </AdvInput>
 
-        <!--NEXT BUTTON-->
         <Button @click="save">Save Accommodations</Button>
 
       </div>
@@ -81,10 +70,7 @@
 import Sheet from "../../../../UI/Sheet.vue";
 import Tag from "../../../../UI/Tag.vue";
 import Button from "../../../../UI/Button.vue";
-import Checkbox from "../../../../UI/Checkbox.vue"; // Not used in this template, consider removing
-import Card from "../../../../UI/Card.vue"; // Not used in this template, consider removing
 import Input from "../../../../UI/Input.vue";
-import Dropdown from "../../../../UI/Dropdown.vue"; // Not used in this template, consider removing
 import Select from "../../../../UI/Select.vue";
 import AdvInput from "../../../../UI/AdvInput.vue";
 import Dates from "../../../create-trip/components/Dates.vue";
@@ -94,69 +80,104 @@ export default {
     Sheet,
     Tag,
     Button,
-    // Checkbox, // Remove if not used
-    // Card,     // Remove if not used
     Input,
-    // Dropdown, // Remove if not used
     Select,
     AdvInput,
     Dates
   },
 
   props: {
+    // This prop now directly controls the Sheet's visibility
+    showSheet: {
+      type: Boolean,
+      default: false,
+    },
+    // modelValue now strictly represents the accommodation data
     modelValue: {
       type: Object,
       default: () => ({
-        showSheet: false,
         name: '',
         type: '',
-
         location: '',
-        numberOfRooms: 1,
-        totalCost: 0,
-        // currency: 'PHP', // If you plan to make currency selectable or dynamic
-
-        checkInTime: new Date('15:00').getTime(), // Common default check-in time
-        checkOutTime: '12:00', // Common default check-out time
-
+        numberOfRooms: null,
+        totalCost: null,
+        checkInTime: '',
+        checkOutTime: '',
         dates: {
-          start: '', // Get it from start date of the trip
-          end: '', // Get it from end date of the trip
+          start: '',
+          end: '',
         }
-      }), // Use a factory function for object defaults
+      }),
       required: true,
     }
   },
 
   data() {
     return {
-      localConfig: {...this.modelValue}
+      // Create a local copy of modelValue to allow internal modifications
+      localConfig: {...this.modelValue},
     }
   },
 
+  // No `showSheets` computed property needed if you're controlling it via `showSheet` prop.
+  // computed: {
+  //   showSheets: {
+  //     get() {
+  //       return this.showSheet
+  //     },
+  //     set(value) {
+  //       this.showSheet = value
+  //     }
+  //   }
+  // },
+
   watch: {
+    // Watch for changes in the prop and update the local copy
     'modelValue': {
       handler(newValue) {
-        this.localConfig = newValue
+        // Use a more robust check for deep equality if needed,
+        // or simply assign if you're sure updates won't cause loops.
+        // For simple objects, `JSON.stringify` works, for complex, a deep-compare utility.
+        if (JSON.stringify(newValue) !== JSON.stringify(this.localConfig)) {
+          this.localConfig = {...newValue};
+        }
       },
-      immediate: true,
-      deep: true,
+      immediate: true, // Run handler immediately on component creation
+      deep: true,      // Deep watch for nested property changes
     }
   },
 
   methods: {
-    save() {
-      this.$emit('update:modelValue', {...this.modelValue, showSheet:false})
-      this.$emit('save')
-    }
-  },
-
-  computed: {
-    showSheet() {
-      return this.modelValue.showSheet;
+    // Helper method to format date range for summary
+    formatDateRange(startDateIso, endDateIso) {
+      if (!startDateIso || !endDateIso) return '';
+      const start = new Date(startDateIso);
+      const end = new Date(endDateIso);
+      const options = { month: 'short', day: 'numeric' };
+      if (start.getFullYear() !== end.getFullYear()) {
+        options.year = 'numeric';
+      }
+      return `${new Intl.DateTimeFormat('en-US', options).format(start)} - ${new Intl.DateTimeFormat('en-US', options).format(end)}`;
     },
 
-  }
+    // Helper method to format cost for summary
+    formatCost(cost) {
+      if (cost === null || cost === undefined || isNaN(cost)) return 'Enter estimated cost';
+      return `₱${new Intl.NumberFormat('en-US').format(cost)}`;
+    },
+
+    // Emits an event to tell the parent to close the sheet
+    closeSheetViaProp() {
+      this.$emit('update:showSheet', false);
+    },
+
+    save() {
+      // Emit the localConfig (updated data) and then signal to close the sheet
+      this.$emit('update:modelValue', this.localConfig); // Emit updated data
+      this.$emit('update:showSheet', false); // Signal to close the sheet
+      this.$emit('save', this.localConfig); // Emit a 'save' event if the parent needs to react
+    }
+  },
 }
 </script>
 

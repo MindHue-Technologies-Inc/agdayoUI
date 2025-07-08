@@ -1,29 +1,27 @@
 <template>
-  <Sheet :model-value="showSheet" @update:modelValue="$emit('update:modelValue', $event)">
+  <Sheet :model-value="showSheet" @update:modelValue="closeSheet">
     <div class="flex flex-col items-start h-full md:px-6 md:py-8 px-2 py-1">
       <div class="flex items-center justify-between w-full mb-6">
         <div class="flex gap-2 items-center justify-center text-3xl text-zinc-800">
           <i class="ph ph-wallet"></i> <span class="font-bold">Trip Budget</span>
           <Tag label="+ Add Category" mode="button" @click="addCategoryRow" />
         </div>
-        <button @click="$emit('update:modelValue', { ...modelValue, showSheet: false })" class="text-zinc-500 hover:text-zinc-700 transition">
+        <button @click="closeSheet" class="text-zinc-500 hover:text-zinc-700 transition">
           <i class="ph ph-x text-2xl"></i>
         </button>
       </div>
 
       <div class="flex flex-col gap-4 w-full mb-6">
-        <AdvInput :summary="totalBudgetSummary" label="Overall Budget" icon="ph-currency-dollar">
+        <AdvInput :summary="totalBudgetSummary" label="Overall Budget" :icon="`${getCurrencySymbol(localBudget.currency)}`">
           <div class="flex flex-col gap-4 p-1">
-            <Input id="totalBudget" v-model.number="localBudget.totalBudget" type="number" placeholder="Enter total trip budget" label="Amount" prefix="₱" min="0" />
+            <Input :format-commas="true" id="totalBudget" v-model.number="localBudget.totalBudget" type="number" placeholder="Enter total trip budget" label="Amount" :prefix="localBudget.currency" min="0" />
             <Select
                 v-model="localBudget.currency"
                 id="budget-currency"
                 label="Currency"
-                :options="[
-                { label: 'PHP (₱)', value: 'PHP' },
-                { label: 'USD ($)', value: 'USD' },
-                { label: 'EUR (€)', value: 'EUR' }
-              ]"
+                optionLabel="label"
+                optionValue="value"
+                :options="currencyOptions()"
             />
             <Button>Set Budget</Button>
           </div>
@@ -43,9 +41,9 @@
         >
           <div class="flex flex-col gap-4 p-1">
             <Input :id="`category-name-${index}`" v-model="category.name" placeholder="e.g., Flights, Food, Activities" label="Category Name" />
-            <Input :id="`category-amount-${index}`" v-model.number="category.amount" type="number" placeholder="Budget for this category" label="Amount" prefix="₱" />
+            <Input :id="`category-amount-${index}`" v-model.number="category.amount" type="number" placeholder="Budget for this category" label="Amount" :prefix="localBudget.currency" />
             <div class="flex justify-end mt-2">
-              <Button v-if="localBudget.categories.length > 1" @click="removeCategoryRow(category.id)" variant="danger">
+              <Button v-if="localBudget.categories.length > 1" @click="removeCategoryRow(category.id)" variant="ghost">
                 Delete Category
               </Button>
             </div>
@@ -86,13 +84,18 @@ export default {
   },
 
   props: {
+    showSheet: {
+      type: Boolean,
+      default: false,
+    },
+
     // modelValue is expected to be an object controlling sheet visibility
     // and containing budget data: { showSheet: boolean, totalBudget: number, currency: string, categories: [] }
     modelValue: {
       type: Object,
       default: () => ({
         showSheet: false,
-        totalBudget: 0,
+        totalBudget: null,
         currency: 'PHP', // Default currency
         categories: []
       }),
@@ -106,7 +109,7 @@ export default {
     return {
       // Create a local copy of the budget data to allow direct manipulation
       localBudget: {
-        totalBudget: 0,
+        totalBudget: null,
         currency: 'PHP',
         categories: [],
       },
@@ -114,9 +117,6 @@ export default {
   },
 
   computed: {
-    showSheet() {
-      return this.modelValue.showSheet;
-    },
     // Computed summary for the total budget AdvInput
     totalBudgetSummary() {
       if (this.localBudget.totalBudget > 0) {
@@ -141,7 +141,7 @@ export default {
       handler(newVal) {
         // Deep copy to avoid mutating the prop directly
         this.localBudget = {
-          totalBudget: newVal.totalBudget || 0,
+          totalBudget: newVal.totalBudget || null,
           currency: newVal.currency || 'PHP',
           categories: newVal.categories ? newVal.categories.map(c => ({ ...c })) : [],
         };
@@ -187,19 +187,224 @@ export default {
     },
     // Creates a summary string for the AdvInput component header
     getCategorySummary(category) {
-      if (category.name && category.amount > 0) {
-        const formatter = new Intl.NumberFormat(this.getLocale(), {
-          style: 'currency',
-          currency: this.localBudget.currency,
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        });
-        return `${category.name}: ${formatter.format(category.amount)}`;
-      } else if (category.name) {
-        return category.name;
+      try {
+        if (category.name && category.amount > 0) {
+          const formatter = new Intl.NumberFormat(this.getLocale(), {
+            style: 'currency',
+            currency: this.localBudget.currency,
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          });
+          return `${formatter.format(category.amount)}`;
+        } else if (category.name) {
+          return category.name;
+        }
+        return 'New Category';
+      } catch (e) {
+        console.log(e)
       }
-      return 'New Category';
     },
+
+    getCurrencySymbol(currencyCode) {
+      try {
+        // Create a new NumberFormat object.
+        // Use 'en-US' or any locale that supports a wide range of currencies.
+        // 'currencyDisplay: "symbol"' ensures the currency symbol is returned.
+        const formatter = new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: currencyCode,
+          currencyDisplay: 'symbol',
+        });
+
+        // Format a dummy amount (e.g., 0) and then extract the symbol.
+        // This is a common trick because there isn't a direct method like getSymbol().
+        const formatted = formatter.format(0);
+
+        // The symbol will usually be at the beginning or end of the formatted string.
+        // We can use a regular expression to find it, or simply return the formatted string
+        // which often just contains the symbol for a zero value.
+        // A more robust way is to strip the digits and spaces.
+
+        // A simpler approach for many currencies is to just return the formatted 0.
+        // For example, formatter.format(0) for USD is "$0.00", for EUR is "€0.00".
+        // We want to extract just the symbol.
+
+        // Let's try to remove numbers, decimal separators, and group separators.
+        return formatted.replace(/[0-9.,\s-]/g, '');
+
+      } catch (error) {
+        return currencyCode;
+      }
+    },
+
+    // CURRENCY OPTIONS
+    currencyOptions() {
+      return [
+        { label: 'AED', value: 'AED' },
+        { label: 'AFN', value: 'AFN' },
+        { label: 'ALL', value: 'ALL' },
+        { label: 'AMD', value: 'AMD' },
+        { label: 'ANG', value: 'ANG' },
+        { label: 'AOA', value: 'AOA' },
+        { label: 'ARS', value: 'ARS' },
+        { label: 'AUD', value: 'AUD' },
+        { label: 'AWG', value: 'AWG' },
+        { label: 'AZN', value: 'AZN' },
+        { label: 'BAM', value: 'BAM' },
+        { label: 'BBD', value: 'BBD' },
+        { label: 'BDT', value: 'BDT' },
+        { label: 'BGN', value: 'BGN' },
+        { label: 'BHD', value: 'BHD' },
+        { label: 'BIF', value: 'BIF' },
+        { label: 'BMD', value: 'BMD' },
+        { label: 'BND', value: 'BND' },
+        { label: 'BOB', value: 'BOB' },
+        { label: 'BOV', value: 'BOV' },
+        { label: 'BRL', value: 'BRL' },
+        { label: 'BSD', value: 'BSD' },
+        { label: 'BTN', value: 'BTN' },
+        { label: 'BWP', value: 'BWP' },
+        { label: 'BYN', value: 'BYN' },
+        { label: 'BZD', value: 'BZD' },
+        { label: 'CAD', value: 'CAD' },
+        { label: 'CDF', value: 'CDF' },
+        { label: 'CHE', value: 'CHE' },
+        { label: 'CHF', value: 'CHF' },
+        { label: 'CHW', value: 'CHW' },
+        { label: 'CLF', value: 'CLF' },
+        { label: 'CLP', value: 'CLP' },
+        { label: 'CNY', value: 'CNY' },
+        { label: 'COP', value: 'COP' },
+        { label: 'COU', value: 'COU' },
+        { label: 'CRC', value: 'CRC' },
+        { label: 'CUC', value: 'CUC' },
+        { label: 'CUP', value: 'CUP' },
+        { label: 'CVE', value: 'CVE' },
+        { label: 'CZK', value: 'CZK' },
+        { label: 'DJF', value: 'DJF' },
+        { label: 'DKK', value: 'DKK' },
+        { label: 'DOP', value: 'DOP' },
+        { label: 'DZD', value: 'DZD' },
+        { label: 'EGP', value: 'EGP' },
+        { label: 'ERN', value: 'ERN' },
+        { label: 'ETB', value: 'ETB' },
+        { label: 'EUR', value: 'EUR' },
+        { label: 'FJD', value: 'FJD' },
+        { label: 'FKP', value: 'FKP' },
+        { label: 'GBP', value: 'GBP' },
+        { label: 'GEL', value: 'GEL' },
+        { label: 'GHS', value: 'GHS' },
+        { label: 'GIP', value: 'GIP' },
+        { label: 'GMD', value: 'GMD' },
+        { label: 'GNF', value: 'GNF' },
+        { label: 'GTQ', value: 'GTQ' },
+        { label: 'GYD', value: 'GYD' },
+        { label: 'HKD', value: 'HKD' },
+        { label: 'HNL', value: 'HNL' },
+        { label: 'HTG', value: 'HTG' },
+        { label: 'HUF', value: 'HUF' },
+        { label: 'IDR', value: 'IDR' },
+        { label: 'ILS', value: 'ILS' },
+        { label: 'INR', value: 'INR' },
+        { label: 'IQD', value: 'IQD' },
+        { label: 'IRR', value: 'IRR' },
+        { label: 'ISK', value: 'ISK' },
+        { label: 'JMD', value: 'JMD' },
+        { label: 'JOD', value: 'JOD' },
+        { label: 'JPY', value: 'JPY' },
+        { label: 'KES', value: 'KES' },
+        { label: 'KGS', value: 'KGS' },
+        { label: 'KHR', value: 'KHR' },
+        { label: 'KMF', value: 'KMF' },
+        { label: 'KPW', value: 'KPW' },
+        { label: 'KRW', value: 'KRW' },
+        { label: 'KWD', value: 'KWD' },
+        { label: 'KYD', value: 'KYD' },
+        { label: 'KZT', value: 'KZT' },
+        { label: 'LAK', value: 'LAK' },
+        { label: 'LBP', value: 'LBP' },
+        { label: 'LKR', value: 'LKR' },
+        { label: 'LRD', value: 'LRD' },
+        { label: 'LSL', value: 'LSL' },
+        { label: 'LYD', value: 'LYD' },
+        { label: 'MAD', value: 'MAD' },
+        { label: 'MDL', value: 'MDL' },
+        { label: 'MGA', value: 'MGA' },
+        { label: 'MKD', value: 'MKD' },
+        { label: 'MMK', value: 'MMK' },
+        { label: 'MNT', value: 'MNT' },
+        { label: 'MOP', value: 'MOP' },
+        { label: 'MRU', value: 'MRU' },
+        { label: 'MUR', value: 'MUR' },
+        { label: 'MVR', value: 'MVR' },
+        { label: 'MWK', value: 'MWK' },
+        { label: 'MXN', value: 'MXN' },
+        { label: 'MYR', value: 'MYR' },
+        { label: 'MZN', value: 'MZN' },
+        { label: 'NAD', value: 'NAD' },
+        { label: 'NGN', value: 'NGN' },
+        { label: 'NIO', value: 'NIO' },
+        { label: 'NOK', value: 'NOK' },
+        { label: 'NPR', value: 'NPR' },
+        { label: 'NZD', value: 'NZD' },
+        { label: 'OMR', value: 'OMR' },
+        { label: 'PAB', value: 'PAB' },
+        { label: 'PEN', value: 'PEN' },
+        { label: 'PGK', value: 'PGK' },
+        { label: 'PHP', value: 'PHP' },
+        { label: 'PKR', value: 'PKR' },
+        { label: 'PLN', value: 'PLN' },
+        { label: 'PYG', value: 'PYG' },
+        { label: 'QAR', value: 'QAR' },
+        { label: 'RON', value: 'RON' },
+        { label: 'RSD', value: 'RSD' },
+        { label: 'RUB', value: 'RUB' },
+        { label: 'RWF', value: 'RWF' },
+        { label: 'SAR', value: 'SAR' },
+        { label: 'SBD', value: 'SBD' },
+        { label: 'SCR', value: 'SCR' },
+        { label: 'SDG', value: 'SDG' },
+        { label: 'SEK', value: 'SEK' },
+        { label: 'SGD', value: 'SGD' },
+        { label: 'SHP', value: 'SHP' },
+        { label: 'SLE', value: 'SLE' },
+        { label: 'SOS', value: 'SOS' },
+        { label: 'SRD', value: 'SRD' },
+        { label: 'SSP', value: 'SSP' },
+        { label: 'STN', value: 'STN' },
+        { label: 'SVC', value: 'SVC' },
+        { label: 'SYP', value: 'SYP' },
+        { label: 'SZL', value: 'SZL' },
+        { label: 'THB', value: 'THB' },
+        { label: 'TJS', value: 'TJS' },
+        { label: 'TMT', value: 'TMT' },
+        { label: 'TND', value: 'TND' },
+        { label: 'TOP', value: 'TOP' },
+        { label: 'TRY', value: 'TRY' },
+        { label: 'TTD', value: 'TTD' },
+        { label: 'TWD', value: 'TWD' },
+        { label: 'TZS', value: 'TZS' },
+        { label: 'UAH', value: 'UAH' },
+        { label: 'UGX', value: 'UGX' },
+        { label: 'USD', value: 'USD' },
+        { label: 'UYU', value: 'UYU' },
+        { label: 'UZS', value: 'UZS' },
+        { label: 'VES', value: 'VES' },
+        { label: 'VND', value: 'VND' },
+        { label: 'VUV', value: 'VUV' },
+        { label: 'WST', value: 'WST' },
+        { label: 'XAF', value: 'XAF' },
+        { label: 'XCD', value: 'XCD' },
+        { label: 'XDR', value: 'XDR' },
+        { label: 'XOF', value: 'XOF' },
+        { label: 'XPF', value: 'XPF' },
+        { label: 'YER', value: 'YER' },
+        { label: 'ZAR', value: 'ZAR' },
+        { label: 'ZMW', value: 'ZMW' },
+        { label: 'ZWG', value: 'ZWG' }
+      ]
+    },
+
     // Emits the updated budget data back to the parent
     saveBudget() {
       // Filter out any completely empty category rows before emitting
@@ -212,7 +417,12 @@ export default {
         categories: savedCategories, // Update the categories array
         showSheet: false, // Close the sheet
       });
-    }
+    },
+
+    // Closes the sheet
+    closeSheet() {
+      this.$emit('update:showSheet', false);
+    },
   },
   mounted() {
     // Initialize with one category if none exist on mount and sheet is visible

@@ -75,9 +75,12 @@
 
       </div>
 
-      <div class="w-full mt-auto pt-6 border-t border-zinc-100 flex justify-end gap-3">
-        <Button variant="secondary" @click="closeSheet">Cancel</Button>
-        <Button variant="primary" @click="saveSettings">Save Changes</Button>
+      <div class="flex items-center justify-between w-full pt-6">
+        <Button variant="ghost" @click="$emit('delete')">Delete</Button>
+        <div class="flex gap-3">
+          <Button variant="secondary" @click="closeSheet">Cancel</Button>
+          <Button variant="primary" @click="saveSettings">Save Changes</Button>
+        </div>
       </div>
     </div>
   </Sheet>
@@ -102,6 +105,11 @@ export default {
     Button,
   },
   props: {
+    showSheet: {
+      type: Boolean,
+      default: false,
+    },
+
     modelValue: {
       type: Object,
       default: () => ({
@@ -116,17 +124,11 @@ export default {
       required: true,
     }
   },
-  emits: ['update:modelValue', 'save'],
 
   data() {
     return {
       internalTrip: { ...this.modelValue.trip },
     };
-  },
-  computed: {
-    showSheet() {
-      return this.modelValue.showSheet;
-    },
   },
   watch: {
     'modelValue.trip': {
@@ -139,7 +141,7 @@ export default {
   },
   methods: {
     closeSheet() {
-      this.$emit('update:modelValue', { ...this.modelValue, showSheet: false });
+      this.$emit('update:showSheet', false);
     },
     saveSettings() {
       this.$emit('save', this.internalTrip);

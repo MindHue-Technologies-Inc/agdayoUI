@@ -26,8 +26,8 @@
         :required="required"
         :class="[
           baseClasses,
-          prefix ? 'pl-12' : '',
-          prefixIcon ? 'pl-12' : '',
+          prefix ? 'pl-14' : '',
+          prefixIcon ? 'pl-14' : '',
           suffix ? 'pr-12' : '',
           disabled ? 'bg-zinc-100 cursor-not-allowed' : '',
           customClass

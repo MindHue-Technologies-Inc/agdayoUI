@@ -1,5 +1,5 @@
 <template>
-  <Sheet :model-value="showSheet" @update:modelValue="$emit('update:modelValue', { ...modelValue, showSheet: false })">
+  <Sheet :model-value="showSheet" @update:modelValue="$emit('update:showSheet', false);">
     <div class="flex flex-col items-start h-full md:px-6 md:py-8 px-2 py-1">
       <div class="flex items-center justify-between w-full mb-6">
         <div class="flex gap-2 items-center justify-center text-3xl text-zinc-800">
@@ -7,7 +7,7 @@
           <div class="flex items-center justify-center">
           </div>
         </div>
-        <button @click="$emit('update:modelValue', { ...modelValue, showSheet: false })" class="text-zinc-500 hover:text-zinc-700 transition">
+        <button @click="$emit('update:showSheet', false);" class="text-zinc-500 hover:text-zinc-700 transition">
           <i class="ph ph-x text-2xl"></i>
         </button>
       </div>
@@ -108,11 +108,14 @@ export default {
   },
 
   props: {
+    showSheet: {
+      type: Boolean,
+      default: false,
+    },
     modelValue: {
       type: Object,
       default: {
-        showSheet: false,
-        preparationChecklist: [],
+        preparationsChecklist: [],
       },
       required: true,
     }
@@ -142,24 +145,20 @@ export default {
   computed: {
     filteredChecklist() {
       if (this.activeTab === 'all') {
-        return this.preparationsChecklist;
+        return this.modelValue.preparationsChecklist;
       }
       if (this.activeTab === 'Not Completed') {
-        return this.preparationsChecklist.filter(task=>!task.completed)
+        return this.modelValue.preparationsChecklist.filter(task=>!task.completed)
       }
       if (this.activeTab === 'Completed') {
-        return this.preparationsChecklist.filter(task=>task.completed)
+        return this.modelValue.preparationsChecklist.filter(task=>task.completed)
       }
-      return this.preparationsChecklist.filter(item => item.category === this.activeTab);
+      return this.modelValue.preparationsChecklist.filter(item => item.category === this.activeTab);
     },
 
     categories() {
-      return [...new Set(this.preparationsChecklist.map(item=>item.category))]
+      return [...new Set(this.modelValue.preparationsChecklist.map(item=>item.category))]
     },
-
-    showSheet() {
-      return this.modelValue.showSheet
-    }
   },
   watch: {
     preparationsChecklist: {
@@ -179,15 +178,15 @@ export default {
     },
 
     deleteTask(item){
-      const index = this.preparationsChecklist.indexOf(item)
-      this.preparationsChecklist.splice(index, 1)
+      const index = this.modelValue.preparationsChecklist.indexOf(item)
+      this.modelValue.preparationsChecklist.splice(index, 1)
     },
 
     addTask() {
       // Ensure task name is not empty
       if (this.newTask.name.trim() === '') return;
 
-      this.preparationsChecklist.push({
+      this.modelValue.preparationsChecklist.push({
         id: Date.now(), // Simple unique ID
         task: this.newTask.name.trim(), // Use newTask.name
         category: this.newTask.category, // Use newTask.category

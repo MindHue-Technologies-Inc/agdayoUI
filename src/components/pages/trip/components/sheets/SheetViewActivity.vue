@@ -3,8 +3,8 @@
     <div class="flex flex-col items-start h-full md:px-6 md:py-8 px-1 py-2">
       <div class="flex items-center justify-between w-full mb-6 pb-2 border-b border-zinc-100">
         <div class="flex gap-3 items-center text-3xl text-zinc-800 max-w-full">
-          <i :class="[activity.icon || 'ph-question', 'text-peach-500 text-3xl']"></i>
-          <span class="font-bold">{{ activity.name || 'Activity Details' }}</span>
+          <i :class="[activity.iconName || 'ph-question', 'text-peach-500 text-3xl','ph']"></i>
+          <span class="font-bold">{{ activity.title || 'Activity Details' }}</span>
         </div>
         <button @click="handleSheetClose" class="text-zinc-500 hover:text-zinc-700 transition">
           <i class="ph ph-x text-2xl"></i>
@@ -28,12 +28,12 @@
           </div>
         </div>
 
-        <div v-if="activity.budget > 0 || (activity.budgetNotes && activity.budgetNotes !== '')" class="flex flex-col">
+        <div v-if="activity.cost > 0 || (activity.costNote && activity.costNote !== '')" class="flex flex-col">
           <span class="text-zinc-500 text-xs uppercase font-bold tracking-wider mb-1">Budget</span>
           <div class="flex items-center gap-2 text-zinc-700">
             <i class="ph ph-currency-circle-dollar text-peach-500 text-lg"></i>
             <span class="text-base font-semibold">{{ formattedBudget }}</span>
-            <span v-if="activity.budgetNotes" class="text-zinc-500 text-sm opacity-80">({{ activity.budgetNotes }})</span>
+            <span v-if="activity.costNote" class="text-zinc-500 text-sm opacity-80">({{ activity.costNote }})</span>
           </div>
         </div>
 
@@ -73,6 +73,11 @@ export default {
   },
 
   props: {
+    showSheet: {
+      type: Boolean,
+      default: false,
+    },
+
     modelValue: {
       type: Object,
       default: () => ({ showSheet: false, activity: null }),
@@ -80,12 +85,7 @@ export default {
     }
   },
 
-  emits: ['update:modelValue', 'edit-activity', 'delete-activity'],
-
   computed: {
-    showSheet() {
-      return this.modelValue.showSheet;
-    },
     // The activity object to display. Default to empty if null to avoid errors.
     activity() {
       return this.modelValue.activity || {};
@@ -122,15 +122,15 @@ export default {
     },
     formattedBudget() {
       // Adjusted condition to show "No estimated cost" only if budget is 0 AND no notes
-      if (this.activity.budget > 0) {
+      if (this.activity.cost > 0) {
         const formatter = new Intl.NumberFormat(this.getLocale(), {
           style: 'currency',
-          currency: this.activity.budgetCurrency || 'PHP',
+          currency: this.activity.costCurrency || 'PHP',
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
         });
-        return formatter.format(this.activity.budget);
-      } else if (this.activity.budgetNotes && this.activity.budgetNotes.trim() !== '') {
+        return formatter.format(this.activity.cost);
+      } else if (this.activity.costNote && this.activity.costNote.trim() !== '') {
         return 'Not specified'; // Or 'N/A' if you prefer
       }
       return 'No estimated cost';
@@ -142,14 +142,14 @@ export default {
       return navigator.language || 'en-US';
     },
     handleSheetClose() {
-      this.$emit('update:modelValue', { ...this.modelValue, showSheet: false }); // Also clear activity on close
+      this.$emit('update:showSheet', false);
     },
     handleEditClick() {
       this.$emit('edit-activity', this.activity);
       this.handleSheetClose();
     },
     handleDeleteClick() {
-      if (confirm(`Are you sure you want to delete "${this.activity.name}"? This action cannot be undone.`)) {
+      if (confirm(`Are you sure you want to delete "${this.activity.title}"? This action cannot be undone.`)) {
         this.$emit('delete-activity', this.activity.id);
         this.handleSheetClose();
       }

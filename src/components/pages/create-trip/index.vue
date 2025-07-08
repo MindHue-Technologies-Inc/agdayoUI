@@ -1,15 +1,11 @@
 <template>
   <Transition name="fade" appear>
-    <!--BODY-->
     <div class="flex flex-col grow place-content-center">
-      <!--HEADER-->
       <h1 class="fadeIn text-4xl sm:text-5xl font-extrabold text-zinc-800 mb-8 sm:mb-12 text-center tracking-tight outfit">
         Plan Your Next Adventure
       </h1>
 
-      <!--INPUT CONTAINERS-->
       <Card customClass="rounded-4xl border-secondary-xs shadow-secondary-lg">
-        <!--NAME-->
         <AdvInput
             label="Trip Name"
             icon="ph-paper-plane-tilt"
@@ -28,19 +24,17 @@
           </div>
         </AdvInput>
 
-        <!--DESTINATION-->
         <Destination ref="destination" v-model="location" @next="proceedNext('destination')"/>
 
-        <!--DATES-->
         <Dates ref="dates" v-model="date" @next="proceedNext('dates')"/>
 
-        <!--SUBMIT BUTTON-->
         <Button :loading="btnLoading" ref="submit" @click="goToTrip">Start Planning</Button>
       </Card>
+
+      <pre>{{ JSON.stringify(useDb, null, 2) }}</pre>
     </div>
   </Transition>
 
-  <!--TOAST-->
   <ToastContainer>
     <Toast
         :variant="'error'"
@@ -63,10 +57,20 @@ import AdvInput from "../../UI/AdvInput.vue";
 import Button from "../../UI/Button.vue";
 import Destination from "./components/Destination.vue";
 import Dates from "./components/Dates.vue";
-import Budget from "./components/Budget.vue"; // New: Import Budget
-import InviteCompanions from "./components/InviteCompanions.vue"; // New: Import InviteCompanions
+import Budget from "./components/Budget.vue";
+import InviteCompanions from "./components/InviteCompanions.vue";
 import ToastContainer from "../../UI/ToastContainer.vue";
 import Toast from "../../UI/Toast.vue";
+import {
+  useDbStore,
+  addEmptyTrip,
+  setName,
+  setLocation,
+  setDate,
+  setTheme,
+  setActivities,
+  setPreparation, setBudget
+} from "../../../stores/db.js";
 
 
 export default {
@@ -86,6 +90,8 @@ export default {
 
   data(){
     return {
+      // 1. Create a data property to hold the store's state reactively
+      useDb: useDbStore.get(), // Initialize with the current state
       dangerToast: {
         message: '',
       },
@@ -99,6 +105,7 @@ export default {
       },
       location: '',
       btnLoading: false,
+      unsubscribeFromDbStore: null, // 2. Property to hold the unsubscribe function
     }
   },
   methods: {
@@ -145,9 +152,47 @@ export default {
       if (!this.validateLocation()) return;
       if (!this.validateDate()) return;
 
-      this.btnLoading = true;
+      // When you call addEmptyTrip(), it modifies the nanostores state
+      const indexOfEmpty = addEmptyTrip()
 
-      window.location.href='/trips/1'
+      console.log(indexOfEmpty)
+
+      setName(indexOfEmpty, this.name)
+      setLocation(indexOfEmpty, this.location)
+      setDate(indexOfEmpty, this.date)
+      setTheme(indexOfEmpty, 'peach')
+      setActivities(indexOfEmpty, [])
+      setPreparation(indexOfEmpty, {preparationsChecklist: []})
+      setBudget(indexOfEmpty, {totalBudget: null, categories: [], showSheet: false, currency: "PHP"})
+
+
+      console.log(this.useDb.trips[indexOfEmpty])
+
+
+      // The 'useDb' in your component's data() will automatically update
+      // due to the subscription in 'mounted()'.
+
+      this.btnLoading = true;
+      window.location.href=`/trips/${indexOfEmpty}`
+    }
+  },
+
+  // Lifecycle hook for initial setup and subscription
+  mounted() {
+    // 3. Subscribe to the nanostores store
+    this.unsubscribeFromDbStore = useDbStore.listen(newValue => {
+      // Update the component's reactive data property with the new store value
+      this.useDb = newValue;
+      console.log("Nanostores updated, Vue component data refreshed:", newValue);
+    });
+  },
+
+  // Lifecycle hook to clean up the subscription when the component is unmounted
+  beforeUnmount() {
+    // 4. Unsubscribe to prevent memory leaks
+    if (this.unsubscribeFromDbStore) {
+      this.unsubscribeFromDbStore();
+      console.log("Unsubscribed from Nanostores.");
     }
   }
 }

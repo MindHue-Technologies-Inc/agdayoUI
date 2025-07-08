@@ -105,7 +105,7 @@ import Toast from "../../UI/Toast.vue";
 import ToastContainer from "../../UI/ToastContainer.vue";
 import TimelineDot from "../trip/components/timeline/TimelineDot.vue";
 import CardActivity from "../trip/components/timeline/CardActivity.vue";
-import { GoogleGenAI } from "@google/genai";
+import {GoogleGenAI} from "@google/genai";
 
 
 const ai = new GoogleGenAI({apiKey: 'AIzaSyAcPq79nQuqhbmGrwKXI9jpOnmVgMaYHCM'});
@@ -212,6 +212,7 @@ export default {
   },
 
   methods: {
+    // ------------------------------ CONVERS ISO DATETIME TO TIME
     formatIsoDateToTime(value) {
       let date = new Date(value)
 
@@ -228,184 +229,86 @@ export default {
       return `${hours}:${formattedMinutes} ${ampm}`;
     },
 
+    // ------------------------------ GENERATES ITINERARY PLANS
     async generateItinerary() {
-      this.isLoading = true
+      // -- INITATE LOADING STATUS
+      this.isLoading = true;
 
-      // --- Few-Shot Example START ---
-      // This part tells Gemini EXACTLY what kind of output you expect.
-      // Make sure the example response matches your desired schema and data types perfectly.
-
-      // User's example request that would yield the sample response
-      this.chatHistory.push({
-        role: 'user',
-        parts: [{ text: 'You are an itinerary planner. Use the example below. Always Suggest real locations' }]
-      });
-
-      // Model's desired example response (this is the "sample response for gemini")
-      this.chatHistory.push({
-        role: 'model',
-        parts: [{
-          text: JSON.stringify({
-            activities: [
-              {
-                datetime: '2025-07-01T08:30:00',
-                iconName: 'ph-coffee',
-                title: 'Morning Coffee & Pastries at Tsokolateria',
-                location: 'Tsokolateria, Igorot Park, Baguio City',
-                cost: 250.00,
-                costNote: '/ Person (Est.)',
-              },
-              {
-                datetime: '2025-07-01T10:00:00',
-                iconName: 'ph-leaf',
-                title: 'Relaxing Stroll at Camp John Hay Eco-Trail',
-                location: 'Camp John Hay, Baguio City',
-                cost: 0,
-                costNote: 'Entrance Fee: Free',
-              },
-              {
-                datetime: '2025-07-01T12:30:00',
-                iconName: 'ph-bowl-food',
-                title: 'Lunch at Cafe by the Ruins',
-                location: 'Shuntug Rd, Baguio City',
-                cost: 400.00,
-                costNote: '/ Person (Est.)',
-              }
-            ]
-          }, null, 2) // `null, 2` for pretty-printing JSON in the prompt text for readability
-        }]
-      });
-      // --- Few-Shot Example END ---
-
-      // This is the actual prompt from the user in your UI
-      this.chatHistory.push({role: 'user', parts: [{text: this.prompt}, {text: this.activities.length > 0 ? JSON.stringify(this.activities) : ''}]});
-
-      // IMPROVED responseSchema descriptions
-      const responseSchema = {
-        type: 'OBJECT',
-        properties: {
-          activities: {
-            type: 'ARRAY',
-            description: 'An array of daily itinerary plans. Ensure all specified fields for each activity are filled.',
-            items: {
-              type: 'OBJECT',
-              properties: {
-                datetime: {
-                  type: 'STRING',
-                  description: 'ISO 8601 full date and time string (e.g., \'YYYY-MM-DDTHH:MM:SS\'). This MUST include both date and time. Use local time zone for Baguio, Philippines.'
-                },
-                iconName: {
-                  type: 'STRING',
-                  description: 'A suitable Phosphor icon name, always prefixed with \'ph-\' (e.g., \'ph-bus\', \'ph-coffee\', \'ph-tree\', \'ph-bowl-food\', \'ph-palette\', \'ph-bed\', \'ph-pizza\', \'ph-church\', \'ph-shopping-bag\', \'ph-airplane-takeoff\', \'ph-rowboat\', \'ph-mountain\', \'ph-horse\', \'ph-wine\', \'ph-heart\', \'ph-suitcase-rolling\', \'ph-leaf\', etc.). Choose the most relevant icon for the activity. DO NOT omit this field.'
-                },
-                title: {
-                  type: 'STRING',
-                  description: 'A short title for the activity. Do not combine multiple activities or whole day plans into a single title. Keep it less than twenty words. Do NOT include dates or times in this title, as they are provided separately in the `datetime` field. (e.g., Arrive at Bus Terminal, Dine-in at Good Taste, etc.)'
-                },
-                location: {
-                  type: 'STRING',
-                  description: 'The specific name of the place and its city/town (e.g., \'Victory Liner Terminal, Baguio City\'). If it\'s a general activity, provide a relevant general area. Do NOT omit this field. Make sure the location name is searchable on Google Maps. Include Country Name'
-                },
-                // coordinates: {
-                //   type: 'OBJECT',
-                //   description: 'Approximate longitude and latitude coordinates of the location. Provide the best possible estimate for accuracy. Do NOT omit this field.',
-                //   properties: {
-                //     longitude: {
-                //       type: 'STRING',
-                //       description: 'The longitude coordinate of the location as a string (e.g., \'120.5960\'). Provide a reasonable estimate even if not exact.'
-                //     },
-                //     latitude: {
-                //       type: 'STRING',
-                //       description: 'The latitude coordinate of the location as a string (e.g., \'16.4024\'). Provide a reasonable estimate even if not exact.'
-                //     }
-                //   }
-                // },
-                cost: {
-                  type: 'NUMBER',
-                  description: 'The estimated cost of this activity as a number (e.g., 540.00). Use 0 if the activity is generally considered free (e.g., a park visit without special rentals). Provide a reasonable numerical estimate.'
-                },
-                currency: {
-                  type: 'STRING',
-                  description: 'Currency of the provided cost in 3-letter code; uppercased'
-                },
-                costNote: {
-                  type: 'STRING',
-                  description: 'A brief note clarifying the cost, such as \'/ Person Ticket\', \'(Boat Rental Est.)\', \'Included in Accommodation\', or \'Depends on purchases\'. Leave this empty if no specific note is applicable, but do NOT omit the field.'
-                },
-              }
-            }
-          }
-        }
-      }
-
-      // CONSTRUCT THE PAYLOAD FOR THE API
-      const payload = {
-        contents: this.chatHistory,
-        generationConfig: {
-          responseMimeType: "application/json",
-          responseSchema: responseSchema
-        }
-      };
-
-      // MAKE THE FETCH
-      const apiResponse = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
-        contents: "RETURN A JSON ONLY \n" + JSON.stringify(payload)
-      });
-
-      // Parse the JSON response from the API.
-      const jsonText = apiResponse.text;
       try {
-        let cleanedText = jsonText.replace(/^\s*```json\n/, '');
-        cleanedText = cleanedText.replace(/\n```\s*$/, '');
-        cleanedText = cleanedText.trim();
-        const parsedJson = JSON.parse(cleanedText); // Parse the JSON string into an object
-        this.activities = parsedJson.activities
+        // -- PAYLOAD FOR BACKEND GEMINI API
+        const payloadToSend = {
+          prompt: this.prompt,
+          currentActivities: this.activities
+        };
 
-        console.log(parsedJson.activities)
+        // -- FETCH RESULTS FROM THE BACKEND GEMINI API
+        const response = await fetch('/api/v1/generate-plans', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payloadToSend), // -- STRINGIFY THE PAYLOAD
+        });
+
+        // CHECK IF RESPONSE IS NOT OK
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error(errorData.error)
+        }
+
+        // -- PARSE THE RESPONSE BODY
+        const parsedJson = await response.json();
+
+        // -- SAVE THE PARSED JSON TO THE ACTIVITIES DATA
+        this.activities = parsedJson.activities;
+
+        // -- GET GEOLOCATION OF THE LOCATIONS
         const geocodingPromises = parsedJson.activities.map(async item => {
-          if (item.location) {
+          if (item.location && !item.coordinates) { // Only geocode if coordinates are missing
             item.coordinates = await this.geocodeLocation(item.location); // Await here
           }
           return item; // Return the modified item
         });
 
-        // Wait for all geocoding promises to resolve
+        // -- RESOLVE ALL PROMISES AND SAVE TO ACTIVITIES
         this.activities = await Promise.all(geocodingPromises);
 
+        // -- INITIALIZE MAP
         if (this.mapLoaded) {
           this.initMapAndMarkers();
         }
-      } catch (parseError) {
-        console.error(`Failed to parse JSON response: ${parseError.message}. Raw response: ${jsonText}`);
-        this.dangerToast.message = parseError.message
-      }
-
-      this.isLoading = false;
-    },
-
-    async geocodeLocation(locationName) {
-      const Maps_API_KEY = "AIzaSyD0ueloZ3TtHb8vff0f7R5Umdihxfu_FyQ"
-      const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${locationName}&key=${Maps_API_KEY}`;
-
-      try {
-        const response = await fetch(geocodeUrl);
-        const data = await response.json();
-
-        if (data.status === 'OK' && data.results.length > 0) {
-          const { lat, lng } = data.results[0].geometry.location;
-          console.log({ latitude: lat, longitude: lng })
-          return { latitude: lat, longitude: lng };
-        } else {
-          console.warn(`Geocoding failed for: "${locationName}". Status: ${data.status}. Error: ${data.error_message || 'N/A'}`);
-          return null;
-        }
       } catch (error) {
-        console.error(`Error during geocoding for "${locationName}":`, error);
-        return null;
+        console.error(`Failed to generate itinerary: ${error.message}`);
+        this.dangerToast.message = `Failed to generate itinerary: ${error.message}`;
+      } finally {
+        this.isLoading = false;
       }
     },
 
+    // ------------------------------ GENERATES LAT LONG FOR THE LOCATION
+    async geocodeLocation(locationName) {
+      try {
+        const response = await fetch('/api/v1/geo-location', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(locationName),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json()
+          console.error(errorData.error)
+        }
+
+        return await response.json()
+      } catch (e) {
+        console.error(e)
+        this.dangerToast.message = e.message
+      }
+    },
+
+    // ------------------------------ CONVERTS ISO DATE TO DATE
     formatIsoDateToDate(value) {
       const date = new Date(value);
       return new Intl.DateTimeFormat('en-US', {
@@ -415,6 +318,7 @@ export default {
       }).format(date)
     },
 
+    // ------------------------------ LOADS GOOGLE MAPS
     loadGoogleMapsScript() {
       // Only load if not already loaded or currently loading
       if (window.google && window.google.maps && this.mapLoaded) {
@@ -448,6 +352,7 @@ export default {
       };
     },
 
+    // ------------------------------ ADD MARKERS ON MAP
     initMapAndMarkers() {
       if (!this.mapLoaded || this.activities.length === 0) {
         return; // Don't proceed if API not loaded or no activities
@@ -528,6 +433,7 @@ export default {
       this.getUserLocation(); // Try to get user location after map is ready
     },
 
+    // ------------------------------ REMOVE MARKERS ON THE MAP AND RESETS MAP STATUS
     clearMap() {
       if (this.map) {
         this.clearMarkers();
@@ -539,11 +445,13 @@ export default {
       this.markers = [];
     },
 
+    // ------------------------------ REMOVE MARKERS
     clearMarkers() {
       this.markers.forEach(marker => marker.setMap(null));
       this.markers = [];
     },
 
+    // ------------------------------ GET USER LOCATION AND ADD ON MAP
     getUserLocation() {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(

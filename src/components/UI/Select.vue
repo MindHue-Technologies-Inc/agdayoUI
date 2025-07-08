@@ -154,7 +154,7 @@ export default {
               option => option[this.optionValue] === newValue
           );
           if (selectedOption) {
-            this.searchTerm = selectedOption[this.optionLabel];
+            this.searchTerm = selectedOption[this.optionValue];
           }
         } else {
           this.searchTerm = ''; // Clear search term if modelValue is null/undefined
