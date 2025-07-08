@@ -13,7 +13,7 @@
 
         <div class="flex flex-col gap-6">
 
-          <TripCard :trips="sortedTrips"></TripCard>
+          <TripCard :trips="sortedTrips.map(trip=>trip.trip)" :actual-index="sortedTrips.map(trip=>trip.originalIndex)"></TripCard>
 
         </div>
 
@@ -47,9 +47,17 @@ export default {
 
   computed: {
     sortedTrips() {
-      const trips = this.useDb.trips
-      return trips.sort((a,b) => {
+      const trips = [...this.useDb.trips]
+      const sortedTrips =  trips.sort((a,b) => {
         return b.date.start.localeCompare(a.date.start)
+      })
+
+      return sortedTrips.map(trip=>{
+        const originalIndex = this.useDb.trips.indexOf(trip);
+        return {
+          trip: trip,
+          originalIndex: originalIndex
+        };
       })
     }
   },

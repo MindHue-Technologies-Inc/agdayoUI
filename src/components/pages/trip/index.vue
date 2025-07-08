@@ -45,7 +45,7 @@
         <div :class="['flex flex-col gap-3 p-4 md:p-6 sm:p-8', headerClass]">
           <div class="fadeIn flex flex-row items-center justify-between">
             <div class="flex flex-row gap-2 items-center">
-              <Tag label="Upcoming" class="bg-white border-primary-light-xs"/>
+              <!--<Tag label="Upcoming" class="bg-white border-primary-light-xs"/>-->
               <Tag label="View on Map" variant="green" mode="button" icon="ph-map-trifold" />
             </div>
 
