@@ -204,7 +204,7 @@
   </transition>
 
 
-  <SheetTripSettings v-model:showSheet="settingsShowSheet" v-model="settings" @save="saveSettings"/>
+  <SheetTripSettings v-model:showSheet="settingsShowSheet" v-model="settings" @save="saveSettings" @delete="deleteTrip"/>
   <SheetPreparation v-model:showSheet="preparationShowSheet" v-model="preparation"/>
   <SheetAccom v-model:showSheet="accommodationShowSheet" @update:showSheet="accommodationShowSheet" v-model="accommodation" />
   <SheetCompanions v-model:showSheet="companionsShowSheet" v-model="companions"/>
@@ -514,10 +514,29 @@ export default {
   },
   computed: {
     days() {
-      let x = this.activities.map(activity=>{
-        return activity.datetime.split('T')[0]
-      })
-      return [...new Set(x)]
+      const dates = [];
+      const startDate = new Date(this.tripConfig.date.start);
+      const endDate = new Date(this.tripConfig.date.end);
+      const locale = navigator.language || 'en-US';
+
+      let currentDate = new Date(this.tripConfig.date.start);
+
+      while (currentDate <= endDate) {
+        const year = currentDate.getFullYear()
+        const month = (currentDate.getMonth() + 1) < 10 ? `0${currentDate.getMonth() + 1}` : `${currentDate.getMonth() + 1}`
+        const day = currentDate.getDate()
+        const isoDate = `${year}-${month}-${day}`;
+        const formattedDate = new Intl.DateTimeFormat(locale, {
+          weekday: 'short',
+          month: 'short',
+          day: 'numeric',
+        }).format(currentDate);
+
+        dates.push(isoDate);
+
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+      return dates;
     },
 
     groupedActivities() {
@@ -530,18 +549,17 @@ export default {
       let hasDay = false;
 
       this.activities?.sort((a, b) => {
-            // Convert datetime strings to Date objects for accurate comparison
-            // Or, for ISO strings, direct string comparison often works too for chronological order.
-            // Using Date objects is generally safer, especially if you deal with varying levels of precision.
-            const dateA = new Date(a.datetime);
-            const dateB = new Date(b.datetime);
-
-            // Compare the Date objects
-            // Returns a negative value if a comes before b
-            // Returns a positive value if a comes after b
-            // Returns 0 if they are the same
-            return dateA - dateB;
-          })
+        // Convert datetime strings to Date objects for accurate comparison
+        // Or, for ISO strings, direct string comparison often works too for chronological order.
+        // Using Date objects is generally safer, especially if you deal with varying levels of precision.
+        const dateA = new Date(a.datetime);
+        const dateB = new Date(b.datetime);
+        // Compare the Date objects
+        // Returns a negative value if a comes before b
+        // Returns a positive value if a comes after b
+        // Returns 0 if they are the same
+        return dateA - dateB;
+      })
           .forEach((activity, index) => {
         const activityDate = new Date(activity.datetime)
         const activityDay = activity.datetime.split('T')[0]
@@ -660,6 +678,13 @@ export default {
       this.selectedActivity.activity = activity
     },
 
+    deleteTrip() {
+      if (confirm("Do you want to delete this trip?")) {
+        removeTrip(this.index)
+        window.location.href = '/trips'
+      }
+    },
+
     formatCurrency(cost) {
       const formatter = new Intl.NumberFormat(navigator.language, {
         style: 'currency',
@@ -671,14 +696,30 @@ export default {
     },
 
     updateActivity(activity) {
+      console.log('Incoming activity for update:', activity);
+
       // -- FIND THE ACTIVITY TO BE UPDATED
-      let activityToUpdate = this.activities.find(act=>act.id === activity.id)
+      let activityToUpdate = this.activities.find(act => act.id === activity.id);
 
-      // -- SET THE NEW ACTIVITY TO THE ACTIVITY FOUND
-      activityToUpdate = activity
+      // -- CHECK IF THE ACTIVITY WAS FOUND
+      if (activityToUpdate) {
+        console.log('Activity found for update:', activityToUpdate);
 
-      // -- UPDATE THE LOCALSTORAGE WITH NEW ACTIVITY
-      setActivities(this.index, this.activities)
+        // -- UPDATE THE PROPERTIES OF THE FOUND ACTIVITY
+        for (const key in activity) {
+          if (Object.prototype.hasOwnProperty.call(activity, key) && key !== 'id') {
+            activityToUpdate[key] = activity[key];
+          }
+        }
+        console.log('Activity after update:', activityToUpdate);
+
+        // -- UPDATE THE LOCALSTORAGE WITH NEW ACTIVITIES ARRAY
+        setActivities(this.index, this.activities);
+
+        console.log('Activities updated in store/localStorage.');
+      } else {
+        console.warn(`Activity with ID ${activity.id} not found for update.`);
+      }
     },
 
     editSelectedActivity(activity) {

@@ -12,7 +12,7 @@
           <i class="ph ph-x text-2xl"></i>
         </button>
       </div>
-
+      {{`${this.localActivity.date}T${this.localActivity.time}:00`}}
       <div class="flex-grow w-full pr-2 flex flex-col gap-6 custom-scrollbar">
         <Input
             id="addActivityName"
@@ -237,13 +237,15 @@ export default {
       const startDate = new Date(this.dateRange.start);
       const endDate = new Date(this.dateRange.end);
       const locale = this.getLocale();
-      console.log(startDate, endDate)
 
-      let currentDate = new Date(startDate);
+      let currentDate = new Date(this.dateRange.start);
       let dayCounter = 1;
 
       while (currentDate <= endDate) {
-        const isoDate = currentDate.toISOString().split('T')[0];
+        const year = currentDate.getFullYear()
+        const month = (currentDate.getMonth() + 1) < 10 ? `0${currentDate.getMonth() + 1}` : `${currentDate.getMonth() + 1}`
+        const day = currentDate.getDate()
+        const isoDate = `${year}-${month}-${day}`;
         const formattedDate = new Intl.DateTimeFormat(locale, {
           weekday: 'short',
           month: 'short',
@@ -252,9 +254,10 @@ export default {
 
         dates.push({ value: isoDate, label: `Day ${dayCounter} (${formattedDate})` });
 
-        currentDate.setUTCDate(currentDate.getUTCDate() + 1);
+        currentDate.setDate(currentDate.getDate() + 1);
         dayCounter++;
       }
+      console.log(dates)
       return dates;
     },
     selectedIconSummary() {

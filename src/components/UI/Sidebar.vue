@@ -19,7 +19,7 @@
             <a href="/trips" class="sidebar-buttons" :class="{'text-peach-500!': pathname.includes('trips')}" ><i class="ph ph-island"></i></a>
             <a href="/create-trip" class="sidebar-buttons bg-white h-8 w-8 flex items-center justify-center rounded-xl" :class="{'text-peach-500!': pathname.includes('create-trip')}" ><i class="ph ph-plus"></i></a>
             <a href="/expenses" class="sidebar-buttons" :class="{'text-peach-500!': pathname.includes('expenses')}" ><i class="ph ph-coins"></i></a>
-            <a href="" class="sidebar-buttons" :class="{'text-peach-500!': pathname.includes('profile')}" ><i class="ph ph-user"></i></a>
+            <a href="/ai" class="sidebar-buttons" :class="{'text-peach-500!': pathname.includes('profile')}" ><span style="background-image: linear-gradient(to right, #eea092, #eabf67);color: transparent;background-clip: text;" class="font-medium">AI</span></a>
             <!--<a href="/reports" class="sidebar-buttons" :class="{'active': this.pathname.includes('reports')}">Reports</a>-->
 
           </div>

@@ -23,51 +23,7 @@ const getInitialState = () => {
 
 // DEFAULT INITIAL STATE IF NOT IN BROWSER OR NO STORED DATA/ERROR
   return {
-    trips: [
-      {
-        name: '',
-        location: '',
-        theme: '',
-        date: {
-          start: null,
-          end: null,
-        },
-        preparation: {
-          preparationsChecklist: [
-            { id: null, task: '', category: '', completed: false, notes: '' },
-          ]
-        },
-        accommodation: {
-          name: '',
-          type: '',
-          location: '',
-          numberOfRooms: null,
-          totalCost: null,
-          checkInTime: '',
-          checkOutTime: '',
-
-          dates: {
-            start: '',
-            end: '',
-          }
-        },
-
-        companions: {
-          companions: []
-        },
-        budget: {
-          overall: null,
-          category: [],
-        },
-        transportation: {},
-        roles: {},
-        activities: [],
-        planningProgress: {
-          completed: 1, // Example: based on 4/7 sections complete
-          total: 7,
-        },
-      }
-    ]
+    trips: []
   }
 }
 

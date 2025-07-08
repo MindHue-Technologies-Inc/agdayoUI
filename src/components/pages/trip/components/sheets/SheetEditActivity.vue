@@ -12,7 +12,6 @@
           <i class="ph ph-x text-2xl"></i>
         </button>
       </div>
-
       <div class="flex-grow w-full pr-2 flex flex-col gap-6 custom-scrollbar">
 
         <Input
@@ -232,7 +231,10 @@ export default {
       let dayCounter = 1;
 
       while (currentDate <= endDate) {
-        const isoDate = currentDate.toISOString().split('T')[0];
+        const year = currentDate.getFullYear()
+        const month = (currentDate.getMonth() + 1) < 10 ? `0${currentDate.getMonth() + 1}` : `${currentDate.getMonth() + 1}`
+        const day = currentDate.getDate()
+        const isoDate = `${year}-${month}-${day}`;
         const formattedDate = new Intl.DateTimeFormat(locale, {
           weekday: 'short',
           month: 'short',
@@ -375,15 +377,15 @@ export default {
       }
 
       if (this.localActivity.date) {
-        const selectedDate = new Date(this.localActivity.date + 'T00:00:00Z'); // Parse as UTC
+        const selectedDate = new Date(this.localActivity.date); // Parse as UTC
         const tripStartDate = new Date(this.dateRange.start);
-        tripStartDate.setUTCHours(0,0,0,0);
+        tripStartDate.setHours(0,0,0,0);
 
         const tripEndDate = new Date(this.dateRange.end);
-        tripEndDate.setUTCHours(0,0,0,0);
+        tripEndDate.setHours(23,59,59,59);
 
-        if (selectedDate < tripStartDate || selectedDate > tripEndDate) {
-          this.validationErrors.date = `Date must be within the trip range (${new Intl.DateTimeFormat(this.getLocale(), { dateStyle: 'short' }).format(tripStartDate)} - ${new Intl.DateTimeFormat(this.getLocale(), { dateStyle: 'short' }).format(tripEndDate)}).`;
+        if (selectedDate <= tripStartDate || selectedDate >= tripEndDate) {
+          this.validationErrors.date = `Date must be within the trip range ${selectedDate} (${tripStartDate} - ${tripEndDate}).`;
           isValid = false;
         }
       }
