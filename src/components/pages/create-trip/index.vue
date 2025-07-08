@@ -30,8 +30,6 @@
 
         <Button :loading="btnLoading" ref="submit" @click="goToTrip">Start Planning</Button>
       </Card>
-
-      <pre>{{ JSON.stringify(useDb, null, 2) }}</pre>
     </div>
   </Transition>
 
