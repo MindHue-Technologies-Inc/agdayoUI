@@ -58,14 +58,14 @@ export default {
         let week1FromNow = new Date()
         let week1Past = new Date()
         week1FromNow.setDate(week1FromNow.getDate() + 3)
-        week1Past.setDate(week1Past.getDate() - 3)
+        week1Past.setDate(week1Past.getDate() - 2)
         const datetime = new Date(trip.date.start)
         return week1Past <= datetime && datetime <= week1FromNow;
       })
 
       return filteredTrips
           .sort((a,b)=>{
-            return b.date.start.localeCompare(a.date.start)
+            return a.date.start.localeCompare(b.date.start)
           })
           .map(filteredTrip => {
         const originalIndex = this.useDb.trips.indexOf(filteredTrip);
