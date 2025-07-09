@@ -1,7 +1,6 @@
 <template>
   <transition name="fade" appear>
     <div class="grow mt-8 md:mt-16">
-      <!--<div class="absolute right-0 border w-[24rem] text-wrap top-0">-->
       <!--  <pre>tripConfig</pre>-->
       <!--  <pre>{{tripConfig}}</pre>-->
 
@@ -40,7 +39,6 @@
 
       <!--  <pre>planningProgress</pre>-->
       <!--  <pre>{{planningProgress}}</pre>-->
-      <!--</div>-->
       <Card :customClass='cardClass + " max-w-4xl mx-auto p-0! overflow-hidden rounded-4xl bg-white"'>
         <div :class="['flex flex-col gap-3 p-4 md:p-6 sm:p-8', headerClass]">
           <div class="fadeIn flex flex-row items-center justify-between">
