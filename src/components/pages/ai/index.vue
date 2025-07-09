@@ -24,11 +24,16 @@
 
       <div v-if="isLoading" class="h-24 flex flex-col items-center justify-center w-full gap-2">
         <Spinner />
-        <span class="text-zinc-400">Generating Daily Plans</span>
+        <span v-if="!isLoadingTrip" class="text-zinc-400">Generating Daily Plans</span>
+        <span v-else class="text-zinc-400">Creating Trip Plan</span>
       </div>
 
       <div v-if="activities.length > 0" class="flex items-center justify-center w-full">
         <span class="text-zinc-500 text-xs">Agdayo AI can make mistakes. Always verify the activities and its location!</span>
+      </div>
+
+      <div class="flex w-full">
+        <Button class="w-full" v-if="activities.length > 0" @click="generateTrip">Create Trip</Button>
       </div>
       <template v-for="(item, index) in groupedActivities" :key="index">
         <TransitionGroup name="fadeIn">
@@ -49,7 +54,7 @@
                 :location="item.data.location"
                 :cost="item.data.cost"
                 :costNote="item.data.costNote"
-                :currency="item.data.currency"
+                :currency="item.data.costCurrency"
             />
           </div>
         </TransitionGroup>
@@ -105,6 +110,8 @@ import Toast from "../../UI/Toast.vue";
 import ToastContainer from "../../UI/ToastContainer.vue";
 import TimelineDot from "../trip/components/timeline/TimelineDot.vue";
 import CardActivity from "../trip/components/timeline/CardActivity.vue";
+import Button from "../../UI/Button.vue";
+import { useDbStore, addTrip } from "../../../stores/db.js";
 
 export default {
   components: {
@@ -113,6 +120,7 @@ export default {
     Input,
     Spinner,
     Toast,
+    Button,
     ToastContainer,
   },
 
@@ -121,8 +129,10 @@ export default {
       dangerToast: {
         message: '',
       },
+      useDb: useDbStore.get(),
       prompt: '',
       isLoading: false,
+      isLoadingTrip: false,
       chatHistory: [],
       markers: [],
       map: null,
@@ -226,9 +236,84 @@ export default {
       return `${hours}:${formattedMinutes} ${ampm}`;
     },
 
+    // ------------------------------ GENERATES TRIP
+    async generateTrip() {
+      // -- INITIATE LOADING STATUS
+      this.isLoading = true;
+      this.isLoadingTrip = true;
+
+      try {
+        // -- PAYLOAD FOR BACKEND GEMINI API
+        const payloadToSend = {
+          prompt: this.prompt,
+          currentActivities: this.activities
+        };
+
+        // -- FETCH RESULTS FROM THE BACKEND GEMINI API
+        const response = await fetch('/api/v1/generate-trip', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payloadToSend), // -- STRINGIFY THE PAYLOAD
+        });
+
+        // CHECK IF RESPONSE IS NOT OK
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error(errorData.error)
+        }
+
+        // -- PARSE THE RESPONSE BODY
+        let parsedJson = await response.json();
+
+        // -- ADD THEME AND ACTIVITIES TO THE JSON
+
+        parsedJson.trip = {
+          ...parsedJson.trip,
+          theme: "peach",
+          activities: this.activities,
+          preparation: {
+            preparationsChecklist: []
+          },
+          accommodation: {
+            location: "Davao City, Philippines",
+          },
+          companions: {},
+          budget: {
+            categories: [],
+            currency: "PHP",
+            showSheet: false,
+            totalBudget: null,
+          },
+          transportation: {},
+          roles: {},
+          planningProgress: {
+            completed: 1,
+            total: 7
+          }
+        }
+
+        console.log(parsedJson)
+
+        // -- ADD TRIP TO THE DATABASE
+        addTrip(parsedJson.trip)
+
+        // -- REDIRECT TO THE TRIP PAGE
+        window.location.href=`/trips/${this.useDb.trips.length}`
+
+
+      } catch (e) {
+        console.error(e.message)
+      } finally {
+        this.isLoading = false
+        this.isLoadingTrip = false;
+      }
+    },
+
     // ------------------------------ GENERATES ITINERARY PLANS
     async generateItinerary() {
-      // -- INITATE LOADING STATUS
+      // -- INITIATE LOADING STATUS
       this.isLoading = true;
 
       try {

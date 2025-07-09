@@ -21,13 +21,53 @@ interface Activity {
   title: string;
   location: string;
   cost: number;
-  currency: string;
+  costCurrency: string;
   costNote: string;
+  description: string;
+  date: string;
+  time: string;
+  coordinates: {
+      latitude: string;
+      longitude: string;
+    };
   // If you move geocoding here, add:
   // coordinates?: {
   //   latitude: string;
   //   longitude: string;
   // };
+}
+
+interface DateRange {
+  start: string;
+  end: string
+}
+
+interface ShowSheet {
+  showSheet: boolean
+}
+
+interface Preparation {
+  showSheet: boolean;
+  preparationsChecklist: object;
+}
+
+interface Trip {
+  name: string;
+  location: string;
+  date: DateRange;
+  theme: string;
+  preparation: Preparation;
+  accommodation: ShowSheet;
+  companions: ShowSheet;
+  budget: ShowSheet;
+  transportation: ShowSheet;
+  roles: ShowSheet;
+  activities: Activity[];
+  planningProgress: {
+    completed: number;
+    totle: number;
+  }
+
 }
 
 interface ItineraryResponse {
@@ -55,54 +95,33 @@ interface GenerateItineraryRequestBody {
 const responseSchema:object = {
   type: 'OBJECT',
   properties: {
-    activities: {
-      type: 'ARRAY',
-      description: 'An array of daily itinerary plans. Ensure all specified fields for each activity are filled.',
-      items: {
-        type: 'OBJECT',
-        properties: {
-          datetime: {
-            type: 'STRING',
-            description: 'ISO 8601 full date and time string (e.g., \'YYYY-MM-DDTHH:MM:SS\'). This MUST include both date and time. Use local time zone for Baguio, Philippines unless specified.'
-          },
-          date: {
-            type: 'STRING',
-            description: 'ISO 8601 but just the date (e.g., \'YYYY-MM-DD\'. Use the datetime for reference',
-          },
-          time: {
-            type: 'STRING',
-            description: 'Time format would be HH:MM. It is in 24-hour format. Use datetime for reference'
-          },
-          description: {
-            type: 'STRING',
-            description: 'A very short description about this activity.'
-          },
-          iconName: {
-            type: 'STRING',
-            description: 'A suitable Phosphor icon name, always prefixed with \'ph-\' (e.g., \'ph-bus\', \'ph-coffee\', \'ph-tree\', \'ph-bowl-food\', \'ph-palette\', \'ph-bed\', \'ph-pizza\', \'ph-church\', \'ph-shopping-bag\', \'ph-airplane-takeoff\', \'ph-rowboat\', \'ph-mountain\', \'ph-horse\', \'ph-wine\', \'ph-heart\', \'ph-suitcase-rolling\', \'ph-leaf\', etc.). Choose the most relevant icon for the activity. DO NOT omit this field.'
-          },
-          title: {
-            type: 'STRING',
-            description: 'A short title for the activity. Do not combine multiple activities or whole day plans into a single title. Keep it less than twenty words. Do NOT include dates or times in this title, as they are provided separately in the `datetime` field. (e.g., Arrive at Bus Terminal, Dine-in at Good Taste, etc.)'
-          },
-          location: {
-            type: 'STRING',
-            description: 'The specific name of the place and its city/town (e.g., \'Victory Liner Terminal, Baguio City\'). If it\'s a general activity, provide a relevant general area. Do NOT omit this field. Make sure the location name is searchable on Google Maps. Include Country Name'
-          },
-          cost: {
-            type: 'NUMBER',
-            description: 'The estimated cost of this activity as a number (e.g., 540.00). Use 0 if the activity is generally considered free (e.g., a park visit without special rentals). Provide a reasonable numerical estimate.'
-          },
-          costCurrency: {
-            type: 'STRING',
-            description: 'Currency of the provided cost in 3-letter code; uppercased'
-          },
-          costNote: {
-            type: 'STRING',
-            description: 'A brief note clarifying the cost, such as \'/ Person Ticket\', \'(Boat Rental Est.)\', \'Included in Accommodation\', or \'Depends on purchases\'. Leave this empty if no specific note is applicable, but do NOT omit the field.'
-          },
+    trip: {
+      type: 'OBJECT',
+      description: 'Trip Configuration with name, date range, and location. Ensure all specified fields are filled.',
+      properties: {
+        name: {
+          type: "STRING",
+          description: "A short name for the trip"
+        },
+        location: {
+          type: "STRING",
+          description: "Location of the trip. Make sure it is short and real. Include the country if necessary"
+        },
+        date: {
+          type: "OBJECT",
+          description: "Duration of the trip. Use ISO format",
+          properties: {
+            start: {
+              type: "STRING",
+              description: "Start date of the trip in ISO format. Start at midnight."
+            },
+            end: {
+              type: "STRING",
+              description: "End date of the trip in ISO format. Use midnight as time."
+            }
+          }
         }
-      }
+      },
     }
   }
 }
@@ -119,38 +138,18 @@ export async function POST ({ request }: { request: Request }): Promise<Response
     const contents: ChatMessage[] = [
       {
         role: 'user',
-        parts: [{ text: `You are an itinerary planner. Use the example below. Always Suggest real locations. If no date provided, use the date today which is ${new Date()}` }]
+        parts: [{ text: `You are an itinerary planner. Use the example below. Your task is to create a trip plan. The activities are already provided for you. If no date provided, use the date today which is ${new Date()}` }]
       },
       {
         role: 'model',
         parts: [{
           text: JSON.stringify({
-            activities: [
-              {
-                datetime: '2025-07-01T08:30:00',
-                iconName: 'ph-coffee',
-                title: 'Morning Coffee & Pastries at Tsokolateria',
-                location: 'Tsokolateria, Igorot Park, Baguio City',
-                cost: 250.00,
-                costNote: '/ Person (Est.)',
-              },
-              {
-                datetime: '2025-07-01T10:00:00',
-                iconName: 'ph-leaf',
-                title: 'Relaxing Stroll at Camp John Hay Eco-Trail',
-                location: 'Camp John Hay, Baguio City',
-                cost: 0,
-                costNote: 'Entrance Fee: Free',
-              },
-              {
-                datetime: '2025-07-01T12:30:00',
-                iconName: 'ph-bowl-food',
-                title: 'Lunch at Cafe by the Ruins',
-                location: 'Shuntug Rd, Baguio City',
-                cost: 400.00,
-                costNote: '/ Person (Est.)',
-              }
-            ]
+            name: "Trip to Somewhere",
+            location: "Clark, Pampanga, Philippines",
+            date: {
+              start: "2025-07-11T16:00:00.000Z",
+              end: "2025-07-11T16:00:00.000Z"
+            },
           }, null, 2)
         }]
       },
