@@ -2,7 +2,7 @@
   <Card v-for="(trip, index) in trips" class="fadeIn" :class="`fadeIn-${index}`" :customClass="cardClass(trip.theme) + 'w-full p-0! overflow-hidden rounded-4xl hover:shadow-lg transition-shadow duration-200 cursor-pointer'">
     <a :href="`/trips/${actualIndex?actualIndex[index]:index}`" class="block">
       <div :class="['flex flex-col gap-3 p-4 sm:p-6 md:p-8', headerClass(trip.theme)]">
-        <div class="flex flex-row items-center justify-between">
+        <div class="flex flex-row items-center justify-between" id="status">
           <Tag v-if="checkUpcoming(trip.date.start, trip.date.end) === 'Upcoming'" label="Upcoming" class="bg-white border-primary-light-xs"/>
           <Tag v-if="checkUpcoming(trip.date.start, trip.date.end) === 'Active'" label="Active" variant="yellow"/>
           <Tag v-if="checkUpcoming(trip.date.start, trip.date.end) === 'Completed'" label="Completed" variant="green"/>
@@ -23,7 +23,7 @@
         <div class="flex flex-row flex-wrap items-center gap-x-6 gap-y-2 text-zinc-600 font-medium text-sm mt-2">
           <div class="flex gap-1 items-center">
             <i :class="textClass(trip.theme)" class="ph ph-calendar-dots text-base"></i>
-            <span>{{formatDateRange(trip.date.start, trip.date.end)}}</span>
+            <span id="date-range">{{formatDateRange(trip.date.start, trip.date.end)}}</span>
           </div>
 
           <div class="flex gap-1 items-center">

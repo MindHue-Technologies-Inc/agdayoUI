@@ -26,7 +26,7 @@
 
           <!-- BOTTOM -->
           <div class="hidden lg:flex flex-col gap-2 mt-4 items-center">
-            <a @click="logoutUser" class="sidebar-buttons"><i class="ph ph-sign-out"></i></a>
+            <a @click="logoutUser" class="sidebar-buttons" id="logoutBtn"><i class="ph ph-sign-out"></i></a>
           </div>
     </div>
 </template>
