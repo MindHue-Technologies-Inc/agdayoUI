@@ -172,14 +172,21 @@ export async function POST ({ request }: { request: Request }): Promise<Response
     // -- SAVE RESPONSE TEXT
     const jsonText: string = apiResponse.text;
 
-    // -- REMOVES PREFIX
-    let cleanedText: string = jsonText.replace(/^\s*```json\n/, '');
+    // Regular expression to capture content between ```json and ```
+    // - ````: Matches the literal closing sequence
+    const regex = /```json\s*([\s\S]*?)\s*```/;
 
-    // -- REMOVES SUFFIX
-    cleanedText = cleanedText.replace(/\n```\s*$/, '');
+    let cleanedText: string;
+    const match = jsonText.match(regex);
 
-    // -- TRIMS THE STRING RESPONSE
-    cleanedText = cleanedText.trim();
+    if (match && match[1]) {
+      // If a match is found and the first capturing group (index 1) has content
+      cleanedText = match[1].trim(); // Get the captured content and trim any leading/trailing whitespace
+    } else {
+      // Fallback: If the expected format is not found.
+      console.warn("JSON block not found in expected '```json ... ```' format. Attempting to parse original text.");
+      cleanedText = jsonText.trim(); // Fallback to just trimming the whole response
+    }
 
     // -- SAVE CLEANED JSON TO PARSED JSON
     const parsedJson: ItineraryResponse = JSON.parse(cleanedText);
