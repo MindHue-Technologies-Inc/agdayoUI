@@ -1,0 +1,67 @@
+[
+  {
+    "datetime": "2025-07-09T08:00:00",
+    "iconName": "ph-coffee",
+    "title": "Breakfast at Xtremely Xpresso Cafe",
+    "location": "Xtremely Xpresso Cafe, SBMA, Olongapo City, Philippines",
+    "cost": 350,
+    "currency": "PHP",
+    "costNote": "/ Person (Est.)",
+    "coordinates": {
+      "latitude": 14.8190696,
+      "longitude": 120.2807293
+    }
+  },
+  {
+    "datetime": "2025-07-09T09:30:00",
+    "iconName": "ph-tiger",
+    "title": "Jungle Adventure at Zoobic Safari",
+    "location": "Zoobic Safari, Ilanin Forest, Subic Bay Freeport Zone, Philippines",
+    "cost": 795,
+    "currency": "PHP",
+    "costNote": "Entrance Fee / Person",
+    "coordinates": {
+      "latitude": 14.750762,
+      "longitude": 120.266899
+    }
+  },
+  {
+    "datetime": "2025-07-09T13:00:00",
+    "iconName": "ph-bowl-food",
+    "title": "Seafood Lunch at Meat Plus Cafe",
+    "location": "Meat Plus Cafe, Sampson Rd, Subic Bay Freeport Zone, Philippines",
+    "cost": 600,
+    "currency": "PHP",
+    "costNote": "/ Person (Est.)",
+    "coordinates": {
+      "latitude": 14.8180182,
+      "longitude": 120.2836582
+    }
+  },
+  {
+    "datetime": "2025-07-09T15:00:00",
+    "iconName": "ph-beach-ball",
+    "title": "Relax and Swim at Camayan Beach Resort",
+    "location": "Camayan Beach Resort, Camayan Wharf, West Ilanin Forest Area, Subic Bay Freeport Zone, Philippines",
+    "cost": 800,
+    "currency": "PHP",
+    "costNote": "Day Tour Pass / Person",
+    "coordinates": {
+      "latitude": 14.7653702,
+      "longitude": 120.2510746
+    }
+  },
+  {
+    "datetime": "2025-07-09T19:00:00",
+    "iconName": "ph-pizza",
+    "title": "Dinner at Aristocrat Restaurant",
+    "location": "The Aristocrat Restaurant, Moonbay Marina, Subic Bay Freeport Zone, Philippines",
+    "cost": 500,
+    "currency": "PHP",
+    "costNote": "/ Person (Est.)",
+    "coordinates": {
+      "latitude": 14.8222222,
+      "longitude": 120.2722222
+    }
+  }
+]
