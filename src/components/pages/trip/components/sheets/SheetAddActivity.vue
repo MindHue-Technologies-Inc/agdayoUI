@@ -12,7 +12,6 @@
           <i class="ph ph-x text-2xl"></i>
         </button>
       </div>
-      {{`${this.localActivity.date}T${this.localActivity.time}:00`}}
       <div class="flex-grow w-full pr-2 flex flex-col gap-6 custom-scrollbar">
         <Input
             id="addActivityName"

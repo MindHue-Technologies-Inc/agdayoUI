@@ -1,187 +1,49 @@
 <template>
   <transition name="fade" appear>
     <div class="grow mt-8 md:mt-16">
-      <!--  <pre>tripConfig</pre>-->
-      <!--  <pre>{{tripConfig}}</pre>-->
 
-      <!--  <pre>settings</pre>-->
-      <!--  <pre>{{settings}}</pre>-->
-
-      <!--  <pre>preparation</pre>-->
-      <!--  <pre>{{preparation}}</pre>-->
-
-      <!--  <pre>accommodation</pre>-->
-      <!--  <pre>{{accommodation}}</pre>-->
-
-      <!--  <pre>companions</pre>-->
-      <!--  <pre>{{companions}}</pre>-->
-
-      <!--  <pre>budget</pre>-->
-      <!--  <pre>{{budget}}</pre>-->
-
-      <!--  <pre>transportation</pre>-->
-      <!--  <pre>{{transportation}}</pre>-->
-
-      <!--  <pre>roles</pre>-->
-      <!--  <pre>{{roles}}</pre>-->
-
-      <!--  <pre>dayNote</pre>-->
-      <!--  <pre>{{dayNote}}</pre>-->
-
-      <!--  <pre>addActivity</pre>-->
-      <!--  <pre>{{addActivity}}</pre>-->
-
-      <!--  <pre>editActivity</pre>-->
-      <!--  <pre>{{editActivity}}</pre>-->
-
-      <!--  <pre>selectedActivity</pre>-->
-      <!--  <pre>{{selectedActivity}}</pre>-->
-
-      <!--  <pre>planningProgress</pre>-->
-      <!--  <pre>{{planningProgress}}</pre>-->
+      <!-- MAIN CARD -->
       <Card :customClass='cardClass + " max-w-4xl mx-auto p-0! overflow-hidden rounded-4xl bg-white"'>
-        <div :class="['flex flex-col gap-3 p-4 md:p-6 sm:p-8', headerClass]">
-          <div class="fadeIn flex flex-row items-center justify-between">
-            <div class="flex flex-row gap-2 items-center">
-              <!--<Tag label="Upcoming" class="bg-white border-primary-light-xs"/>-->
-              <Tag label="View on Map" variant="green" mode="button" icon="ph-map-trifold" />
-            </div>
 
-            <button @click="settingsShowSheet = true" class="flex justify-center items-center text-2xl text-zinc-600 cursor-pointer transition hover:text-peach-500 active:text-peach-600 focus:outline-none focus:ring-2 focus:ring-peach-300 rounded-full p-1 -mr-1">
-              <i class="ph ph-gear-six"></i>
-            </button>
-          </div>
+        <!-- TRIP HEADER -->
+        <TripDetailsHeader
+            :trip-config="tripConfig"
+            :planning-progress="planningProgress"
+            @show-settings="settingsShowSheet = true"
+        />
 
-          <div class="fadeIn fadeIn-1">
-            <h2 class="font-extrabold text-4xl sm:text-5xl text-zinc-800 tracking-tight outfit leading-tight">{{tripConfig.name}}</h2>
-          </div>
+        <!-- TRIP SECTION -->
+        <TripSections
 
-          <div class="mt-2 fadeIn fadeIn-2">
-            <span class="text-zinc-600 font-semibold">Planning Progress:</span>
-            <div :class="progressBgClass" class="w-full rounded-full h-2 mt-1">
+            @show-accommodation="accommodationShowSheet=true"
+            @show-budget="budgetShowSheet=true"
+            @show-companions="companionsShowSheet=true"
+            @show-preparation="preparationShowSheet=true"
+            @show-roles="rolesShowSheet=true"
+            @show-transportation="transportationShowSheet=true"
 
-              <div :class="['h-2 rounded-full transition-all ease', progressClass]" :style="{ width: `${(planningProgress.completed / planningProgress.total) * 100}%` }"></div>
-            </div>
-            <span class="text-sm text-zinc-500 mt-1 block">{{ planningProgress.completed }}/{{ planningProgress.total }} Sections Complete</span>
-          </div>
+            :preparation="preparation"
+            :budget="budget"
+            :accommodation="accommodation"
+            :companions="companions"
+            :roles="roles"
+            :transportation="transportation"
 
-          <div class="fadeIn fadeIn-3 flex flex-row items-center gap-6 text-zinc-600 font-medium mt-2">
-            <div class="flex gap-2 items-center">
-              <i :class="['ph ph-calendar-dots text-xl', textClass]"></i>
-              <span>{{formatDateRange(tripConfig.date.start, tripConfig.date.end)}}</span>
-            </div>
+        />
 
-            <div class="flex gap-2 items-center">
-              <i :class="['ph ph-map-pin text-xl', textClass]"></i>
-              <span>{{tripConfig.location}}</span>
-            </div>
-          </div>
+        <!-- DAY PLANS -->
+        <ActivityTimeline
+            :trip-config="tripConfig"
+            :activities="activities"
 
-        </div>
-
-        <div class="flex flex-row gap-4 py-4 sm:py-6 px-4 md:px-6 overflow-x-auto custom-scrollbar bg-zinc-50 border-t border-b border-zinc-100">
-          <AdvSquareCard
-              iconName="ph-suitcase"
-              cardName="Preparations"
-              :tagName="`${preparation.preparationsChecklist.length} Tasks`"
-              tagVariant="blue"
-              @card-click="preparationShowSheet = true" />
-          <AdvSquareCard
-              iconName="ph-bed"
-              cardName="Accommodations"
-              :tagName="`${accommodation.numberOfRooms} ${accommodation.numberOfRooms > 1 ? 'Rooms' : 'Room'}`"
-              tagVariant="orange"
-              @card-click="accommodationShowSheet = true"
-          />
-          <AdvSquareCard
-              iconName="ph-wallet"
-              cardName="Budget"
-              :tagName="`${formatCurrency(budget.totalBudget)} Budget`"
-              tagVariant="red"
-              @card-click="budgetShowSheet = true"
-          />
-          <AdvSquareCard
-              iconName="ph-users"
-              cardName="Companions"
-              tagName="4 Travelers"
-              tagVariant="purple"
-              @card-click="companionsShowSheet = true"
-          />
-          <AdvSquareCard
-              iconName="ph-bus"
-              cardName="Transportation"
-              tagName="3 Pending"
-              tagVariant="blue"
-              @card-click="transportationShowSheet = true"
-          />
-          <AdvSquareCard
-              iconName="ph-hand-palm"
-              cardName="Roles"
-              tagName="4 Roles"
-              tagVariant="primary"
-              @card-click="rolesShowSheet = true"
-          />
-        </div>
-
-        <div class="flex flex-col gap-0 p-4 md:p-6 sm:p-8">
-          <div class="flex items-center justify-between">
-            <h3 class="font-bold text-3xl sm:text-4xl text-zinc-800 outfit">Day Plan</h3>
-            <Button @click="addActivityShowSheet = true">+ Add Activity</Button>
-          </div>
-
-          <div>
-            <template v-if="groupedActivities.length <= 0">
-              <div class="py-8 text-center flex flex-col items-center justify-center">
-                <i class="ph ph-note-pencil text-4xl text-zinc-300 mb-2"></i> <span class="text-zinc-500 font-medium text-lg">No Activities Yet</span>
-                <p class="text-zinc-400 text-sm mt-1">Start by adding your first activity.</p>
-              </div>
-            </template>
-            <template v-else v-for="(item, index) in groupedActivities" :key="index">
-              <div :class="[
-                  'fadeIn',
-                  `fadeIn-${index}`
-              ]">
-                <div :key="'top-' + index" class="flex items-center justify-between">
-                  <button
-                      @click="dayNoteShowSheet = true"
-                      class="flex items-center gap-2 text-left p-2 -ml-2 rounded-lg hover:bg-zinc-100 transition-colors focus:outline-none focus:ring-2 focus:ring-peach-500"
-                  >
-                    <span v-if="item.type === 'day'" class="font-semibold text-2xl text-zinc-800 my-4">Day {{days.indexOf(item.iso) + 1}} - {{ item.label }}</span>
-                  </button>
-                  <Tag v-if="item.type === 'day'" @click="dayNoteShowSheet = true" label="+ Add Note" mode="button"/>
-                </div>
-
-                <div :key="'mid' + index" v-if="item.type === 'tag'" class="relative flex items-center justify-center">
-                  <div class="absolute w-full border-t border-dashed border-zinc-300"></div>
-                  <span class="relative z-10 px-4 bg-white text-zinc-500 text-sm font-semibold uppercase">{{ item.label }}</span>
-                </div>
-
-                <div
-                    :key="'bot' + index"
-                    v-else-if="item.type === 'activity'"
-                    class="flex flex-row gap-2 md:gap-4"
-                >
-                  <TimelineDot :time="formatIsoDateToTime(item.data.datetime)" :isLast="false" />
-                  <CardActivity
-                      @click="showViewActivitySheet(item.data)"
-                      :iconName="item.data.iconName"
-                      :title="item.data.title"
-                      :location="item.data.location"
-                      :cost="item.data.cost"
-                      :costNote="item.data.costNote"
-                      :currency="item.data.currency"
-                  />
-                </div>
-              </div>
-            </template>
-          </div>
-          <div class="w-full text-center mt-8">
-            <Button @click="addActivityShowSheet = true" variant="secondary" class="border border-zinc-200 hover:border-peach-400 w-full">
-              <i class="ph ph-plus text-lg mr-1"></i> Add Activity
-            </Button>
-          </div>
-        </div>
+            @show-add-activity="addActivityShowSheet=true"
+            @show-day-note="dayNoteShowSheet=true"
+            @show-view-activity="showViewActivitySheet"
+        />
       </Card>
+      <!-- END OF MAIN CARD -->
+
+
       <!--TOAST-->
       <ToastContainer>
         <Toast
@@ -190,6 +52,8 @@
             :message="dangerToast.message"
         />
       </ToastContainer>
+
+
       <!--TOAST-->
       <ToastContainer>
         <Toast
@@ -233,9 +97,11 @@ import Tag from "../../UI/Tag.vue"
 import Button from "../../UI/Button.vue";
 import ToastContainer from "../../UI/ToastContainer.vue";
 import Toast from "../../UI/Toast.vue";
+import TripDetailsHeader from "./components/TripDetailsHeader.vue";
+import TripSections from "./components/TripSections.vue";
+import ActivityTimeline from "./components/ActivityTimeline.vue";
 import {
     useDbStore,
-    addEmptyTrip,
     setName,
     setLocation,
     setDate,
@@ -248,7 +114,7 @@ import {
     setRoles,
     setActivities,
     setPlanningProgress,
-    removeTrip
+    removeTrip,
 
 } from "../../../stores/db.js";
 
@@ -271,10 +137,8 @@ import TimelineDot from "./components/timeline/TimelineDot.vue";
 export default {
   components: {
     AdvSquareCard,
-    // Sheet, // Removed if not directly used in this template
     Card,
     Tag,
-    // Anchor, // Removed if not directly used in this template
     Button,
     SheetTripSettings,
     SheetPreparation,
@@ -292,11 +156,9 @@ export default {
     TimelineDot,
     ToastContainer,
     Toast,
-  },
-
-  directives: {
-    // Only include if you're actually using v-auto-animate in this template
-    // autoAnimate: vAutoAnimate
+    TripDetailsHeader,
+    TripSections,
+    ActivityTimeline
   },
 
   props: {
@@ -511,89 +373,6 @@ export default {
     }
   },
   computed: {
-    days() {
-      const dates = [];
-      const startDate = new Date(this.tripConfig.date.start);
-      const endDate = new Date(this.tripConfig.date.end);
-      const locale = navigator.language || 'en-US';
-
-      let currentDate = new Date(this.tripConfig.date.start);
-
-      while (currentDate <= endDate) {
-        const year = currentDate.getFullYear()
-        const month = (currentDate.getMonth() + 1) < 10 ? `0${currentDate.getMonth() + 1}` : `${currentDate.getMonth() + 1}`
-        const day = currentDate.getDate()
-        const isoDate = `${year}-${month}-${day}`;
-        const formattedDate = new Intl.DateTimeFormat(locale, {
-          weekday: 'short',
-          month: 'short',
-          day: 'numeric',
-        }).format(currentDate);
-
-        dates.push(isoDate);
-
-        currentDate.setDate(currentDate.getDate() + 1);
-      }
-      return dates;
-    },
-
-    groupedActivities() {
-      const result = [];
-      let currentDay = null;
-      let hasMorning = false;
-      let hasNoon = false;
-      let hasAfternoon = false;
-      let hasEvening = false;
-      let hasDay = false;
-
-      this.activities?.sort((a, b) => {
-        // Convert datetime strings to Date objects for accurate comparison
-        // Or, for ISO strings, direct string comparison often works too for chronological order.
-        // Using Date objects is generally safer, especially if you deal with varying levels of precision.
-        const dateA = new Date(a.datetime);
-        const dateB = new Date(b.datetime);
-        // Compare the Date objects
-        // Returns a negative value if a comes before b
-        // Returns a positive value if a comes after b
-        // Returns 0 if they are the same
-        return dateA - dateB;
-      })
-          .forEach((activity, index) => {
-        const activityDate = new Date(activity.datetime)
-        const activityDay = activity.datetime.split('T')[0]
-        const activityHour = activityDate.getHours();
-
-        if(activityDay !== currentDay) {
-          currentDay = activityDay;
-          hasMorning = false;
-          hasNoon = false;
-          hasAfternoon = false;
-          hasEvening = false;
-          hasDay = false;
-        }
-
-        if (!hasDay) {
-          hasDay = true;
-          result.push({type: 'day', label: this.formatIsoDateToDate(activityDate), iso: activity.datetime.split('T')[0]})
-        }
-
-        if (activityHour >= 0 && activityHour < 12 && !hasMorning) {
-          result.push({ type: 'tag', label: 'Morning' });
-          hasMorning = true;
-        } else if (activityHour >= 12 && activityHour < 13 && !hasNoon) {
-          result.push({ type: 'tag', label: 'Noon' });
-          hasNoon = true;
-        } else if (activityHour >= 13 && activityHour < 18 && !hasAfternoon) {
-          result.push({ type: 'tag', label: 'Afternoon' });
-          hasAfternoon = true;
-        } else if (activityHour >= 18 && activityHour < 23 && !hasEvening) { // Evening from 8 PM to 5 AM next day
-          result.push({ type: 'tag', label: 'Evening' });
-          hasEvening = true;
-        }
-        result.push({ type: 'activity', data: activity });
-      })
-      return result
-    },
 
     cardClass() {
       switch (this.tripConfig.theme) {
@@ -609,66 +388,6 @@ export default {
           return 'border-primary-light-sm shadow-primary-light-md';
       }
     },
-
-    headerClass() {
-      switch (this.tripConfig.theme) {
-        case 'peach':
-          return 'bg-peach-50';
-        case 'blue':
-          return 'bg-sky-50';
-        case 'amber':
-          return 'bg-amber-50';
-        case 'emerald':
-          return 'bg-emerald-50';
-        default:
-          return 'bg-peach-50';
-      }
-    },
-
-    progressClass() {
-      switch (this.tripConfig.theme) {
-        case 'peach':
-          return 'bg-peach-500';
-        case 'blue':
-          return 'bg-sky-500';
-        case 'amber':
-          return 'bg-amber-500';
-        case 'emerald':
-          return 'bg-emerald-500';
-        default:
-          return 'bg-peach-500';
-      }
-    },
-
-    progressBgClass() {
-      switch (this.tripConfig.theme) {
-        case 'peach':
-          return 'bg-peach-200'
-        case 'blue':
-          return 'bg-sky-200';
-        case 'amber':
-          return 'bg-amber-200';
-        case 'emerald':
-          return 'bg-emerald-200';
-        default:
-          return 'bg-peach-200';
-      }
-    },
-
-    textClass() {
-      switch (this.tripConfig.theme) {
-        case 'peach':
-          return 'text-peach-500';
-        case 'blue':
-          return 'text-sky-500';
-        case 'amber':
-          return 'text-amber-500';
-        case 'emerald':
-          return 'text-emerald-500';
-        default:
-          return 'text-peach-500';
-      }
-    }
   },
   methods: {
     showViewActivitySheet(activity) {
@@ -681,16 +400,6 @@ export default {
         removeTrip(this.index)
         window.location.href = '/trips'
       }
-    },
-
-    formatCurrency(cost) {
-      const formatter = new Intl.NumberFormat(navigator.language, {
-        style: 'currency',
-        currency: this.budget.currency,
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-      });
-      return formatter.format(this.budget.totalBudget);
     },
 
     updateActivity(activity) {
@@ -738,75 +447,6 @@ export default {
       } catch (e) {
         this.dangerToast.message = `${e}`
       }
-    },
-    formatDateRange(startDateIso, endDateIso) {
-      if (!startDateIso || !endDateIso) return '';
-
-      const start = new Date(startDateIso);
-      const end = new Date(endDateIso);
-
-      if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-        console.warn(`Invalid date string(s) for range: Start "${startDateIso}", End "${endDateIso}"`);
-        return '';
-      }
-
-      // Options for consistent short month and numeric day
-      const monthDayOptions = { month: 'short', day: 'numeric' };
-      const yearOptions = { year: 'numeric' };
-
-      const startMonthDay = new Intl.DateTimeFormat('en-US', monthDayOptions).format(start);
-      const endDay = new Intl.DateTimeFormat('en-US', { day: 'numeric' }).format(end);
-      const year = new Intl.DateTimeFormat('en-US', yearOptions).format(end);
-
-      // If it's a single-day trip
-      if (startDateIso === endDateIso) {
-        return `${startMonthDay}, ${year}`;
-      }
-
-      // If it's a multi-day trip within the same month and year
-      if (start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear()) {
-        // Example: "May 14 - 16, 2025"
-        return `${startMonthDay.split(' ')[0]} ${new Intl.DateTimeFormat('en-US', { day: 'numeric' }).format(start)} - ${endDay}, ${year}`;
-      }
-
-      // If it spans different months or years, show full start date and end date
-      // Example: "Dec 25 - Jan 5, 2026" or "Dec 25, 2025 - Jan 5, 2026"
-      const startFull = new Intl.DateTimeFormat('en-US', monthDayOptions).format(start);
-      const endFull = new Intl.DateTimeFormat('en-US', monthDayOptions).format(end);
-
-      if (start.getFullYear() === end.getFullYear()) {
-        return `${startFull} - ${endFull}, ${year}`;
-      } else {
-        // If years are different, include year for both
-        const startFullYear = new Intl.DateTimeFormat('en-US', {month: 'short', day: 'numeric', year: 'numeric'}).format(start);
-        const endFullYear = new Intl.DateTimeFormat('en-US', {month: 'short', day: 'numeric', year: 'numeric'}).format(end);
-        return `${startFullYear} - ${endFullYear}`;
-      }
-    },
-
-    formatIsoDateToTime(value){
-      let date = new Date(value)
-
-      let hours = date.getHours()
-      const minutes = date.getMinutes()
-
-      const ampm = hours >= 12 ? 'PM' : 'AM'
-
-      hours = hours % 12;
-      hours = hours ? hours : 12
-
-      const formattedMinutes = minutes < 10 ? '0' + minutes: minutes;
-
-      return `${hours}:${formattedMinutes} ${ampm}`;
-    },
-
-    formatIsoDateToDate(value) {
-      const date = new Date(value);
-      return new Intl.DateTimeFormat('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      }).format(date)
     },
 
     hasPayload(payload) {
@@ -922,9 +562,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-/* Custom scrollbar for horizontal actions */
-
-</style>
