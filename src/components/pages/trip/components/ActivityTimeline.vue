@@ -45,7 +45,7 @@
                 :location="item.data.location"
                 :cost="item.data.cost"
                 :costNote="item.data.costNote"
-                :currency="item.data.currency"
+                :currency="item.data.costCurrency"
             />
           </div>
         </div>
