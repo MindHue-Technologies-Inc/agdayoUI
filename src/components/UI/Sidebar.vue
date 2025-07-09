@@ -1,6 +1,6 @@
 <template>
     <!-- SIDEBAR or MENU -->
-    <div class="flex lg:flex-col p-4 lg:py-4 py-8 items-center lg:justify-between justify-center lg:bg-transparent bg-zinc-100 fixed text-white lg:fixed lg:inset-0 lg:w-fit lg:h-full bottom-0 h-auto w-full z-50">
+    <div class="flex lg:flex-col p-4 lg:py-4 py-8 items-center lg:justify-between justify-center lg:bg-transparent bg-zinc-100 fixed text-white lg:fixed lg:inset-0 lg:w-fit lg:h-full bottom-0 h-12 w-full z-50">
           <!-- LOGO and USER -->
           <div class="hidden lg:flex flex-col items-center justify-center gap-2 mb-4">
             <div class="flex flex-col">
