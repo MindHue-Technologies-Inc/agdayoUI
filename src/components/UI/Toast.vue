@@ -16,7 +16,7 @@
       <div class="relative flex justify-between items-center gap-2">
         <span class="text-white">{{ message }}</span>
 
-        <button class="cursor-pointer h-6 w-6" @click="hideToast">
+        <button class="cursor-pointer h-6 w-6" @click="hideToast(0)">
           <i class="ph ph-x"></i>
         </button>
       </div>

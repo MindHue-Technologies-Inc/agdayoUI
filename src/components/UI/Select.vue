@@ -215,7 +215,7 @@ export default {
       } else {
         this.highlightedIndex = this.filteredOptions.length - 1; // Wrap around
       }
-      this.scrollIntoView();
+      // this.scrollIntoView();
     },
     highlightNext() {
       if (!this.showOptions) {
@@ -226,7 +226,7 @@ export default {
       } else {
         this.highlightedIndex = 0; // Wrap around
       }
-      this.scrollIntoView();
+      // this.scrollIntoView();
     },
     selectHighlighted() {
       if (this.highlightedIndex !== -1 && this.filteredOptions[this.highlightedIndex]) {

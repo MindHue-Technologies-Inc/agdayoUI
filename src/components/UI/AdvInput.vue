@@ -27,7 +27,7 @@
     >
       <div v-show="isExpanded" ref="content" class="">
         <div class="">
-          <div class="w-full">
+          <div class="w-full" id="slot">
             <slot/>
           </div>
         </div>
