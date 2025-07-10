@@ -1,10 +1,11 @@
 <template>
   <transition name="fade" appear>
     <div class="grow mt-8 md:mt-16">
+      <!-- PAYMENT BUTTON -->
+      <!--<PaymentButton description="Premium Subscription" :amount="999"/>-->
 
       <!-- MAIN CARD -->
       <Card :customClass='cardClass + " max-w-4xl mx-auto p-0! overflow-hidden rounded-4xl bg-white"'>
-
         <!-- TRIP HEADER -->
         <TripDetailsHeader
             :trip-config="tripConfig"
@@ -95,6 +96,7 @@ import AdvSquareCard from "../../UI/AdvSquareCard.vue"
 import Card from "../../UI/Card.vue";
 import Tag from "../../UI/Tag.vue"
 import Button from "../../UI/Button.vue";
+import PaymentButton from "../../UI/PaymentButton.vue";
 import ToastContainer from "../../UI/ToastContainer.vue";
 import Toast from "../../UI/Toast.vue";
 import TripDetailsHeader from "./components/TripDetailsHeader.vue";
@@ -140,6 +142,7 @@ export default {
     Card,
     Tag,
     Button,
+    PaymentButton,
     SheetTripSettings,
     SheetPreparation,
     SheetAddActivity,
@@ -169,6 +172,13 @@ export default {
   },
 
   watch: {
+    anySheetOpen(isOpen) {
+      if (isOpen) {
+        document.body.classList.add('no-scroll')
+      } else {
+        document.body.classList.remove('no-scroll')
+      }
+    },
     //--------------------------------------------- Watcher for 'preparation'
     preparation: {
       handler(newValue) {
@@ -387,6 +397,20 @@ export default {
         default:
           return 'border-primary-light-sm shadow-primary-light-md';
       }
+    },
+
+    anySheetOpen() {
+      return this.settingsShowSheet ||
+          this.preparationShowSheet ||
+          this.accommodationShowSheet ||
+          this.companionsShowSheet ||
+          this.budgetShowSheet ||
+          this.transportationShowSheet ||
+          this.rolesShowSheet ||
+          this.dayNoteShowSheet ||
+          this.addActivityShowSheet ||
+          this.editActivityShowSheet ||
+          this.selectedActivityShowSheet;
     },
   },
   methods: {
