@@ -15,11 +15,9 @@ export async function POST({request}: {request: Request}): Promise<Response> {
 
     const response: Response = await fetch(geocodeUrl)
     const data: any = await response.json()
-    console.log(data)
 
     if (data.status === 'OK' && data.results.length > 0) {
       const {lat, lng } = data.results[0].geometry.location;
-      console.log({latitude: lat, longitude: lng})
 
       return new Response(JSON.stringify({latitude: lat, longitude: lng}), {
         status: 200,
@@ -29,7 +27,7 @@ export async function POST({request}: {request: Request}): Promise<Response> {
       })
     } else {
       console.warn(`Geocoding failed for: "${locationName}". Status: ${data.status}. Error: ${data.error_message || 'N/A'}`);
-      return new Response(JSON.stringify(data.error_message), {
+      return new Response(JSON.stringify(data.status), {
         status: 404,
         headers: {
           'Content-Type': 'application/json'

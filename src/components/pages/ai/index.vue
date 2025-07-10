@@ -386,8 +386,12 @@ export default {
         });
 
         if (!response.ok) {
-          const errorData = await response.json()
-          console.error(errorData.error)
+          console.error('Response not OK')
+          const error = await response.json()
+          if (error === 'ZERO_RESULTS') {
+            throw new Error("Can't add marker for this location")
+          }
+          throw new Error(error)
         }
 
         return await response.json()
