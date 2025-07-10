@@ -1,11 +1,12 @@
 <template>
-  <button @click="handlePayment" :disabled="isLoading">
+  <Button @click="handlePayment" :disabled="isLoading">
     {{ isLoading ? 'Processing...' : buttonText }}
-  </button>
+  </Button>
 </template>
 
 <script setup>
 import { ref } from 'vue';
+import Button from "./Button.vue";
 
 const props = defineProps({
   amount: {
@@ -61,20 +62,3 @@ async function handlePayment() {
   }
 }
 </script>
-
-<style scoped>
-button {
-  background-color: #007bff;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-button:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
-}
-</style>
