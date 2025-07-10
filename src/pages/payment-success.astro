@@ -1,0 +1,12 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PaymentSuccess from "../components/pages/payment-success/index.vue"
+import Main from "../components/layout/Main.vue"
+export const prerender =  false
+---
+
+<Layout>
+  <Main>
+    <PaymentSuccess client:load />
+  </Main>
+</Layout>

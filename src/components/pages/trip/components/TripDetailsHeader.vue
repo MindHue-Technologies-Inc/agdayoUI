@@ -131,14 +131,14 @@ export default {
     }
   },
   methods: {
-    formatDateRange(startDateIso, endDateIso) {
-      if (!startDateIso || !endDateIso) return '';
+    formatDateRange(startDate, endDate) {
+      if (!startDate || !endDate) return '';
 
-      const start = new Date(startDateIso);
-      const end = new Date(endDateIso);
+      const start = startDate
+      const end = endDate
 
       if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-        console.warn(`Invalid date string(s) for range: Start "${startDateIso}", End "${endDateIso}"`);
+        console.warn(`Invalid date string(s) for range: Start "${startDate}", End "${endDate}"`);
         return '';
       }
 
@@ -149,7 +149,7 @@ export default {
       const endDay = new Intl.DateTimeFormat('en-US', { day: 'numeric' }).format(end);
       const year = new Intl.DateTimeFormat('en-US', yearOptions).format(end);
 
-      if (startDateIso === endDateIso) {
+      if (startDate === endDate) {
         return `${startMonthDay}, ${year}`;
       }
 

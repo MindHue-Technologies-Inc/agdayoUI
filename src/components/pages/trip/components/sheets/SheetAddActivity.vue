@@ -32,7 +32,7 @@
                 id="addActivityDate"
                 label="Date"
                 :options="days"
-                :placeholder="isEditing ? (localActivity.date ? new Intl.DateTimeFormat(getLocale(), { month: 'short', day: 'numeric' }).format(new Date(localActivity.date + 'T00:00:00Z')) : 'Select Date') : 'Select Date'"
+                :placeholder="isEditing ? (localActivity.date ? new Intl.DateTimeFormat(getLocale(), { month: 'short', day: 'numeric' }).format(new Date(localActivity.date + 'T00:00:000')) : 'Select Date') : 'Select Date'"
                 icon="ph-calendar"
             />
             <Input

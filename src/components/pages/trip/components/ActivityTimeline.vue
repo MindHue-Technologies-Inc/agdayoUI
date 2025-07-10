@@ -99,6 +99,8 @@ export default {
       const endDate = new Date(this.tripConfig.date.end);
       const locale = navigator.language || 'en-US';
 
+      console.log(startDate)
+
       let currentDate = new Date(this.tripConfig.date.start);
 
       while (currentDate <= endDate) {
