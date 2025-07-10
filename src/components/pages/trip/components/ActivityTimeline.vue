@@ -99,12 +99,14 @@ export default {
       const endDate = new Date(this.tripConfig.date.end);
       const locale = navigator.language || 'en-US';
 
+      console.log(startDate)
+
       let currentDate = new Date(this.tripConfig.date.start);
 
       while (currentDate <= endDate) {
         const year = currentDate.getFullYear()
         const month = (currentDate.getMonth() + 1) < 10 ? `0${currentDate.getMonth() + 1}` : `${currentDate.getMonth() + 1}`
-        const day = currentDate.getUTCDate()
+        const day = currentDate.getDate()
         const isoDate = `${year}-${month}-${day}`;
         const formattedDate = new Intl.DateTimeFormat(locale, {
           weekday: 'short',

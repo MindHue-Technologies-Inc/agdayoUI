@@ -10,13 +10,20 @@
         <h1 class="fadeIn text-4xl sm:text-5xl font-extrabold text-zinc-800 mb-8 sm:mb-12 text-center tracking-tight outfit">
           Let <span style="background-image: linear-gradient(to right, #eea092, #eabf67);color: transparent;background-clip: text;">Agdayo AI</span> help you plan your next trip!
         </h1>
-        <Input
-            placeholder="Where do you want to go and when?"
-            id="prompt"
-            v-model="prompt"
-            @enter="generateItinerary"
-            class="w-full"
-        />
+        <div class="w-full relative">
+          <Input
+              placeholder="Where do you want to go and when?"
+              id="prompt"
+              v-model="prompt"
+              @enter="generateItinerary"
+              class="w-full"
+          />
+
+          <!--SUBMIT BUTTON-->
+          <div class="absolute inset top-2 bottom-2 right-3 z-10">
+            <Button @click="generateItinerary" size="sm" custom-class="h-8 w-8 p-0!" ><i class="ph ph-arrow-right"></i></Button>
+          </div>
+        </div>
       </div>
       <!--<pre>{{activities.length}}</pre>-->
       <!--<pre>{{chatHistory}}</pre>-->

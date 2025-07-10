@@ -4,7 +4,6 @@
 
       <!-- MAIN CARD -->
       <Card :customClass='cardClass + " max-w-4xl mx-auto p-0! overflow-hidden rounded-4xl bg-white"'>
-
         <!-- TRIP HEADER -->
         <TripDetailsHeader
             :trip-config="tripConfig"

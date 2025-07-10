@@ -67,7 +67,7 @@ const responseSchema:object = {
           },
           datetime: {
             type: 'STRING',
-            description: 'ISO 8601 full date and time string (e.g., \'YYYY-MM-DDTHH:MM:SS\'). This MUST include both date and time. Use local time zone for Baguio, Philippines unless specified.'
+            description: 'ISO 8601 full date and time string (e.g., \'YYYY-MM-DDTHH:MM:SS\'). This MUST include both date and time. Do  not add Z at the end of datetime'
           },
           date: {
             type: 'STRING',
