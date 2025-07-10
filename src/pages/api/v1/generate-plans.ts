@@ -61,6 +61,10 @@ const responseSchema:object = {
       items: {
         type: 'OBJECT',
         properties: {
+          id: {
+            type: 'STRING',
+            description: 'A randomly generated id string consisting of letters and numbers.'
+          },
           datetime: {
             type: 'STRING',
             description: 'ISO 8601 full date and time string (e.g., \'YYYY-MM-DDTHH:MM:SS\'). This MUST include both date and time. Use local time zone for Baguio, Philippines unless specified.'

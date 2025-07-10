@@ -136,6 +136,8 @@ export default {
 
       const start = new Date(startDateIso);
       const end = new Date(endDateIso);
+      console.log(start, "JS")
+      console.log(startDateIso, "ISO")
 
       if (isNaN(start.getTime()) || isNaN(end.getTime())) {
         console.warn(`Invalid date string(s) for range: Start "${startDateIso}", End "${endDateIso}"`);

@@ -169,6 +169,13 @@ export default {
   },
 
   watch: {
+    anySheetOpen(isOpen) {
+      if (isOpen) {
+        document.body.classList.add('no-scroll')
+      } else {
+        document.body.classList.remove('no-scroll')
+      }
+    },
     //--------------------------------------------- Watcher for 'preparation'
     preparation: {
       handler(newValue) {
@@ -387,6 +394,20 @@ export default {
         default:
           return 'border-primary-light-sm shadow-primary-light-md';
       }
+    },
+
+    anySheetOpen() {
+      return this.settingsShowSheet ||
+          this.preparationShowSheet ||
+          this.accommodationShowSheet ||
+          this.companionsShowSheet ||
+          this.budgetShowSheet ||
+          this.transportationShowSheet ||
+          this.rolesShowSheet ||
+          this.dayNoteShowSheet ||
+          this.addActivityShowSheet ||
+          this.editActivityShowSheet ||
+          this.selectedActivityShowSheet;
     },
   },
   methods: {
