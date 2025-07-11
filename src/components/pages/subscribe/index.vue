@@ -36,7 +36,7 @@
             </li>
           </ul>
 
-          <PaymentButton description="Premium Subscription - 1 Month" :amount="4900" class="w-full py-3 text-lg" />
+          <PaymentButton description="Premium Access - 1 Month" :amount="49" class="w-full py-3 text-lg" />
         </div>
 
         <!-- 3 month support -->
@@ -79,7 +79,7 @@
             </li>
           </ul>
 
-          <PaymentButton description="Premium Subscription - 3 Months" :amount="11900" class="w-full py-3 text-lg" />
+          <PaymentButton description="Premium Access - 3 Months" :amount="119" class="w-full py-3 text-lg" />
         </div>
 
         <!-- 1 Year Support -->
@@ -124,7 +124,7 @@
             </li>
           </ul>
 
-          <PaymentButton description="Premium Subscription - 1 Year" :amount="39900" class="w-full py-3 text-lg" />
+          <PaymentButton description="Premium Access - 1 Year" :amount="399" class="w-full py-3 text-lg" />
         </div>
       </div>
 

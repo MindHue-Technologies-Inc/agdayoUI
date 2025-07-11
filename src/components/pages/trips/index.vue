@@ -49,7 +49,11 @@ export default {
     sortedTrips() {
       const trips = [...this.useDb.trips]
       const sortedTrips =  trips.sort((a,b) => {
-        return b.date.start.localeCompare(a.date.start)
+        try {
+          return b.date.start.localeCompare(a.date.start)
+        } catch (e) {
+          return true
+        }
       })
 
       return sortedTrips.map(trip=>{
