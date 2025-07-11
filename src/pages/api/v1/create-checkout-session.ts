@@ -22,7 +22,7 @@ export async function POST({request}: {request:Request}): Promise<Response> {
       });
     }
 
-    const response:any = await paymongoFetch<PaymongoCheckoutSessionResponse>('/checkout_sessions', {
+    const response:any = await paymongoFetch('/checkout_sessions', {
       method: "POST",
       body: {
         data: {

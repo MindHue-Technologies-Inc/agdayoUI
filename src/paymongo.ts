@@ -19,7 +19,7 @@ const DEFAULT_HEADERS = {
 };
 
 // -- WRAPPER FOR PAYMONGO API CALLS
-export async function paymongoFetch<T>(endpoint: string, options: any = {}): Promise<object> {
+export async function paymongoFetch(endpoint: string, options: any = {}): Promise<object> {
   const url = `${PAYMONGO_BASE_URL}${endpoint}`;
 
   // Merge default headers with any custom headers provided for this specific request
@@ -55,7 +55,7 @@ export async function paymongoFetch<T>(endpoint: string, options: any = {}): Pro
     }
 
     // Always parse response as JSON for PayMongo
-    return await response.json() as T;
+    return await response.json();
   } catch (error) {
     console.error('Network or Parsing Error:', error);
     // Re-throw the error for the caller to handle
