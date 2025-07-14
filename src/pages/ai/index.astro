@@ -7,7 +7,23 @@ export const prerender = false;
 ---
 
 <Layout>
-    <meta slot="head" name="description" content="Let Agdayo AI help you plan your next trip! Generate personalized itineraries and daily plans with our intelligent travel assistant." />
+  <meta slot="head" charset="UTF-8" />
+  <meta slot="head" name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  {/* Primary SEO Meta Tags */}
+  <title slot="head">Agdayo AI: Your Personalized Travel Itinerary Planner</title>
+  <meta slot="head" name="description" content="Let Agdayo AI help you plan your next trip! Generate personalized itineraries, optimize routes, and discover hidden gems for your perfect adventure in minutes." />
+  <meta slot="head" name="keywords" content="AI travel planner, AI itinerary generator, personalized travel, travel planning app, custom trip planner, Agdayo AI, Olongapo travel, Philippines travel AI, smart travel assistant" />
+  <link slot="head" rel="canonical" href="https://agdayo.mindhue.tech/ai/" /> {/* IMPORTANT: Replace with your actual URL */}
+
+  {/* Open Graph / Social Media Meta Tags (for Facebook, LinkedIn, etc.) */}
+  <meta slot="head" property="og:title" content="Agdayo AI: Your Personalized Travel Itinerary Planner" />
+  <meta slot="head" property="og:description" content="Let Agdayo AI help you plan your next trip! Generate personalized itineraries, optimize routes, and discover hidden gems for your perfect adventure in minutes." />
+  <meta slot="head" property="og:type" content="website" />
+  <meta slot="head" property="og:url" content="https://agdayo.mindhue.tech/ai/" /> {/* IMPORTANT: Replace with your actual URL */}
+  <meta slot="head" property="og:image" content="https://agdayo.mindhue.tech/images/agdayo-ai-social-share.jpg" /> {/* IMPORTANT: Create a compelling image (1200x630px recommended) */}
+  <meta slot="head" property="og:image:alt" content="Agdayo AI App creating a travel itinerary" />
+
   <Main>
     <Topbar title="Agdayo AI" client:visible/>
     <AI client:only/>
