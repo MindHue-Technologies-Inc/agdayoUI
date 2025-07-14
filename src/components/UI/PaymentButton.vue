@@ -29,7 +29,7 @@ async function handlePayment() {
   isLoading.value = true;
   try {
     // Call your microservice
-    const response = await fetch('http://localhost:3001/create-checkout-session', {
+    const response = await fetch('/api/v1/create-checkout-session', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

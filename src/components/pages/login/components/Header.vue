@@ -4,10 +4,10 @@
 
     <div class="flex items-center justify-center gap-6 zain text-[1.25rem] font-bold text-white text-shadow">
       <!-- What is agdayo -->
-      <a href="/" class="transition hover:text-sky-100">What is agdayo?</a>
+      <a href="/what-is-agdayo" class="transition hover:text-sky-100">What is agdayo?</a>
 
       <!-- Features -->
-      <a href="/" class="transition hover:text-sky-100">Features</a>
+      <a href="/features" class="transition hover:text-sky-100">Features</a>
 
       <!-- About us -->
       <a href="/" class="transition hover:text-sky-100">About Us</a>

@@ -1,5 +1,39 @@
 <template>
-  <div class="flex items-center justify-center min-w-[375px] w-full lg:w-[390px]">
+  <div class="relative flex items-center justify-center min-w-[375px] w-full lg:w-[390px]">
+    <!-- HEADER -->
+    <div class="absolute bottom-6 block lg:hidden">
+      <div class="flex items-center justify-center gap-6 zain text-[1.25rem] font-medium text-zinc-700 text-shadow">
+        <!-- What is agdayo -->
+        <a href="/what-is-agdayo" class="transition hover:text-zinc-400">What is agdayo?</a>
+
+        <!-- Features -->
+        <a href="/" class="transition hover:text-zinc-400">Features</a>
+
+        <!-- About us -->
+        <a href="/" class="transition hover:text-zinc-400">About Us</a>
+
+        <!-- Links -->
+        <!-- IG -->
+        <a href="/" class="flex items-center justify-center transition hover:text-zinc-400">
+          <i class="ph ph-instagram-logo"></i>
+        </a>
+
+        <!-- FACEBOOK -->
+        <a href="/" class="flex items-center justify-center transition hover:text-zinc-400">
+          <i class="ph ph-facebook-logo"></i>
+        </a>
+
+        <!-- TIKTOK -->
+        <a href="/" class="flex items-center justify-center transition hover:text-zinc-400">
+          <i class="ph ph-tiktok-logo"></i>
+        </a>
+
+        <!-- X -->
+        <a href="/" class="flex items-center justify-center transition hover:text-zinc-400">
+          <i class="ph ph-x-logo"></i>
+        </a>
+      </div>
+    </div>
     <div class="flex flex-col gap-16 items-center justify-center w-fit">
       <div class="flex flex-col items-center justify-center gap-4">
         <span class="text-zinc-400 font-bold">Start your travels in</span>
