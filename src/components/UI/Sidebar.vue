@@ -50,6 +50,9 @@ export default {
       this.showMenu = !this.showMenu;
     },
     async logoutUser() {
+      window.location.href="/login"
+
+      // -- IRRELEVANT
       const res = await apiRequest({
         method: 'DELETE',
         url: "/auth/signout"

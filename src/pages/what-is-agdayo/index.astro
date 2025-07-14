@@ -1,0 +1,14 @@
+---
+import Layout from "../../layouts/Layout.astro"
+import Main from "../../components/layout/Main.vue"
+import Topbar from "../../components/UI/Topbar.vue"
+import WhatIsAgdayoPage from "../../components/pages/what-is-agdayo/index.vue"
+export const prerender = false;
+---
+
+<Layout>
+  <Main>
+    <Topbar title="What is Agdayo?" client:visible/>
+    <WhatIsAgdayoPage client:only/>
+  </Main>
+</Layout>

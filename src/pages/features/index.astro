@@ -1,0 +1,14 @@
+---
+import Layout from "../../layouts/Layout.astro"
+import Main from "../../components/layout/Main.vue"
+import Topbar from "../../components/UI/Topbar.vue"
+import FeaturesPage from "../../components/pages/features/index.vue"
+export const prerender = false;
+---
+
+<Layout>
+  <Main>
+    <Topbar title="Features" client:visible/>
+    <FeaturesPage client:only/>
+  </Main>
+</Layout>
