@@ -10,10 +10,10 @@ if (!API_KEY) {
 const PAYMONGO_BASE_URL = 'https://api.paymongo.com/v1';
 
 // Pre-calculate the Authorization header once
-const AUTH_HEADER = `Basic ${Buffer.from(API_KEY).toString('base64')}`;
+const AUTH_HEADER: string = `Basic ${Buffer.from(API_KEY).toString('base64')}`;
 
 // Define default headers
-const DEFAULT_HEADERS = {
+const DEFAULT_HEADERS: {Authorization: string, 'Content-Type': string} = {
   'Authorization': AUTH_HEADER,
   'Content-Type': 'application/json'
 };
