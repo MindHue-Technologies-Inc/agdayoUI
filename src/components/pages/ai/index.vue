@@ -576,9 +576,7 @@ export default {
   },
 
   mounted() {
-    if (this.activities.length > 0) {
-      this.loadGoogleMapsScript();
-    }
+    this.loadGoogleMapsScript();
   }
 }
 </script>
