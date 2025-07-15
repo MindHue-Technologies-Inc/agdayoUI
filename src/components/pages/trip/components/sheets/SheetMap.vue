@@ -138,7 +138,11 @@ const initMapAndMarkers = async () => {
   // -- CALCULATE INITIAL MAP CENTER AND BOUNDS
   let bounds = new google.maps.LatLngBounds();
   activitiesWithCoords.forEach(activity => {
-    bounds.extend(new google.maps.LatLng(activity.coordinates.latitude, activity.coordinates.longitude));
+    try {
+      bounds.extend(new google.maps.LatLng(activity.coordinates.latitude, activity.coordinates.longitude));
+    } catch (e) {
+      console.error(e)
+    }
   });
 
   // -- INITIALIZE MAP IF IT DOESN'T EXISTS OR RE-CENTER/FIT BOUND IF IT DOES
@@ -215,8 +219,12 @@ const clearMap = () => {
   markers.value = [];
   const x = document.getElementById('map')
   const y = document.getElementById('google-maps-script')
-  x.remove()
-  y.remove()
+  try {
+    x.remove()
+    y.remove()
+  } catch (e) {
+    console.error(e)
+  }
 }
 
 // -- CLEAR MARKERS

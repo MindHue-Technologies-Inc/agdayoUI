@@ -2,7 +2,7 @@
   <Transition name="ios-sheet-slide">
     <div
         v-if="modelValue"
-        class="fixed inset-0 z-[999] flex items-end justify-center" @click.self="closeSheet"
+        class="sheet-container fixed inset-0 z-[999] flex items-end justify-center" @click.self="closeSheet"
     >
       <Transition name="ios-sheet-slide">
         <div
