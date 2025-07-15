@@ -11,6 +11,7 @@
             :trip-config="tripConfig"
             :planning-progress="planningProgress"
             @show-settings="settingsShowSheet = true"
+            @show-map="mapShowSheet = true"
         />
 
         <!-- TRIP SECTION -->
@@ -88,6 +89,7 @@
       @delete-activity="deleteActivity"
   />
   <SheetDayNote v-model:showSheet="dayNoteShowSheet" v-model="dayNote"/>
+  <SheetMap :activities="activities" v-model:showSheet="mapShowSheet"/>
 
 </template>
 
@@ -133,6 +135,7 @@ import SheetBudget from "./components/sheets/SheetBudget.vue";
 import SheetTransportation from "./components/sheets/SheetTransportation.vue";
 import SheetRoles from "./components/sheets/SheetRoles.vue";
 import SheetDayNote from "./components/sheets/SheetDayNote.vue";
+import SheetMap from "./components/sheets/SheetMap.vue";
 import CardActivity from "./components/timeline/CardActivity.vue";
 import TimelineDot from "./components/timeline/TimelineDot.vue";
 
@@ -155,6 +158,7 @@ export default {
     SheetTransportation,
     SheetRoles,
     SheetDayNote,
+    SheetMap,
     CardActivity,
     TimelineDot,
     ToastContainer,
@@ -293,6 +297,7 @@ export default {
       companionsShowSheet: false,
       budgetShowSheet: false,
       transportationShowSheet: false,
+      mapShowSheet: false,
       rolesShowSheet: false,
       dayNoteShowSheet: false,
       addActivityShowSheet: false,
@@ -410,7 +415,8 @@ export default {
           this.dayNoteShowSheet ||
           this.addActivityShowSheet ||
           this.editActivityShowSheet ||
-          this.selectedActivityShowSheet;
+          this.selectedActivityShowSheet ||
+          this.mapShowSheet;
     },
   },
   methods: {

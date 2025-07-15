@@ -3,7 +3,7 @@
       <div class="fadeIn flex flex-row items-center justify-between">
         <div class="flex flex-row gap-2 items-center">
           <!--<Tag label="Upcoming" class="bg-white border-primary-light-xs"/>-->
-          <Tag label="View on Map" variant="green" mode="button" icon="ph-map-trifold" />
+          <Tag label="View on Map" @click="$emit('showMap', true)" variant="green" mode="button" icon="ph-map-trifold" />
         </div>
 
         <button @click="$emit('show-settings')" class="flex justify-center items-center text-2xl text-zinc-600 cursor-pointer transition hover:text-peach-500 active:text-peach-600 focus:outline-none focus:ring-2 focus:ring-peach-300 rounded-full p-1 -mr-1">
@@ -57,7 +57,7 @@ export default {
       required: true,
     },
   },
-  emits: ['show-settings'],
+  emits: ['show-settings', 'showMap'],
   computed: {
     cardClass() {
       switch (this.tripConfig.theme) {

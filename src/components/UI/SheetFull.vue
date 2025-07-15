@@ -8,7 +8,7 @@
         <div
             v-if="modelValue"
             ref="sheetContent"
-            class="bg-white rounded-t-3xl border-secondary-sm shadow-secondary-md md:min-w-[48rem] min-w-full max-w-lg min-h-[90%] max-h-[90%] flex flex-col" :style="{
+            class="bg-white relative rounded-t-3xl border-secondary-sm shadow-secondary-md md:min-w-[48rem] min-w-full max-w-lg min-h-[90%] max-h-[90%] flex flex-col" :style="{
               'max-height': maxHeight,
               transform: `translateY(${dragOffsetY}px)`,
               transition: isDragging ? 'none' : 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
@@ -27,7 +27,7 @@
             </div>
           </div>
 
-          <div class="overflow-y-auto grow h-full flex flex-col">
+          <div class="absolute border z-10 overflow-y-auto grow h-full flex flex-col">
             <slot></slot>
           </div>
         </div>
