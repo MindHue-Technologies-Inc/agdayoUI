@@ -408,11 +408,11 @@ export default {
       return this.settingsShowSheet ||
           this.preparationShowSheet ||
           this.accommodationShowSheet ||
-          this.companionsShowSheet ||
+          // this.companionsShowSheet ||
           this.budgetShowSheet ||
-          this.transportationShowSheet ||
-          this.rolesShowSheet ||
-          this.dayNoteShowSheet ||
+          // this.transportationShowSheet ||
+          // this.rolesShowSheet ||
+          // this.dayNoteShowSheet ||
           this.addActivityShowSheet ||
           this.editActivityShowSheet ||
           this.selectedActivityShowSheet ||
