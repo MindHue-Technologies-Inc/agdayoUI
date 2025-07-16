@@ -1,5 +1,4 @@
 import { GoogleGenAI } from "@google/genai";
-
 export const prerender = false;
 
 // -- READY API KEY FOR GOOGLE GEMINI

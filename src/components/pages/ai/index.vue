@@ -52,7 +52,8 @@
 
           <div
               v-else-if="item.type === 'activity'"
-              class="flex flex-row gap-2 md:gap-4"
+              class="flex flex-row gap-2 md:gap-4 fadeIn"
+              :class="`fadeIn-${index}`"
           >
             <TimelineDot :time="formatIsoDateToTime(item.data.datetime)" :isLast="false" />
             <CardActivity
