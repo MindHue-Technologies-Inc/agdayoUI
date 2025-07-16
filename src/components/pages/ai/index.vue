@@ -425,7 +425,7 @@ export default {
 
       console.log("Loading Google Maps script...");
       const script = document.createElement('script');
-      const Maps_API_KEY = "AIzaSyD0ueloZ3TtHb8vff0f7R5Umdihxfu_FyQ"
+      const Maps_API_KEY = import.meta.env.PUBLIC_MAP_API_KEY
       script.src = `https://maps.googleapis.com/maps/api/js?key=${Maps_API_KEY}&callback=initMapCallback`;
       script.async = true;
       script.defer = true;

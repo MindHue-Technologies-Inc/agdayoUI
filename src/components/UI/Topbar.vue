@@ -14,6 +14,15 @@
     <div>
       <span class="text-xl font-bold">{{ title }}</span>
     </div>
+
+    <div :class="[
+        'flex items-center justify-center ',
+         'text-2xl transition rounded-full p-1 ',
+          'bg-none hover:text-zinc-500 cursor-pointer',
+          'absolute right-0 bg-zinc-200 aspect-square border-2 border-zinc-300'
+    ]">
+      <i class="ph ph-user"></i>
+    </div>
   </div>
 </template>
 
