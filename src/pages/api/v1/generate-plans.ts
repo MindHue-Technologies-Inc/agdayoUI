@@ -60,7 +60,7 @@ const CURRENT_LOCATION = 'Olongapo City, Central Luzon, Philippines'; // Define 
 
 
 // --- FUNCTION DECLARATION FOR GEMINI (The "Tool" Gemini can use) ---
-const findPlacesToolDeclaration = {
+const findPlacesToolDeclaration: any = {
       name: "find_places_nearby",
       description: `Finds real-world places (e.g., restaurants, beaches, hotels, landmarks) using a database. This tool is essential for providing accurate locations in the itinerary. Prioritize results within ${CURRENT_LOCATION} unless another location is explicitly mentioned.`,
       parameters: {
@@ -209,6 +209,8 @@ export async function POST({ request }: { request: Request }): Promise<Response>
         
         The current date is ${CURRENT_DATE_TIME}. The current default location context is ${CURRENT_LOCATION}. Use this context for generating location suggestions unless the user explicitly specifies a different area.
         
+        Your response MUST be ONLY a JSON object matching the provided schema. DO NOT include any conversational text, preambles, or markdown formatting (e.g., \`\`\`json). Just the raw JSON object.
+        
         Example JSON Structure for your final output:`
         },
           { text: JSON.stringify({
@@ -258,7 +260,7 @@ export async function POST({ request }: { request: Request }): Promise<Response>
     let geminiResponse: any; // Use 'any' for the raw response for flexibility with tool calls
 
     // --- Start the multi-turn interaction with Gemini ---
-    const chatSession = ai.chats.create({
+    const chatSession:any = ai.chats.create({
       model: "gemini-2.5-flash",
       history: initialContents,
       responseSchema: responseSchema,
