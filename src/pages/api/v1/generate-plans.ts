@@ -55,13 +55,12 @@ interface GenerateItineraryRequestBody {
 
 // Current Date and Time for Gemini's reference
 const CURRENT_DATE_TIME = new Date().toISOString();
-const CURRENT_LOCATION = 'Olongapo City, Central Luzon, Philippines'; // Define your current location context
 
 
 // --- FUNCTION DECLARATION FOR GEMINI (The "Tool" Gemini can use) ---
 const findPlacesToolDeclaration: any = {
       name: "find_places_nearby",
-      description: `Finds real-world places (e.g., restaurants, beaches, hotels, landmarks) using a database. This tool is essential for providing accurate locations in the itinerary. Prioritize results within ${CURRENT_LOCATION} unless another location is explicitly mentioned.`,
+      description: `Finds real-world places (e.g., restaurants, beaches, hotels, landmarks) using a database. This tool is essential for providing accurate locations in the itinerary.`,
       parameters: {
         type: "object",
         properties: {
