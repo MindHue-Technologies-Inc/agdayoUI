@@ -77,7 +77,7 @@ const findPlacesToolDeclaration: any = {
           },
           location_bias: {
             type: "string",
-            description: `Optional: A geographical bias for the search, e.g., 'Baguio City, Philippines' or '15.1706,120.5925'. If not provided, assume the search is relevant to the current user context, which is ${CURRENT_LOCATION}.`,
+            description: `Optional: A geographical bias for the search, e.g., 'Baguio City, Philippines' or '15.1706,120.5925'.`,
           },
         },
         required: ["query"],
@@ -205,7 +205,7 @@ export async function POST({ request }: { request: Request }): Promise<Response>
         
         Always suggest real, verifiable locations. You MUST use the 'find_places_nearby' tool to search for locations if you need to find specific places like restaurants, beaches, museums, etc. Do NOT hallucinate locations.
         
-        The current date is ${CURRENT_DATE_TIME}. The current default location context is ${CURRENT_LOCATION}. Use this context for generating location suggestions unless the user explicitly specifies a different area.
+        The current date is ${CURRENT_DATE_TIME}.
         
         Your response MUST be ONLY a JSON object matching the provided schema. DO NOT include any conversational text, preambles, or markdown formatting (e.g., \`\`\`json). Just the raw JSON object.
         
