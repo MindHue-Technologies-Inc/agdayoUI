@@ -205,6 +205,8 @@ export async function POST({ request }: { request: Request }): Promise<Response>
         
         Always suggest real, verifiable locations. You MUST use the 'find_places_nearby' tool to search for locations if you need to find specific places like restaurants, beaches, museums, etc. Do NOT hallucinate locations.
         
+        Always suggest real places to eat.
+        
         The current date is ${CURRENT_DATE_TIME}.
         
         Your response MUST be ONLY a JSON object matching the provided schema. DO NOT include any conversational text, preambles, or markdown formatting (e.g., \`\`\`json). Just the raw JSON object.
