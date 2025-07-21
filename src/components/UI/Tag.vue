@@ -7,7 +7,10 @@
           { 'cursor-pointer': isButtonMode, 'hover:brightness-95 active:brightness-90': isButtonMode } // Button specific styles
     ]"
   >
-    {{ label }}
+    <div class="flex items-center justify-center gap-1">
+      <i :class="['ph', icon]"></i>
+      {{ label }}
+    </div>
   </component>
 </template>
 
@@ -29,6 +32,10 @@ export default {
       type: String,
       default: 'peach', // Default to your existing peach color
     },
+
+    icon: {
+      type: String,
+    }
   },
   computed: {
     // Returns the base class for the tag
