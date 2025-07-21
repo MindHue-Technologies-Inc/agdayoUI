@@ -113,11 +113,11 @@ const responseSchema:object = {
           properties: {
             start: {
               type: "STRING",
-              description: "Start date of the trip in ISO format. Start at midnight."
+              description: "Start date of the trip in ISO format. Start at midnight. Do not add Z at the end of datetime"
             },
             end: {
               type: "STRING",
-              description: "End date of the trip in ISO format. Use midnight as time."
+              description: "End date of the trip in ISO format. Use midnight as time. Do not add Z at the end of datetime"
             }
           }
         }
