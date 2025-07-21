@@ -40,7 +40,7 @@
       </div>
 
       <div class="flex w-full">
-        <Button class="w-full" v-if="activities.length > 0" @click="generateTrip">Create Trip</Button>
+        <Button class="w-full" v-if="activities.length > 0" @click="generateTrip">Save this plan</Button>
       </div>
       <template v-for="(item, index) in groupedActivities" :key="index">
         <TransitionGroup name="fadeIn">

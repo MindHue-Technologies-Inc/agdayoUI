@@ -32,7 +32,7 @@ import Sheet from "../../../../UI/Sheet.vue";
 import Button from "../../../../UI/Button.vue";
 
 // -- API URL
-const api_url = import.meta.env.VITE_API_BASE_URL
+const api_url = import.meta.env.PUBLIC_API_BASE_URL
 
 // -- PROPS
 const props = defineProps({

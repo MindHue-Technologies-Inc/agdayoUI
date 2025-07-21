@@ -106,7 +106,7 @@ export default {
       while (currentDate <= endDate) {
         const year = currentDate.getFullYear()
         const month = (currentDate.getMonth() + 1) < 10 ? `0${currentDate.getMonth() + 1}` : `${currentDate.getMonth() + 1}`
-        const day = currentDate.getDate()
+        const day = currentDate.getDate() < 9 ? `0${currentDate.getDate()}` : `${currentDate.getDate()}`
         const isoDate = `${year}-${month}-${day}`;
         const formattedDate = new Intl.DateTimeFormat(locale, {
           weekday: 'short',
