@@ -28,7 +28,7 @@
 
         <Dates ref="dates" v-model="date" @next="proceedNext('dates')"/>
 
-        <Button :loading="btnLoading" ref="submit" @click="goToTrip">Start Planning</Button>
+        <Button :loading="btnLoading" ref="submit" @click="saveTrip">Start Planning</Button>
       </Card>
     </div>
   </Transition>
@@ -145,53 +145,49 @@ export default {
       }
     },
 
-    goToTrip() {
+    async saveTrip() {
+      this.btnLoading = true;
+
+      // -- 1. VALIDATE INPUTS
       if (!this.validateName()) return;
       if (!this.validateLocation()) return;
       if (!this.validateDate()) return;
 
-      // When you call addEmptyTrip(), it modifies the nanostores state
-      const indexOfEmpty = addEmptyTrip()
+      try {
+        // -- 1.5 CONSTRUCT TRIP PAYLOAD
+        const payload = {
+          name: this.name,
+          date: this.date,
+          location: this.location,
+        }
 
-      console.log(indexOfEmpty)
+        // -- 2. CALL POST API
+        const response = await fetch('/api/v1/trips', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload)
+        })
 
-      setName(indexOfEmpty, this.name)
-      setLocation(indexOfEmpty, this.location)
-      setDate(indexOfEmpty, this.date)
-      setTheme(indexOfEmpty, 'peach')
-      setActivities(indexOfEmpty, [])
-      setPreparation(indexOfEmpty, {preparationsChecklist: []})
-      setBudget(indexOfEmpty, {totalBudget: null, categories: [], showSheet: false, currency: "PHP"})
+        // -- 3. CHECK IF RESPONSE IS NOT GOOD
+        if (!response.ok) {
+          const error = await response.json()
+          console.error('Something went wrong', error.message)
+          throw new Error(error.message)
+        }
 
+        // -- 4. GET THE ID OF THE NEWLY CREATED TRIP
+        const { tripId, tripData } = await response.json()
 
-      console.log(this.useDb.trips[indexOfEmpty])
+        console.log(tripId, tripData)
 
+        window.location.href=`/trips/${tripId}`
 
-      // The 'useDb' in your component's data() will automatically update
-      // due to the subscription in 'mounted()'.
-
-      this.btnLoading = true;
-      window.location.href=`/trips/${indexOfEmpty}`
+      } catch (error) {
+        console.error(error)
+      }
     }
   },
-
-  // Lifecycle hook for initial setup and subscription
-  mounted() {
-    // 3. Subscribe to the nanostores store
-    this.unsubscribeFromDbStore = useDbStore.listen(newValue => {
-      // Update the component's reactive data property with the new store value
-      this.useDb = newValue;
-      console.log("Nanostores updated, Vue component data refreshed:", newValue);
-    });
-  },
-
-  // Lifecycle hook to clean up the subscription when the component is unmounted
-  beforeUnmount() {
-    // 4. Unsubscribe to prevent memory leaks
-    if (this.unsubscribeFromDbStore) {
-      this.unsubscribeFromDbStore();
-      console.log("Unsubscribed from Nanostores.");
-    }
-  }
 }
 </script>

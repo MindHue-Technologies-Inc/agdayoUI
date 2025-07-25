@@ -8,7 +8,7 @@ export const prerender = false;
 
 <Layout>
   <Main loading={false}>
-    <Topbar title="Games" client:visible/>
+    <Topbar title="Games" client:only/>
     <TicTacToe client:visible/>
   </Main>
 </Layout>

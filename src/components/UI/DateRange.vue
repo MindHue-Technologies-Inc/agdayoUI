@@ -116,7 +116,8 @@ export default {
 
       // Add actual days of the month
       for (let i = 1; i <= daysInMonth; i++) {
-        days.push(new Date(this.selectedYear, this.selectedMonth, i));
+        const utcDate = Date.UTC(this.selectedYear, this.selectedMonth, i)
+        days.push(new Date(utcDate));
       }
 
       return days;

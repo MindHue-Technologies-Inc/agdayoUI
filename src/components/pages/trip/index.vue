@@ -1,71 +1,79 @@
 <template>
-  <transition name="fade" appear>
-    <div class="grow mt-8 md:mt-16">
-      <!-- PAYMENT BUTTON -->
-      <!--<PaymentButton description="Premium Subscription" :amount="999"/>-->
-
-      <!-- MAIN CARD -->
-      <Card :customClass='cardClass + " max-w-4xl mx-auto p-0! overflow-hidden rounded-4xl bg-white"'>
-        <!-- TRIP HEADER -->
-        <TripDetailsHeader
-            :trip-config="tripConfig"
-            :planning-progress="planningProgress"
-            @show-settings="settingsShowSheet = true"
-            @show-map="mapShowSheet = true"
-        />
-
-        <!-- TRIP SECTION -->
-        <TripSections
-
-            @show-accommodation="accommodationShowSheet=true"
-            @show-budget="budgetShowSheet=true"
-            @show-companions="companionsShowSheet=true"
-            @show-preparation="preparationShowSheet=true"
-            @show-roles="rolesShowSheet=true"
-            @show-transportation="transportationShowSheet=true"
-
-            :preparation="preparation"
-            :budget="budget"
-            :accommodation="accommodation"
-            :companions="companions"
-            :roles="roles"
-            :transportation="transportation"
-
-        />
-
-        <!-- DAY PLANS -->
-        <ActivityTimeline
-            :trip-config="tripConfig"
-            :activities="activities"
-
-            @show-add-activity="addActivityShowSheet=true"
-            @show-day-note="dayNoteShowSheet=true"
-            @show-view-activity="showViewActivitySheet"
-        />
-      </Card>
-      <!-- END OF MAIN CARD -->
-
-
-      <!--TOAST-->
-      <ToastContainer>
-        <Toast
-            :variant="'error'"
-            ref="dangerToast"
-            :message="dangerToast.message"
-        />
-      </ToastContainer>
-
-
-      <!--TOAST-->
-      <ToastContainer>
-        <Toast
-            :variant="'success'"
-            ref="successToast"
-            :message="successToast.message"
-        />
-      </ToastContainer>
+  <template v-if="isLoading">
+    <div class="flex items-center justify-center w-full h-[32rem]">
+      <Spinner label="Loading your trips"/>
     </div>
-  </transition>
+  </template>
+  <template v-else>
+    <transition name="fade" appear>
+
+      <div class="grow mt-8 md:mt-16 fadeIn" v-if="tripConfig.name">
+        <!-- PAYMENT BUTTON -->
+        <!--<PaymentButton description="Premium Subscription" :amount="999"/>-->
+
+        <!-- MAIN CARD -->
+        <Card :customClass='cardClass + " max-w-4xl mx-auto p-0! overflow-hidden rounded-4xl bg-white"'>
+          <!-- TRIP HEADER -->
+          <TripDetailsHeader
+              :trip-config="tripConfig"
+              :planning-progress="planningProgress"
+              @show-settings="settingsShowSheet = true"
+              @show-map="mapShowSheet = true"
+          />
+
+          <!-- TRIP SECTION -->
+          <TripSections
+
+              @show-accommodation="accommodationShowSheet=true"
+              @show-budget="budgetShowSheet=true"
+              @show-companions="companionsShowSheet=true"
+              @show-preparation="preparationShowSheet=true"
+              @show-roles="rolesShowSheet=true"
+              @show-transportation="transportationShowSheet=true"
+
+              :preparation="preparation"
+              :budget="budget"
+              :accommodation="accommodation"
+              :companions="companions"
+              :roles="roles"
+              :transportation="transportation"
+
+          />
+
+          <!-- DAY PLANS -->
+          <ActivityTimeline
+              :trip-config="tripConfig"
+              :activities="activities"
+
+              @show-add-activity="addActivityShowSheet=true"
+              @show-day-note="dayNoteShowSheet=true"
+              @show-view-activity="showViewActivitySheet"
+          />
+        </Card>
+        <!-- END OF MAIN CARD -->
+
+
+        <!--TOAST-->
+        <ToastContainer>
+          <Toast
+              :variant="'error'"
+              ref="dangerToast"
+              :message="dangerToast.message"
+          />
+        </ToastContainer>
+
+
+        <!--TOAST-->
+        <ToastContainer>
+          <Toast
+              :variant="'success'"
+              ref="successToast"
+              :message="successToast.message"
+          />
+        </ToastContainer>
+      </div>
+    </transition>
+  </template>
 
 
   <SheetTripSettings v-model:showSheet="settingsShowSheet" v-model="settings" @save="saveSettings" @delete="deleteTrip"/>
@@ -138,9 +146,11 @@ import SheetDayNote from "./components/sheets/SheetDayNote.vue";
 import SheetMap from "./components/sheets/SheetMap.vue";
 import CardActivity from "./components/timeline/CardActivity.vue";
 import TimelineDot from "./components/timeline/TimelineDot.vue";
+import Spinner from "../../UI/Spinner.vue";
 
 export default {
   components: {
+    Spinner,
     AdvSquareCard,
     Card,
     Tag,
@@ -171,7 +181,11 @@ export default {
   props: {
     index: {
       type: Number,
-      required: true,
+      required: false,
+    },
+    tripId: {
+      type: String,
+      required: true
     }
   },
 
@@ -280,6 +294,7 @@ export default {
       successToast: {
         message: '',
       },
+      isLoading: true,
       useDb: useDbStore.get(), // Initialize with the current state
       unsubscribeFromDbStore: null, // 2. Property to hold the unsubscribe function
       tripConfig: {
@@ -410,7 +425,7 @@ export default {
           this.accommodationShowSheet ||
           // this.companionsShowSheet ||
           this.budgetShowSheet ||
-          // this.transportationShowSheet ||
+          this.transportationShowSheet ||
           // this.rolesShowSheet ||
           // this.dayNoteShowSheet ||
           this.addActivityShowSheet ||
@@ -554,41 +569,35 @@ export default {
       } catch (err) {
         console.error('Error at Saving Settings', err)
       }
+    },
+
+    setTripConfig(data) {
+      this.tripConfig.name = data.name
+      this.tripConfig.location = data.location
+      this.tripConfig.theme = data.theme
+      this.tripConfig.date.start = new Date(data.date.start.replace('Z', ''))
+      this.tripConfig.date.end = new Date(data.date.end.replace('Z',''))
+    },
+
+    setTripSettings(data) {
+      this.settings.trip = {...this.tripConfig}
     }
   },
 
-  mounted() {
-    // SUBSCRIBE TO NANOTSTORES
-    this.unsubscribeFromDbStore = useDbStore.listen(newValue => {
-      // Update the component's reactive data property with the new store value
-      this.useDb = newValue;
-    });
+  async mounted() {
+    const response = await fetch(`/api/v1/trip?tripId=${this.tripId}`, {
+      method: 'GET',
+      header: {
+        'Content-Type': 'application/json'
+      }
+    })
 
-    // SIMULATE API CALL
-    const payload = {
-      trip: {
-        name: this.useDb.trips[this.index].name,
-        start_date: new Date(this.useDb.trips[this.index].date.start),
-        end_date: new Date(this.useDb.trips[this.index].date.end),
-        status: '',
-        location: this.useDb.trips[this.index].location,
-        created_by: 'Albert Sobreo',
-        theme: this.useDb.trips[this.index].theme,
-        preparation: this.useDb.trips[this.index].preparation,
-        budget: this.useDb.trips[this.index].budget,
-        activities: this.useDb.trips[this.index].activities,
-        accommodation: this.useDb.trips[this.index].accommodation,
-      },
-    }
+    const data = await response.json()
 
+    this.setTripConfig(data)
+    this.setTripSettings(data)
 
-
-    this.initTripConfig(payload)
-    this.initAccommodation(payload)
-    this.initSettings(payload)
-    this.initPreparation(payload)
-    this.initBudget(payload)
-    this.initActivities(payload)
+    this.isLoading = false
   }
 }
 </script>

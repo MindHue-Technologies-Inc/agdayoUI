@@ -1,6 +1,6 @@
 <template>
   <Card v-for="(trip, index) in trips" class="fadeIn" :class="`fadeIn-${index}`" :customClass="cardClass(trip.theme) + 'w-full p-0! overflow-hidden rounded-4xl hover:shadow-lg transition-shadow duration-200 cursor-pointer'">
-    <a :href="`/trips/${actualIndex?actualIndex[index]:index}`" class="block">
+    <a :href="`/trips/${trip.id}`" class="block">
       <div :class="['flex flex-col gap-3 p-4 sm:p-6 md:p-8', headerClass(trip.theme)]">
         <div class="flex flex-row items-center justify-between" id="status">
           <Tag v-if="checkUpcoming(trip.date.start, trip.date.end) === 'Upcoming'" label="Upcoming" class="bg-white border-primary-light-xs"/>
@@ -15,7 +15,7 @@
         <div class="mt-2">
           <span class="text-zinc-600 font-semibold text-sm">Planning Progress:</span>
           <div :class="progressBgClass(trip.theme)" class="w-full rounded-full h-2 mt-1">
-            <div class="h-2 rounded-full" :class="progressClass(trip.theme)" style="width: 75%;"></div>
+            <div class="h-2 rounded-full" :class="progressClass(trip.theme)" :style="{ width: `${(trip.planningProgress.completed / trip.planningProgress.total) * 100}%` }"></div>
           </div>
           <span class="text-xs text-zinc-500 mt-1 block"><span class="text-sm text-zinc-500 mt-1 block">{{ trip.planningProgress?.completed }}/{{ trip.planningProgress?.total }} Sections Complete</span></span>
         </div>
@@ -50,11 +50,6 @@ export default {
       type: Array,
       required: true,
     },
-
-    actualIndex: {
-      type: Array,
-      required: false
-    }
   },
 
   methods: {

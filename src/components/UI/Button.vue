@@ -33,7 +33,7 @@ export default {
     variant: {
       type: String,
       default: 'primary',
-      validator: (val) => ['primary', 'secondary', 'danger', 'ghost'].includes(val),
+      validator: (val) => ['primary', 'secondary', 'danger', 'ghost', 'google'].includes(val),
     },
     size: {
       type: String,
@@ -83,6 +83,9 @@ export default {
         case 'ghost':
           // Peach outline/ghost style
           return 'text-peach-700 border border-peach-500 bg-transparent hover:bg-peach-50';
+        case 'google':
+          // DARK BUTTON
+          return 'bg-zinc-800 text-zinc-200 hover:bg-zinc-700'
         default:
           return '';
       }

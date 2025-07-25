@@ -32,6 +32,6 @@ import Footer from "../components/UI/Footer.vue"
 	</head>
 	<body class="outfit text-zinc-900 flex flex-col min-h-screen bg-cover bg-center bg-no-repeat">
 		<slot class="flex-grow" />
-		<Footer />
+		<Footer client:only />
 	</body>
 </html>

@@ -1,8 +1,9 @@
 ---
 import LoginPage from "../components/pages/login/index.vue"
 import Layout from "../layouts/LoginLayout.astro"
+export const prerender = false;
 ---
 
 <Layout>
-  <LoginPage client:load/>
+  <LoginPage client:only/>
 </Layout>

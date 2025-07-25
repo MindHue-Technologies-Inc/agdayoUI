@@ -6,7 +6,11 @@
     <div v-if="upcomingActivities.length <= 0" class="flex flex-col grow items-center justify-center gap-4">
       <i class="ph ph-island text-8xl text-zinc-400"></i>
       <span class="font-medium text-zinc-400">No Active or Upcoming Trip</span>
-      <Anchor href="/create-trip" class="text-xl">Start Planning your Trip</Anchor>
+      <div class="flex flex-col gap-1 items-center justify-center">
+        <Anchor href="/create-trip" class="text-xl">Start Planning your Trip</Anchor>
+        <span>or</span>
+        <span class="text-xl">Use <a href="/ai" class="p-1 rounded-lg bg-white transition border border-zinc-200 scale-100 active:scale-95 hover:scale-105"><span class="font-medium" style="background-image: linear-gradient(to right, #eea092, #eabf67);color: transparent;background-clip: text;">Agdayo AI</span></a> to help you plan your Trip!</span>
+      </div>
     </div>
 
     <!-- ELSE -->
@@ -21,22 +25,9 @@ import Anchor from "../../UI/Anchor.vue";
 import TripCard from "../../UI/TripCard.vue";
 import {
   useDbStore,
-  addEmptyTrip,
-  setName,
-  setLocation,
-  setDate,
-  setTheme,
-  setPreparation,
-  setCompanions,
-  setAccommodation,
-  setBudget,
-  setTransportation,
-  setRoles,
-  setActivities,
-  setPlanningProgress,
-  removeTrip
 
 } from "../../../stores/db.js";
+import {useAuthStore} from "../../../stores/auth.js";
 
 export default {
   name: "ActiveTrips",
@@ -47,7 +38,8 @@ export default {
 
   data() {
     return {
-      useDb: useDbStore.get()
+      useDb: useDbStore.get(),
+      useAuth: useAuthStore
     }
   },
 

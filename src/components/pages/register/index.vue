@@ -61,6 +61,9 @@ import ToastContainer from "../../UI/ToastContainer.vue";
 import Toast from "../../UI/Toast.vue";
 import {apiRequest} from "../../../fetch.js";
 import {useRegisterStore, setEmail, setPassword} from "../../../stores/register.js";
+import {createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword} from 'firebase/auth'
+import { auth } from "../../../lib/firebase/client.js";
+import {login} from "../../../stores/auth.js";
 
 export default {
   components: {
@@ -76,8 +79,8 @@ export default {
       isLoading: false,
       useRegister: useRegisterStore,
       activeInput: "email",
-      email: 'albertcorpmail@gmail.com',
-      password: '1234',
+      email: '',
+      password: '',
 
       dangerToast: {
         message: '',
@@ -111,34 +114,72 @@ export default {
       this.isLoading = true;
       // VALIDATE FIRST
       if (this.password == null || this.password === '') {
-        this.dangerToast.message = "Please Enter a password.";;
+        this.dangerToast.message = "Please Enter a password.";
         return;
       }
-      setPassword(this.password);
 
-      console.log(this.useRegister.value)
+      // -- CREATE USER ON FIREBASE
+      // const registerResponse = await createUserWithEmailAndPassword(auth, this.email, this.password)
+      try {
+        const registerResponse = await fetch('/api/v1/auth/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({email: this.email, password: this.password})
+        })
 
-      const res = await apiRequest({
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        url: '/auth/signup',
-        body: {
-          email: this.email,
-          password: this.password,
+        const registerData = await registerResponse.json();
+
+        if (!registerResponse.ok) {
+          // Handle API errors (e.g., email already exists, weak password from server)
+          throw new Error(registerData.message || 'Registration failed on server.');
         }
-      })
 
-      if (!res.ok) {
-        this.dangerToast.message = 'Something went wrong'
-        return
+        console.log("Client: User registered via API. Server response:", registerData);
+      } catch (err) {
+        console.error(err)
       }
 
-      console.log(await res.json())
-      window.location.href='/register/otp'
+      try {
+        // -- LOGIN USER ON FRONTEND
+        const userCredential = await signInWithEmailAndPassword(auth, this.email, this.password);
+
+        const user = userCredential.user
+        const idToken = await user.getIdToken();
+
+        // -- LOGIN USER USING BACKEND
+        const sessionResponse = await fetch('/api/v1/auth/session-login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({idToken})
+        })
+
+        if (!sessionResponse.ok) {
+          const errorData = await sessionResponse.json();
+          throw new Error(errorData.message || 'Failed to create session on server.');
+        }
+
+        // -- SESSION COOKIE IS NOW SET BY THE SERVER
+        // -- UPDATE THE NANOSTORE AND REDIRECT
+        login({
+          user: {
+            id: user.uid,
+            email: user.email,
+            displayName: user.displayName || user.email.split('@')[0],
+          },
+          token: idToken, // This token is primarily for client-side use if needed. The cookie is the real source of truth for SSR.
+        });
+
+        window.location.href = '/build-profile'
+      } catch (error) {
+        console.error("Client: Registration/Login Error:", error);
+        this.dangerToast.message = error.message || 'An unexpected error occurred during registration.';
+      }
+
       this.isLoading = false
-      // setTimeout(()=>{window.location.href = '/register/otp'}, 1000)
 
     }
   }
