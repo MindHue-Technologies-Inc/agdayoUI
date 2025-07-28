@@ -15,6 +15,7 @@ const inPublicRoute = [
     '/api/v1/auth/register-using-google/',
     '/api/v1/auth/session-login',
     '/api/v1/auth/session-logout',
+    '/api/v2/maps-places',
     '/register',
     '/register/',
     '/register/otp',

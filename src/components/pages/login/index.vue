@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-row w-screen h-screen">
+  <div class="flex flex-row w-screen lg:h-screen py-8 lg:py-0">
     <!-- SPLASH FRAME -->
     <div class="hidden lg:flex relative grow">
       <Splash class="absolute h-full inset-0"/>

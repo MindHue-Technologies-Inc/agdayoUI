@@ -1,23 +1,14 @@
 import { adminAuth, adminDb } from "../../../../lib/firebase/server.ts";
-import type {APIRoute} from "astro";
-import { FieldValue } from 'firebase-admin/firestore'; // Import FieldValue for serverTimestamp
+import type { locals } from "../../../../types/locals.ts";
+import { FieldValue } from "firebase-admin/firestore";
+import type {ActivityWriteData} from "../../../../types/trip-activity.ts";
 
 export const prerender = false;
-
-interface locals {
-  user: {
-    uid: string;
-    email?: string;
-    displayName?: string;
-    photoURL?: string;
-    // Add any other properties from your decodedClaims
-  } | null;
-  isAuthenticated: boolean;
-}
 
 // Interface for the incoming request body
 interface CreateTripRequestBody {
   name: string;
+  activities: ActivityWriteData[],
   location: string;
   theme?: string; // Optional field
   date: {
@@ -54,6 +45,7 @@ export const GET = async ({locals}:{url:URL, request:Request,locals:locals}) => 
     // -- 3. FORMAT THE SNAPSHOT
     const trips = tripsSnapshot.docs.map((doc:any) => {
       const data = doc.data();
+      console.log(data.date)
       console.log(doc.id)
       return {
         id: doc.id,
@@ -64,6 +56,12 @@ export const GET = async ({locals}:{url:URL, request:Request,locals:locals}) => 
           start: data.date.start,
           end: data.date.end,
         },
+        companionsUids: data.companionsUids,
+        budgetIds: data.budgetIds,
+        accommodationIds: data.accommodationIds,
+        taskIds: data.taskIds,
+        activityIds: data.activityIds,
+
         planningProgress: {
           completed: data.planningProgress.completed,
           total: data.planningProgress.total
@@ -110,6 +108,7 @@ export const POST = async ({request, locals}:{request:Request, locals:locals}) =
     const body: CreateTripRequestBody = await request.json()
 
     const {
+      activities,
       name,
       location,
       theme,
@@ -187,6 +186,36 @@ export const POST = async ({request, locals}:{request:Request, locals:locals}) =
       photoURL: photoURL,
       joinedAt: FieldValue.serverTimestamp(),
     })
+
+    const newActivityIds: string[] = [];
+
+    // -- 7.1 ADD ACTIVITIES IF IT EXISTS
+    const activitiesToLoop = activities ? [...activities] : []
+    for (const activity of activitiesToLoop) {
+      if (activity.id) {
+        delete activity.id
+      }
+      const activityToSave = {
+        ...activity,
+        createdAt: FieldValue.serverTimestamp(),
+        createdBy: uid,
+      }
+
+      const activityRef = tripRef
+          .collection('activities')
+          .doc()
+
+      batch.set(activityRef, activityToSave)
+
+      newActivityIds.push(activityRef.id); // Collect the ID
+    }
+
+    if (newActivityIds.length > 0) {
+      batch.update(tripRef, {
+        activityIds: FieldValue.arrayUnion(...newActivityIds), // Use spread operator for multiple IDs
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+    }
 
     // -- 8. COMMIT THE BATCH
     await batch.commit();

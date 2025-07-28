@@ -18,7 +18,7 @@
             id="activityTitle"
             v-model="localActivity.title"
             placeholder="e.g., Explore Mines View Park"
-            label="Activity Name"
+            label="Activity Name (Required)"
             icon="ph-article"
             :error="validationErrors.title"
         />
@@ -32,7 +32,7 @@
                 class="w-full"
                 v-model="localActivity.date"
                 id="activityDate"
-                label="Date"
+                label="Date (Required)"
                 :options="days"
                 :placeholder="localActivity.date ? new Intl.DateTimeFormat(getLocale(), { month: 'short', day: 'numeric' }).format(new Date(localActivity.date + 'T00:00:00Z')) : 'Select Date'"
                 icon="ph-calendar"
@@ -42,7 +42,7 @@
                 id="activityTime"
                 v-model="localActivity.time"
                 type="time"
-                label="Time"
+                label="Time (Required)"
                 icon="ph-clock"
                 :error="validationErrors.time"
             />
@@ -89,7 +89,7 @@
               id="activityCostNote"
               v-model="localActivity.costNote"
               placeholder="e.g., per person, entrance fee"
-              label="Notes (Optional)"
+              label="Budget Notes"
               icon="ph-note"
               :error="validationErrors.costNote"
           />
@@ -110,7 +110,7 @@
           <label class="ml-6 text-sm font-medium text-zinc-900">
             Activity Type Icon
           </label>
-          <div class="flex flex-wrap gap-3 p-1">
+          <div class="flex flex-wrap justify-center gap-3 p-1">
             <button
                 v-for="(iconClass) in activityIcons"
                 :key="iconClass"
@@ -233,7 +233,7 @@ export default {
       while (currentDate <= endDate) {
         const year = currentDate.getFullYear()
         const month = (currentDate.getMonth() + 1) < 10 ? `0${currentDate.getMonth() + 1}` : `${currentDate.getMonth() + 1}`
-        const day = currentDate.getDate()
+        const day = currentDate.getDate() < 10 ? `0${currentDate.getDate()}` : `${currentDate.getDate()}`
         const isoDate = `${year}-${month}-${day}`;
         const formattedDate = new Intl.DateTimeFormat(locale, {
           weekday: 'short',
@@ -250,8 +250,8 @@ export default {
     },
     // This computed prop simplifies the Button's disabled state
     isFormValid() {
-      // Basic check: title is required
-      if (!this.localActivity.title.trim()) {
+      // Basic check: title, date and time are required
+      if (!this.localActivity.title.trim() && !this.localActivity.date && !this.localActivity.time) {
         return false;
       }
       // You can add more complex checks here if needed before attempting to save

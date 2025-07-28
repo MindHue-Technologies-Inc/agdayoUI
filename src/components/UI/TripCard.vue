@@ -15,9 +15,9 @@
         <div class="mt-2">
           <span class="text-zinc-600 font-semibold text-sm">Planning Progress:</span>
           <div :class="progressBgClass(trip.theme)" class="w-full rounded-full h-2 mt-1">
-            <div class="h-2 rounded-full" :class="progressClass(trip.theme)" :style="{ width: `${(trip.planningProgress.completed / trip.planningProgress.total) * 100}%` }"></div>
+            <div class="h-2 rounded-full" :class="progressClass(trip.theme)" :style="{ width: `${(progressOfPlanning(trip)  / trip.planningProgress.total) * 100}%` }"></div>
           </div>
-          <span class="text-xs text-zinc-500 mt-1 block"><span class="text-sm text-zinc-500 mt-1 block">{{ trip.planningProgress?.completed }}/{{ trip.planningProgress?.total }} Sections Complete</span></span>
+          <span class="text-xs text-zinc-500 mt-1 block"><span class="text-sm text-zinc-500 mt-1 block">{{ progressOfPlanning(trip) }}/{{ trip.planningProgress?.total }} Sections Complete</span></span>
         </div>
 
         <div class="flex flex-row flex-wrap items-center gap-x-6 gap-y-2 text-zinc-600 font-medium text-sm mt-2">
@@ -53,6 +53,22 @@ export default {
   },
 
   methods: {
+    progressOfPlanning(trip) {
+      const conditions = [
+        trip.activityIds?.length > 0,
+        trip.budgetIds?.length > 0,
+        trip.companionsUids?.length > 1,
+        trip.taskIds?.length > 0,
+        !!trip.accommodationIds?.length > 0,
+        // Add other conditions here
+      ];
+
+      const completed = conditions.filter(Boolean).length;
+      const total = conditions.length;
+
+      return completed
+    },
+
     checkUpcoming(dateStart, dateEnd) {
       const currentDate = new Date()
       const startDate = new Date(dateStart)

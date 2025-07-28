@@ -14,7 +14,7 @@
         <div class="flex flex-col gap-6">
 
           <template v-if="trips.length > 0">
-            <TripCard :trips="trips"></TripCard>
+            <TripCard :trips="sortedTrips"></TripCard>
           </template>
 
           <template v-else-if="isLoading">
@@ -60,6 +60,15 @@ export default {
       trips: [],
       isLoading: true,
     }
+  },
+
+  computed: {
+    sortedTrips() {
+      return this.trips.toSorted((a,b) => {
+        return a.date.start.localeCompare(b.date.start)
+      })
+    },
+
   },
 
   methods: {

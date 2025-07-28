@@ -75,11 +75,11 @@
 
       </div>
 
-      <div class="flex items-center justify-between w-full pt-6">
+      <div class="flex items-start justify-between w-full pt-6 flex-col lg:flex-row gap-5">
         <Button variant="ghost" @click="$emit('delete')">Delete</Button>
-        <div class="flex gap-3">
-          <Button variant="secondary" @click="closeSheet">Cancel</Button>
-          <Button variant="primary" @click="saveSettings">Save Changes</Button>
+        <div class="flex gap-3 w-full lg:w-fit">
+          <Button class="w-full lg:w-fit" variant="secondary" @click="closeSheet">Cancel</Button>
+          <Button class="w-full lg:w-fit" variant="primary" @click="saveSettings">Save Changes</Button>
         </div>
       </div>
     </div>

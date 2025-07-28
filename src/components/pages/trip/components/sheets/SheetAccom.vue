@@ -24,30 +24,30 @@
                ]"
               />
             </div>
-            <Button>Next</Button>
+
           </div>
         </AdvInput>
 
         <AdvInput :summary="localConfig.location" label="Location" icon="ph-map-pin">
           <div class="flex flex-col gap-4 p-1">
             <Input v-model="localConfig.location" id="accommodation-location" placeholder="Enter name of location" label="Name" />
-            <Button>Next</Button>
+
           </div>
         </AdvInput>
 
-        <Dates v-model="localConfig.dates" :summary="formatDateRange(localConfig.dates.start, localConfig.dates.end)"/>
+        <Dates :disable-button="true" v-model="localConfig.dates" :summary="formatDateRange(localConfig.dates.start, localConfig.dates.end)"/>
 
         <AdvInput :summary="`${localConfig.numberOfRooms} Room(s)` || 'Add details for rooms & guests'" label="Rooms & Guests" icon="ph-users">
           <div class="flex flex-col gap-4 p-1">
             <Input v-model="localConfig.numberOfRooms" id="number-numbers" type="number" placeholder="Number of Rooms" label="Rooms" min="1" />
-            <Button>Next</Button>
+
           </div>
         </AdvInput>
 
         <AdvInput :summary="formatCost(localConfig.totalCost)" label="Cost" icon="₱">
           <div class="flex flex-col gap-4 p-1">
             <Input v-model="localConfig.totalCost" id="cost" type="number" :formatCommas="true" placeholder="Estimated total cost" label="Total Cost" prefix="₱" min="0" />
-            <Button>Next</Button>
+
           </div>
         </AdvInput>
 
@@ -55,7 +55,7 @@
           <div class="flex flex-col gap-4 p-1">
             <Input v-model="localConfig.checkInTime" id="check-in" type="time" label="Check-in Time" />
             <Input v-model="localConfig.checkOutTime" id="check-out" type="time" label="Check-out Time" />
-            <Button>Next</Button>
+
           </div>
         </AdvInput>
 
@@ -157,7 +157,12 @@ export default {
       if (start.getFullYear() !== end.getFullYear()) {
         options.year = 'numeric';
       }
-      return `${new Intl.DateTimeFormat('en-US', options).format(start)} - ${new Intl.DateTimeFormat('en-US', options).format(end)}`;
+      console.log(startDateIso, endDateIso)
+      try {
+        return `${new Intl.DateTimeFormat('en-US', options).format(start)} - ${new Intl.DateTimeFormat('en-US', options).format(end)}`;
+      } catch (error) {
+        console.error(error)
+      }
     },
 
     // Helper method to format cost for summary
@@ -171,11 +176,29 @@ export default {
       this.$emit('update:showSheet', false);
     },
 
-    save() {
-      // Emit the localConfig (updated data) and then signal to close the sheet
+    async save() {
+      // -- Emit the localConfig (updated data) and then signal to close the sheet
       this.$emit('update:modelValue', this.localConfig); // Emit updated data
       this.$emit('update:showSheet', false); // Signal to close the sheet
-      this.$emit('save', this.localConfig); // Emit a 'save' event if the parent needs to react
+
+      // -- GET TRIP ID FIRST
+      const pathname = window.location.pathname
+      const tripId = pathname.split('/')[2]
+
+      // -- SAVE to FIRESTORE
+      const response = await fetch('/api/v1/trip/accommodations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          tripId: tripId,
+          accommodationData: this.localConfig
+        })
+      })
+
+      // -- PRINT RESPONSE
+      console.log(await response.json())
     }
   },
 }

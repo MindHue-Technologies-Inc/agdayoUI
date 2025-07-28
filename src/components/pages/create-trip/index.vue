@@ -146,7 +146,6 @@ export default {
     },
 
     async saveTrip() {
-      this.btnLoading = true;
 
       // -- 1. VALIDATE INPUTS
       if (!this.validateName()) return;
@@ -154,6 +153,7 @@ export default {
       if (!this.validateDate()) return;
 
       try {
+        this.btnLoading = true;
         // -- 1.5 CONSTRUCT TRIP PAYLOAD
         const payload = {
           name: this.name,
