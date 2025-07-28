@@ -1,7 +1,7 @@
 {
   "name": "expensetrackerui",
   "type": "module",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "scripts": {
     "dev": "astro dev --host 0.0.0.0",
     "build": "astro build",
@@ -15,9 +15,13 @@
     "@clerk/astro": "^2.6.7",
     "@formkit/auto-animate": "^0.8.2",
     "@google/genai": "^1.7.0",
+    "@prisma/client": "^6.12.0",
+    "@prisma/extension-accelerate": "^2.0.2",
     "@tailwindcss/vite": "^4.1.4",
     "apexcharts": "^4.7.0",
     "astro": "^5.7.4",
+    "firebase": "^12.0.0",
+    "firebase-admin": "^13.4.0",
     "jwt-decode": "^4.0.0",
     "nanostores": "^1.0.1",
     "philippines": "^1.0.0",
@@ -32,6 +36,8 @@
     "@vitest/ui": "^3.1.2",
     "@vue/test-utils": "^2.4.6",
     "jsdom": "^26.1.0",
+    "prisma": "^6.12.0",
+    "tsx": "^4.20.3",
     "vitest": "^3.1.2"
   }
 }

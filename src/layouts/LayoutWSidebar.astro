@@ -35,8 +35,8 @@ import Sidebar from "../components/UI/Sidebar.vue"
   
   <!-- BODY -->
   <body class="outfit relative text-zinc-900 flex flex-col min-h-screen bg-cover bg-center bg-no-repeat">
-    <Sidebar client:load/>
+    <Sidebar client:only/>
     <slot class="flex-grow" />
-    <Footer class="pb-16 lg:pb-4" />
+    <Footer client:only class="pb-16 lg:pb-4" />
   </body>
 </html>

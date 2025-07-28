@@ -3,12 +3,12 @@
       id="travel-dates"
       label="Dates"
       icon="ph ph-calendar"
-
+      :summary="summary"
       ref="advInput"
   >
     <div class="flex flex-col p-1 gap-2">
       <DateRangePicker v-model:range="range" />
-      <Button class="w-full" @click="proceedNext" :disabled="!range.start || !range.end">Next</Button>
+      <Button v-if="!disableButton" class="w-full" @click="proceedNext" :disabled="!range.start || !range.end">Next</Button>
     </div>
   </AdvInput>
 </template>
@@ -27,6 +27,11 @@ export default {
   props: {
     summary: {
       type: String,
+    },
+
+    disableButton: {
+      type: Boolean,
+      default: false,
     },
 
     modelValue: {

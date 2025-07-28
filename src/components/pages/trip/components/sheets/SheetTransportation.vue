@@ -1,12 +1,12 @@
 <template>
-  <Sheet :model-value="showSheet" @update:modelValue="$emit('update:modelValue', $event)">
+  <Sheet :model-value="showSheet" @update:modelValue="$emit('update:showSheet', false)">
     <div class="flex flex-col items-start h-full md:px-6 md:py-8 px-1 py-2">
       <div class="flex items-center justify-between w-full mb-6">
         <div class="flex gap-2 items-center justify-center text-3xl text-zinc-800">
           <i class="ph ph-bus"></i> <span class="font-bold">Transportation</span>
           <Tag label="+ Add Segment" mode="button" @click="addTransportRow" />
         </div>
-        <button @click="$emit('update:modelValue', { ...modelValue, showSheet: false })" class="text-zinc-500 hover:text-zinc-700 transition">
+        <button @click="$emit('update:showSheet', false)" class="text-zinc-500 hover:text-zinc-700 transition">
           <i class="ph ph-x text-2xl"></i>
         </button>
       </div>
@@ -117,10 +117,15 @@ export default {
       type: Object,
       default: () => ({ showSheet: false, transports: [] }), // Default with an empty transports array
       required: true,
+    },
+
+    showSheet: {
+      type: Boolean,
+      default: false
     }
   },
 
-  emits: ['update:modelValue'],
+  emits: ['update:modelValue', 'update:showSheet'],
 
   data() {
     return {
@@ -137,12 +142,6 @@ export default {
         'Other': 'ph-question',
       }
     };
-  },
-
-  computed: {
-    showSheet() {
-      return this.modelValue.showSheet;
-    },
   },
 
   watch: {

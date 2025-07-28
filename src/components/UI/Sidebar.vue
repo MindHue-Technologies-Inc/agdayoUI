@@ -34,7 +34,7 @@
 <script>
 import { logout, useAuthStore } from '../../stores/auth';
 import { version } from '../../../package.json'
-import {apiRequest} from "../../fetch.js";
+import { auth } from "../../lib/firebase/client.js";
 
 export default {
   data() {
@@ -50,21 +50,35 @@ export default {
       this.showMenu = !this.showMenu;
     },
     async logoutUser() {
-      window.location.href="/login"
+      try {
+        // -- 1. SIGN OUT FROM FIREBASE CLIENT SDK
+        await auth.signOut()
+        console.log('FIREBASE CLIENT-SIDE SIGN OUT SUCCESSFUL')
 
-      // -- IRRELEVANT
-      const res = await apiRequest({
-        method: 'DELETE',
-        url: "/auth/signout"
-      })
+        // -- 2. SEND REQUEST TO YOUR SERVER-SIDE LOGOUT API TO CLEAR THE HTTPONLY COOKIE
+        const response = await fetch('/api/v1/auth/session-logout', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+        });
 
-      if (!res.ok){
-        console.log('RES IS NOT OK')
-        return
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Server-side logout failed.');
+        }
+
+        console.log('SERVER-SIDE SESSION CLEARED')
+
+        // -- 3. CLEAR NANOSTORES
+
+
+        // -- 4. REDIRECT TO LOGIN
+        window.location.href = '/login'
+      } catch (error) {
+        console.error("Logout Error:", error);
+        alert("An error occurred during logout. Please try again.");
       }
-
-      await res.json()
-      window.location.href = "/login";
     }
   },
   mounted() {
