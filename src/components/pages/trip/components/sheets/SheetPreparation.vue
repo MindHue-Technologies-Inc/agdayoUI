@@ -29,6 +29,7 @@
         >
           <Checkbox :id="`task-${item.id}`"
                     v-model="item.completed"
+                    @change="taskChecked(item, $event)"
                     :label="item.task"
                     labelClass="!text-base font-medium"
 
@@ -173,33 +174,83 @@ export default {
     b0ss(item) {
       this.newTask.category = item
     },
+
+    async taskChecked(task, e){
+      console.log(task)
+      const response = await fetch('/api/v1/trip/task', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({taskId: task.id, taskData: task})
+      })
+    },
+
     toggleEditMode(){
       this.editMode = !this.editMode
     },
 
-    deleteTask(item){
-      const index = this.modelValue.preparationsChecklist.indexOf(item)
-      this.modelValue.preparationsChecklist.splice(index, 1)
+    async deleteTask(item){
+      try {
+        const index = this.modelValue.preparationsChecklist.indexOf(item)
+        this.modelValue.preparationsChecklist.splice(index, 1)
+
+        const response = await fetch(`/api/v1/trip/task?tripId=${item.tripId}&taskId=${item.id}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+        })
+
+        if (!response.ok) {
+          const error = await response.json()
+          throw new Error(`Error deleting task: ${error.message}`)
+        }
+      } catch (error) {
+        console.error(error)
+      }
     },
 
-    addTask() {
+    async addTask() {
       // Ensure task name is not empty
       if (this.newTask.name.trim() === '') return;
 
-      this.modelValue.preparationsChecklist.push({
-        id: Date.now(), // Simple unique ID
-        task: this.newTask.name.trim(), // Use newTask.name
-        category: this.newTask.category, // Use newTask.category
-        completed: false,
-        notes: this.newTask.notes.trim(), // Use newTask.notes
-      });
+      try {
+        // -- GET TRIP ID FROM URL
+        const pathname = window.location.pathname
+        const tripId = pathname.split('/')[2]
 
-      // Reset the new task object for the next entry
-      this.newTask = {
-        name: '',
-        category: '', // Reset to default
-        notes: ''
-      };
+        // -- USE THIS FOR UPDATING THE DATA ON FRONT END
+        const newLength = this.modelValue.preparationsChecklist.push({...this.newTask, task: this.newTask.name});
+        const indexOfNewTask = newLength - 1;
+
+        // -- CALL THE API FOR ADDING TASK
+        const response = await fetch('/api/v1/trip/task', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({task: this.newTask, tripId: tripId})
+        })
+
+        if (!response.ok) {
+          const error = await response.json()
+          throw new Error(`Error creating task: ${error.message}`)
+        }
+
+        const { createdTask, taskId } = await response.json()
+
+        this.modelValue.preparationsChecklist[indexOfNewTask] = createdTask
+
+        // Reset the new task object for the next entry
+        this.newTask = {
+          name: '',
+          category: '', // Reset to default
+          notes: ''
+        };
+      } catch (error) {
+        console.error(error)
+      }
       // this.$emit('update:modelValue', { ...this.modelValue, preparationsChecklist: this.preparationsChecklist })
     }
   }

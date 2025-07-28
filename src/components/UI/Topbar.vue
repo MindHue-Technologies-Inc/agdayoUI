@@ -17,16 +17,19 @@
 
     <div :class="[
         'flex items-center justify-center ',
-         'text-2xl transition rounded-full p-1 ',
+         'text-2xl transition rounded-full ',
           'bg-none hover:text-zinc-500 cursor-pointer',
-          'absolute right-0 bg-zinc-200 aspect-square border-2 border-zinc-300'
+          'absolute right-0 bg-zinc-200 aspect-square border-2 border-zinc-300',
+          'overflow-hidden h-8 w-8'
     ]">
-      <i class="ph ph-user"></i>
+      <img v-if="photoURL" :src="photoURL" alt="">
+      <i v-else class="ph ph-user"></i>
     </div>
   </div>
 </template>
 
 <script>
+import {useAuthStore} from "../../stores/auth.js";
 export default {
   props: {
     title: {
@@ -36,6 +39,18 @@ export default {
     hideBackButton: {
       type: Boolean,
       default: false
+    }
+  },
+
+  data() {
+    return {
+      useAuth: useAuthStore.get()
+    }
+  },
+
+  computed: {
+    photoURL() {
+      return this.useAuth.user?.user?.photoURL
     }
   },
 

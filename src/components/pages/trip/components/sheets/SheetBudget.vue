@@ -23,13 +23,23 @@
                 optionValue="value"
                 :options="currencyOptions()"
             />
-            <Button>Set Budget</Button>
           </div>
         </AdvInput>
       </div>
 
       <div class="flex-grow w-full pr-2 flex flex-col gap-3 custom-scrollbar">
-        <h3 class="text-lg font-semibold text-zinc-700 mt-2 mb-2">Budget Breakdown</h3>
+        <div class="flex flex-row items-center justify-between">
+          <h3 class="text-lg font-semibold text-zinc-700 mt-2 mb-2">Budget Breakdown </h3>
+          <div class="font-normal! text-xs text-zinc-400 flex flex-col gap-0">
+            <span>Total {{formatCurrency(totalBreakdown)}}</span>
+            <div v-if="totalBreakdown - localBudget.totalBudget > 0">
+              <span>{{formatCurrency(totalBreakdown - localBudget.totalBudget)}} over budget</span>
+            </div>
+            <div v-else>
+              <span>{{formatCurrency(localBudget.totalBudget - totalBreakdown)}} below budget</span>
+            </div>
+          </div>
+        </div>
         <AdvInput
             v-for="(category, index) in localBudget.categories"
             :key="category.id"
@@ -43,7 +53,7 @@
             <Input :id="`category-name-${index}`" v-model="category.name" placeholder="e.g., Flights, Food, Activities" label="Category Name" />
             <Input :id="`category-amount-${index}`" v-model.number="category.amount" type="number" placeholder="Budget for this category" label="Amount" :prefix="localBudget.currency" />
             <div class="flex justify-end mt-2">
-              <Button v-if="localBudget.categories.length > 1" @click="removeCategoryRow(category.id)" variant="ghost">
+              <Button v-if="localBudget.categories.length > 1" @click="removeCategoryRow(category.tempId, category.id)" variant="ghost">
                 Delete Category
               </Button>
             </div>
@@ -129,6 +139,12 @@ export default {
         return formatter.format(this.localBudget.totalBudget);
       }
       return 'Set your overall trip budget';
+    },
+
+    totalBreakdown() {
+      return this.localBudget.categories.reduce((accumulator, currentValue) => {
+        return accumulator + currentValue.amount
+      }, 0)
     }
   },
 
@@ -172,17 +188,40 @@ export default {
     // Adds a new blank budget category object to the localBudget.categories array
     addCategoryRow() {
       this.localBudget.categories.push({
-        id: this.generateUniqueId(),
+        tempId: this.generateUniqueId(),
         name: '',
         amount: 0,
       });
     },
     // Removes a budget category from the localBudget.categories array by ID
-    removeCategoryRow(id) {
-      this.localBudget.categories = this.localBudget.categories.filter(category => category.id !== id);
+    async removeCategoryRow(tempId, id) {
+      this.localBudget.categories = this.localBudget.categories.filter(category => {
+        if (category.id) {
+          return category.id !== id
+        } else {
+          return category.tempId !== tempId
+        }
+      });
       // Optional: if all removed, add a new blank row for convenience
       if (this.localBudget.categories.length === 0) {
         this.addCategoryRow();
+      }
+
+      // -- GET TRIP ID
+      const pathname = window.location.pathname
+      const tripId = pathname.split('/')[2]
+
+      // -- API CALL TO DELETE THE BUDGET CATEGORY IN FIRESTORE
+      const response = await fetch(`/api/v1/trip/budget?tripId=${tripId}&budgetId=${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        console.error(`ERROR deleting budget: ${error.message}`)
       }
     },
     // Creates a summary string for the AdvInput component header
@@ -203,6 +242,16 @@ export default {
       } catch (e) {
         console.log(e)
       }
+    },
+
+    formatCurrency(amount) {
+      const formatter = new Intl.NumberFormat((this.getLocale(), {
+        style: 'currency',
+        currency: this.localBudget.currency,
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }))
+      return `${this.getCurrencySymbol(this.localBudget.currency)} ${formatter.format(amount)}`;
     },
 
     getCurrencySymbol(currencyCode) {
@@ -406,7 +455,7 @@ export default {
     },
 
     // Emits the updated budget data back to the parent
-    saveBudget() {
+    async saveBudget() {
       // Filter out any completely empty category rows before emitting
       const savedCategories = this.localBudget.categories.filter(c => c.name.trim() !== '' || c.amount > 0);
 
@@ -415,8 +464,29 @@ export default {
         totalBudget: this.localBudget.totalBudget,
         currency: this.localBudget.currency,
         categories: savedCategories, // Update the categories array
-        showSheet: false, // Close the sheet
       });
+
+      this.$emit('update:showSheet', false)
+
+      // -- GET TRIP ID
+      const pathname = window.location.pathname
+      const tripId = pathname.split('/')[2]
+
+      const response = await fetch ('/api/v1/trip/budget', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          tripId: tripId,
+          overallBudget: this.localBudget.totalBudget,
+          budgetBreakdown: savedCategories,
+        })
+      })
+
+      if (!response.ok) {
+        console.error('ERROR saving budget')
+      }
     },
 
     // Closes the sheet

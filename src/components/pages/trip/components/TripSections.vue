@@ -9,7 +9,7 @@
     <AdvSquareCard
         iconName="ph-bed"
         cardName="Accommodations"
-        :tagName="`${accommodation.numberOfRooms} ${accommodation.numberOfRooms > 1 ? 'Rooms' : 'Room'}`"
+        :tagName="`${accommodation?.numberOfRooms} ${accommodation?.numberOfRooms > 1 ? 'Rooms' : 'Room'}`"
         tagVariant="orange"
         @card-click="$emit('show-accommodation')"
     />

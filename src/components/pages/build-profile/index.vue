@@ -113,6 +113,8 @@ import provinces from "philippines/provinces";
 import Select from "../../UI/Select.vue";
 import ToastContainer from "../../UI/ToastContainer.vue";
 import Toast from "../../UI/Toast.vue";
+import { updateProfile } from "firebase/auth";
+import { auth } from "../../../lib/firebase/client.js";
 
 export default {
   components: {
@@ -199,7 +201,7 @@ export default {
       this.setActiveInput('hear');
     },
 
-    validateHearAndBuildProfile() {
+    async validateHearAndBuildProfile() {
       // **Your Validation Logic for heardUs here**
       let isValid = true;
       if (!this.heardUs) {
@@ -209,12 +211,12 @@ export default {
         return
       }
 
-      this.buildProfile();
+      await this.buildProfile();
     },
 
     // --- End Validation Method Templates ---
 
-    buildProfile() {
+    async buildProfile() {
       // Your existing logic to set store values
 
       setFullName(this.fullName);
@@ -223,6 +225,11 @@ export default {
       setHeardUs(this.heardUs);
       setHasExperience(this.hasExperience);
       // Ensure useRegisterStore is called as a function if it's a Pinia store
+
+      // -- SAVE DISPLAY NAME TO FIREBASE USER
+      await updateProfile(auth.currentUser, {
+        displayName: this.fullName
+      })
 
       // Final navigation
       window.location.href = '/active-trip'

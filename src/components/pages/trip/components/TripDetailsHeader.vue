@@ -16,7 +16,7 @@
         <h2 class="font-extrabold text-4xl sm:text-5xl text-zinc-800 tracking-tight outfit leading-tight">{{tripConfig.name}}</h2>
       </div>
 
-      <div class="mt-2 fadeIn fadeIn-2">
+      <div class="fadeIn mt-2 fadeIn-2">
         <span class="text-zinc-600 font-semibold">Planning Progress:</span>
         <div :class="progressBgClass" class="w-full rounded-full h-2 mt-1">
           <div :class="['h-2 rounded-full transition-all ease', progressClass]" :style="{ width: `${(planningProgress.completed / planningProgress.total) * 100}%` }"></div>
@@ -60,6 +60,10 @@ export default {
   },
   emits: ['show-settings', 'showMap'],
   computed: {
+    fadeIn() {
+      return this.tripConfig.name ? true : false
+    },
+
     cardClass() {
       switch (this.tripConfig.theme) {
         case 'peach':

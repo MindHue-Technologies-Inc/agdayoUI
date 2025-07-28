@@ -13,7 +13,22 @@
 
         <div class="flex flex-col gap-6">
 
-          <TripCard :trips="sortedTrips.map(trip=>trip.trip)" :actual-index="sortedTrips.map(trip=>trip.originalIndex)"></TripCard>
+          <template v-if="trips.length > 0">
+            <TripCard :trips="sortedTrips"></TripCard>
+          </template>
+
+          <template v-else-if="isLoading">
+            <div class="flex items-center justify-center w-full h-[32rem]">
+              <Spinner label="Loading your trips"/>
+            </div>
+          </template>
+
+          <template v-else>
+            <div class="flex flex-col grow items-center justify-center gap-2 h-[32rem]">
+              <i class="ph ph-island text-5xl text-zinc-400"></i>
+              <span class="font-medium text-zinc-400">No Trips</span>
+            </div>
+          </template>
 
         </div>
 
@@ -27,10 +42,13 @@ import Card from "../../UI/Card.vue";
 import TripCard from "../../UI/TripCard.vue";
 import Tag from "../../UI/Tag.vue";
 import Button from "../../UI/Button.vue";
-import {useDbStore} from "../../../stores/db.js";
+import Spinner from "../../UI/Spinner.vue";
+import Anchor from "../../UI/Anchor.vue";
 
 export default {
   components: {
+    Anchor,
+    Spinner,
     Card,
     Tag,
     Button,
@@ -39,46 +57,46 @@ export default {
 
   data() {
     return {
-      useDb: useDbStore.get(), // Initialize with the current state
-      unsubscribeFromDbStore: null,
       trips: [],
+      isLoading: true,
     }
   },
 
   computed: {
     sortedTrips() {
-      const trips = [...this.useDb.trips]
-      const sortedTrips =  trips.sort((a,b) => {
-        try {
-          return b.date.start.localeCompare(a.date.start)
-        } catch (e) {
-          return true
-        }
+      return this.trips.toSorted((a,b) => {
+        return a.date.start.localeCompare(b.date.start)
       })
+    },
 
-      return sortedTrips.map(trip=>{
-        const originalIndex = this.useDb.trips.indexOf(trip);
-        return {
-          trip: trip,
-          originalIndex: originalIndex
-        };
-      })
-    }
   },
 
   methods: {
+    async fetchTrips() {
+      try {
+        const response = await fetch('/api/v1/trips')
+        if (!response.ok) {
+          const error = await response.json()
+          console.error('Something went wrong', error.message)
+          throw new Error(`Something went wrong: ${error.message}`)
+        }
+
+        this.trips = await response.json()
+        console.log(this.trips)
+      } catch (error) {
+        console.error(error)
+      } finally {
+        this.isLoading = false
+      }
+    },
+
     redirect(address){
       window.location.href=address
     },
   },
 
-  mounted() {
-    // 3. Subscribe to the nanostores store
-    this.unsubscribeFromDbStore = useDbStore.listen(newValue => {
-      // Update the component's reactive data property with the new store value
-      this.useDb = newValue;
-      console.log("Nanostores updated, Vue component data refreshed:", newValue);
-    });
+  async mounted() {
+    await this.fetchTrips();
   },
 }
 </script>

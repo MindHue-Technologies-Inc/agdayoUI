@@ -17,7 +17,7 @@
             id="addActivityName"
             v-model="localActivity.title"
             placeholder="e.g., Explore Mines View Park"
-            label="Activity Name"
+            label="Activity Name (Required)"
             icon="ph-article"
         />
 
@@ -30,7 +30,7 @@
                 class="w-full"
                 v-model="localActivity.date"
                 id="addActivityDate"
-                label="Date"
+                label="Date (Required)"
                 :options="days"
                 :placeholder="isEditing ? (localActivity.date ? new Intl.DateTimeFormat(getLocale(), { month: 'short', day: 'numeric' }).format(new Date(localActivity.date + 'T00:00:000')) : 'Select Date') : 'Select Date'"
                 icon="ph-calendar"
@@ -39,7 +39,7 @@
                 id="addActivityTime"
                 v-model="localActivity.time"
                 type="time"
-                label="Time"
+                label="Time (Required)"
                 icon="ph-clock"
             />
           </div>
@@ -81,7 +81,7 @@
               id="addActivityCostNote"
               v-model="localActivity.costNote"
               placeholder="e.g., per person, entrance fee"
-              label="Notes (Optional)"
+              label="Budget Notes"
               icon="ph-note"
           />
         </div>
@@ -100,7 +100,7 @@
           <label class="ml-6 text-sm font-medium text-zinc-900">
             Activity Type Icon
           </label>
-          <div class="flex flex-wrap gap-3 p-1">
+          <div class="flex flex-wrap justify-center gap-3 p-1">
             <button
                 v-for="(iconClass) in activityIcons"
                 :key="iconClass"
@@ -126,7 +126,7 @@
         <Button class="w-full" @click="cancelActivity" variant="secondary">
           Cancel
         </Button>
-        <Button class="w-full" @click="saveActivity" :disabled="!localActivity.title">
+        <Button class="w-full" @click="saveActivity" :disabled="!localActivity.title && !localActivity.date && !localActivity.time">
           {{ isEditing ? 'Save Changes' : 'Add Activity' }}
         </Button>
       </div>
@@ -243,7 +243,7 @@ export default {
       while (currentDate <= endDate) {
         const year = currentDate.getFullYear()
         const month = (currentDate.getMonth() + 1) < 10 ? `0${currentDate.getMonth() + 1}` : `${currentDate.getMonth() + 1}`
-        const day = currentDate.getDate()
+        const day = currentDate.getDate() < 10 ? `0${currentDate.getDate()}` : `${currentDate.getDate()}`
         const isoDate = `${year}-${month}-${day}`;
         const formattedDate = new Intl.DateTimeFormat(locale, {
           weekday: 'short',
@@ -282,6 +282,13 @@ export default {
           }
         }
       }
+    },
+
+    'localActivity.title': {
+      immediate: true,
+      handler(newVal) {
+        this.localActivity.name = newVal
+      }
     }
   },
 
@@ -289,14 +296,9 @@ export default {
     getLocale() {
       return navigator.language || 'en-US';
     },
-    generateUniqueId() {
-      // Basic ID generation; for a real app, use a UUID library or backend ID
-      return Date.now() + Math.random().toString(36).substring(2, 9);
-    },
     getInitialActivityState() {
       // Returns a fresh, empty activity object for adding a new one
       return {
-        id: this.generateUniqueId(), // Give new activities an ID upfront for consistency
         name: '',
         time: '',
         date: '',

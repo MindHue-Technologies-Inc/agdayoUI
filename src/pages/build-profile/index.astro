@@ -8,7 +8,7 @@ export const prerender = false;
 
 <Layout>
   <Main loading={false}>
-    <Topbar title="Build Profile" client:visible/>
-    <BuildProfile client:visible/>
+    <Topbar title="Build Profile" client:only/>
+    <BuildProfile client:only/>
   </Main>
 </Layout>

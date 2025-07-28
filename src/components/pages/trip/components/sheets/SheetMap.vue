@@ -1,14 +1,16 @@
 <template>
-  <Sheet :model-value="showSheet" @update:modelValue="closeSheetViaProp">
-    <div class="relative flex flex-col items-start grow h-full">
+  <Sheet :padding-on="false" :model-value="showSheet" @update:modelValue="closeSheetViaProp">
+    <div class="relative flex flex-col items-start grow h-full rounded-t-xl overflow-hidden">
       <!-- HEADER CONTAINER -->
-      <div class="bg-linear-to-b from-white/100 via-white/70 to-white/0 z-10 md:px-6 md:py-8 px-2 px-2 py-1 flex items-center justify-between w-full mb-6">
-        <div class="flex gap-2 items-center justify-center text-3xl text-zinc-800">
+      <div class="bg-none z-10 md:px-6 md:py-8 px-2 px-2 py-1 flex items-center justify-between w-full mb-6">
+        <div class="flex gap-2 items-center justify-center text-3xl p-2 rounded-xl bg-white text-zinc-700">
           <i class="ph ph-globe-hemisphere-west"></i> <span class="font-bold">Map</span>
         </div>
 
-        <button @click="closeSheetViaProp" class="text-zinc-500 hover:text-zinc-700 transition">
-          <i class="ph ph-x text-2xl"></i>
+        <button @click="closeSheetViaProp" class="cursor-pointer">
+          <div class="h-10 w-10 rounded-full flex items-center justify-center bg-white">
+            <i class="text-black ph ph-x text-2xl"></i>
+          </div>
         </button>
       </div>
 
@@ -112,7 +114,7 @@ const initMapAndMarkers = async () => {
 
   if (activitiesWOCoords.length > 0) {
     for (let a of activitiesWOCoords) {
-      const response = await fetch(`${api_url}/geo-location`, {
+      const response = await fetch(`/api/v1/geo-location`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -152,11 +154,27 @@ const initMapAndMarkers = async () => {
       center: bounds.getCenter(),
       mapId: 'YOU_MAP_ID_HERE',
       zoomControl: false,
-      mapTypeControl: false,
+      mapTypeId: google.maps.MapTypeId.HYBRID,
       streetViewControl: false,
+      gestureHandling: 'greedy', // <--- Add this line
       fullscreenControl: true,
       fullscreenControlOptions: {
         position: google.maps.ControlPosition.LEFT_BOTTOM
+      },
+      mapTypeControl: true, // Set to true to show the map type control
+      mapTypeControlOptions: {
+        position: google.maps.ControlPosition.BOTTOM_CENTER,
+        // Optional: Customize the style of the control
+        // style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR, // Default: horizontal buttons
+        // style: google.maps.MapTypeControlStyle.DROPDOWN_MENU, // Alternative: dropdown menu
+
+        // Optional: Specify which map types are available in the control
+        mapTypeIds: [
+          google.maps.MapTypeId.ROADMAP,
+          google.maps.MapTypeId.HYBRID, // Satellite with labels
+        ],
+        // Optional: Position the control
+        // position: google.maps.ControlPosition.TOP_RIGHT, // Example position
       },
       rotateControl: false,
       scaleControl: false,

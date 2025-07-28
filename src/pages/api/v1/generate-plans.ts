@@ -95,11 +95,6 @@ const responseSchema: object = {
       items: {
         type: 'OBJECT',
         properties: {
-          id: {
-            type: 'STRING',
-            description: 'A randomly generated unique ID string consisting of letters and numbers.'
-          },
-
           datetime: {
             type: 'STRING',
             description: 'ISO 8601 full date and time string (e.g., \'YYYY-MM-DDTHH:MM:SS\'). This MUST include both date and time. Do not add Z at the end of datetime.'
@@ -162,10 +157,14 @@ const responseSchema: object = {
 
 
 // --- INTERNAL FUNCTION TO CALL YOUR /api/places.js ROUTE ---
-async function callAstroPlacesApi(query: string, location_bias?: string, place_type?: string): Promise<any> {
+async function callAstroPlacesApi(query: string,
+                                  location_bias?: string,
+                                  place_type?: string): Promise<any> {
   const ASTRO_PLACES_API_URL = process.env.NODE_ENV === 'production'
       ? 'https://agdayo.mindhue.tech/api/v2/maps-places' // Replace with your deployed URL
       : 'http://localhost:4321/api/v2/maps-places'; // Ensure this matches your dev server port
+
+  const allResponses = []
 
   try {
     const response = await fetch(ASTRO_PLACES_API_URL, {
@@ -182,8 +181,7 @@ async function callAstroPlacesApi(query: string, location_bias?: string, place_t
       throw new Error(`Places API call failed: ${errorData.message || response.statusText}`);
     }
 
-    const data = await response.json();
-    return data;
+    return await response.json();
   } catch (error: any) {
     console.error("Error in callAstroPlacesApi:", error);
     return { status: "error", message: `Internal API call failed: ${error.message}` };
@@ -285,8 +283,11 @@ export async function POST({ request }: { request: Request }): Promise<Response>
     }
 
 
+    let theLoopStopper = true
+
+
     // Loop to handle tool calls until Gemini provides a final text response
-    while (true) {
+    while (theLoopStopper) {
       console.log('CURRENT RESPONSE', currentResponse.candidates)
       const candidate = currentResponse.candidates?.[0];
       console.log('CANDIDATE', candidate?.content?.parts)
@@ -295,57 +296,67 @@ export async function POST({ request }: { request: Request }): Promise<Response>
         throw new Error('Gemini API response was empty or malformed.');
       }
 
-      const firstPart = candidate.content.parts[0];
-      console.log('FIRST PART', firstPart)
+      const parts = candidate.content.parts;
+      console.log('FIRST PART', parts)
 
-      if (firstPart.functionCall) {
-        // --- Gemini wants to call a tool ---
-        const functionCall = firstPart.functionCall;
-        const functionName = functionCall.name;
-        const functionArgs = functionCall.args;
+      const allToolOutput = []
 
-        console.log("FUNCTION", functionCall, functionName, functionArgs)
+      for (let firstPart of parts) {
+        if (firstPart.functionCall) {
+          // --- Gemini wants to call a tool ---
+          const functionCall = firstPart.functionCall;
+          const functionName = functionCall.name;
+          const functionArgs = functionCall.args;
 
-        console.log(`\nGemini requested function call: ${functionName}`);
-        console.log(`Arguments: ${JSON.stringify(functionArgs)}`);
+          console.log("FUNCTION", functionCall, functionName, functionArgs)
 
-        if (functionName === "find_places_nearby") {
-          const { query, location_bias, place_type } = functionArgs;
+          console.log(`\nGemini requested function call: ${functionName}`);
+          console.log(`Arguments: ${JSON.stringify(functionArgs)}`);
 
-          // Call your Astro API route that wraps Google Places API
-          const toolOutput = await callAstroPlacesApi(query, location_bias, place_type);
+          if (functionName === "find_places_nearby") {
+            const { query, location_bias, place_type } = functionArgs;
 
-          // Check for errors from your internal API
-          if (toolOutput.status === 'error') {
-            console.error("Error from internal Astro Places API:", toolOutput.message);
-            // Send an error response back to Gemini so it knows the tool failed
-            currentResponse = await chatSession.sendMessage({
-              message: JSON.stringify({ error: toolOutput.message || 'Failed to find places.' })
-            });
+            // Call your Astro API route that wraps Google Places API
+            const toolOutput = await callAstroPlacesApi(query, location_bias, place_type);
+
+            // Check for errors from your internal API
+            if (toolOutput.status === 'error') {
+              console.error("Error from internal Astro Places API:", toolOutput.message);
+              // Send an error response back to Gemini so it knows the tool failed
+              currentResponse = await chatSession.sendMessage({
+                message: JSON.stringify({ error: toolOutput.message || 'Failed to find places.' })
+              });
+            } else {
+              // Send the successful tool output back to Gemini
+              console.log(`Tool output for ${functionName}:`, JSON.stringify(toolOutput.places, null, 2));
+              // currentResponse = await chatSession.sendMessage({
+              //   message: JSON.stringify(toolOutput)
+              // });
+
+              allToolOutput.push(toolOutput)
+            }
           } else {
-            // Send the successful tool output back to Gemini
-            console.log(`Tool output for ${functionName}:`, JSON.stringify(toolOutput.places, null, 2));
+            // Handle unknown function calls (shouldn't happen if functionDeclarations are strict)
+            console.warn(`Gemini requested an unknown function: ${functionName}`);
             currentResponse = await chatSession.sendMessage({
-              message: JSON.stringify(toolOutput)
+              message: "Unknown function requested."
             });
           }
+        } else if (firstPart.text) {
+          // --- Gemini provided a text response (hopefully the final JSON) ---
+          geminiResponse = firstPart.text; // This is the final JSON string
+          console.log('GEMINI RESPONSE', geminiResponse)
+          theLoopStopper = false; // Exit the loop
         } else {
-          // Handle unknown function calls (shouldn't happen if functionDeclarations are strict)
-          console.warn(`Gemini requested an unknown function: ${functionName}`);
-          currentResponse = await chatSession.sendMessage({
-            message: "Unknown function requested."
-          });
+          // Unexpected response format
+          console.error("Unexpected Gemini response format:", candidate);
+          throw new Error("Gemini returned an unexpected response format.");
         }
-      } else if (firstPart.text) {
-        // --- Gemini provided a text response (hopefully the final JSON) ---
-        geminiResponse = firstPart.text; // This is the final JSON string
-        console.log('GEMINI RESPONSE', geminiResponse)
-        break; // Exit the loop
-      } else {
-        // Unexpected response format
-        console.error("Unexpected Gemini response format:", candidate);
-        throw new Error("Gemini returned an unexpected response format.");
       }
+
+      currentResponse = await chatSession.sendMessage({
+        message: JSON.stringify(allToolOutput)
+      })
     }
 
 

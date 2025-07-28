@@ -25,11 +25,7 @@ if (isBrowser) {
 }
 
 // Helper functions
-export function login({ user, token }) {
-  document.cookie = `auth=${encodeURIComponent(JSON.stringify({
-    token: token,
-    isAuthenticated: true,
-  }))}; path=/`;
+export function login(user, token) {
   useAuthStore.set({
     user,
     token,

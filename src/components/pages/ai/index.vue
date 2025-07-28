@@ -98,7 +98,7 @@
       </div>
 
 
-      <div v-else-if="activities.length > 0 && !mapLoaded" class="w-full h-[400px] my-4 flex items-center justify-center text-zinc-400">Loading Map...</div>
+      <div v-else-if="activities.length > 0 && !mapLoaded" class="w-full h-[800px] my-4 flex items-center justify-center text-zinc-400">Loading Map...</div>
     </div>
 
   <!--TOAST-->
@@ -277,38 +277,42 @@ export default {
 
         // -- ADD THEME AND ACTIVITIES TO THE JSON
 
-        parsedJson.trip = {
+        const tripToSave = {
           ...parsedJson.trip,
           theme: "peach",
           activities: this.activities,
-          preparation: {
-            preparationsChecklist: []
-          },
-          accommodation: {
-            location: "Davao City, Philippines",
-          },
-          companions: {},
-          budget: {
-            categories: [],
-            currency: "PHP",
-            showSheet: false,
-            totalBudget: null,
-          },
-          transportation: {},
-          roles: {},
-          planningProgress: {
-            completed: 1,
-            total: 7
-          }
         }
 
-        console.log(parsedJson)
+        console.log(tripToSave)
 
+        // -- ADD TRIP TO FIRESTORE USING API ENDPOINT
+        const tripsResponse = await fetch('/api/v1/trips', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(tripToSave)
+        })
+
+        if (!tripsResponse) {
+          const error = await tripsResponse.json()
+          throw new Error(`Error with saving trips: ${error.message}`)
+        }
+
+        // -- GET THE ID OF THE TRIP
+        const tripsJsonResponse = await tripsResponse.json()
+        console.log(tripsJsonResponse)
+        const tripId = tripsJsonResponse.tripId
+
+        console.log(tripId)
+
+        // -- LOCATE TO TRIP WITH ITS ID
+        window.location.href = `/trips/${tripId}`
         // -- ADD TRIP TO THE DATABASE
-        addTrip(parsedJson.trip)
+        // addTrip(parsedJson.trip)
 
         // -- REDIRECT TO THE TRIP PAGE
-        window.location.href=`/trips/${this.useDb.trips.length}`
+        // window.location.href=`/trips/${this.useDb.trips.length}`
 
 
       } catch (e) {
@@ -473,8 +477,23 @@ export default {
           zoom: 10, // Default zoom, will be adjusted by fitBounds
           center: bounds.getCenter(),
           mapId: 'YOUR_MAP_ID_HERE', // Optional: Replace with a custom map ID from Google Cloud Console
+          mapTypeId: google.maps.MapTypeId.HYBRID,
           zoomControl: false,          // Hide zoom +/- buttons
-          mapTypeControl: false,       // Hide Map/Satellite toggle
+          mapTypeControl: true, // Set to true to show the map type control
+          mapTypeControlOptions: {
+            position: google.maps.ControlPosition.BOTTOM_CENTER,
+            // Optional: Customize the style of the control
+            // style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR, // Default: horizontal buttons
+            // style: google.maps.MapTypeControlStyle.DROPDOWN_MENU, // Alternative: dropdown menu
+
+            // Optional: Specify which map types are available in the control
+            mapTypeIds: [
+              google.maps.MapTypeId.ROADMAP,
+              google.maps.MapTypeId.HYBRID, // Satellite with labels
+            ],
+            // Optional: Position the control
+            // position: google.maps.ControlPosition.TOP_RIGHT, // Example position
+          },
           streetViewControl: false,    // Hide Pegman (Street View) button
           fullscreenControl: true,    // Hide fullscreen button
           rotateControl: false,        // Hide 45° imagery rotate control
@@ -496,9 +515,31 @@ export default {
           label: (index + 1).toString(), // Numbered markers
         });
 
+        const googleMapsLink = this.getGoogleMapsLink(activity);
+
         // Optional: Add info window on marker click
         const infoWindow = new google.maps.InfoWindow({
-          content: `<div><strong>${activity.title}</strong><br>${activity.location}</div>`,
+          content: `
+        <div class="p-4 pt-0">
+          <span class="font-bold text-2xl">${activity.title}</span>
+          <br>
+          ${activity.location}
+          <br>
+          ${googleMapsLink !== '#' ? `
+          <div>
+            <a href="${googleMapsLink}" target="_blank" rel="noopener noreferrer"
+               style="
+                 color: #1a73e8; /* Google blue */
+                 text-decoration: none;
+                 font-weight: 500;
+                 display: inline-block; /* Allows padding/margin if needed */
+                 padding-top: 5px; /* Space from location text */
+               ">
+              View in Google Maps
+            </a>
+          </div>
+        ` : ''}
+        </div>`,
         });
 
         marker.addListener('click', () => {
@@ -545,6 +586,23 @@ export default {
       this.markers = [];
     },
 
+    // ------------------------------ HELPER FUNCTION TO OPEN GOOGLE MAP LINKS
+    getGoogleMapsLink(activity) {
+      // Prefer coordinates for a precise link
+      if (activity.coordinates && typeof activity.coordinates.latitude === 'number' && typeof activity.coordinates.longitude === 'number') {
+        const lat = activity.coordinates.latitude;
+        const lng = activity.coordinates.longitude;
+        // This URL opens Google Maps centered on the coordinates with a reasonable zoom level (e.g., 15)
+        return `https://www.google.com/maps/@${lat},${lng},19z`;
+      } else if (activity.location) {
+        // Fallback to a search query if coordinates are not available or invalid
+        const encodedLocation = encodeURIComponent(activity.location);
+        return `https://www.google.com/maps/search/?api=1&query=${encodedLocation}`;
+      }
+      // Return a fallback or empty string if no location data is present
+      return '#'; // Or an empty string if you prefer not to show the link
+    },
+
     // ------------------------------ GET USER LOCATION AND ADD ON MAP
     getUserLocation() {
       if (navigator.geolocation) {
@@ -586,7 +644,7 @@ export default {
 /* You might need some basic styles for your map container */
 #map {
   width: 100%;
-  height: 400px; /* Or adjust as per your design */
+  height: 800px; /* Or adjust as per your design */
   background-color: #f0f0f0; /* Placeholder background */
 }
 </style>

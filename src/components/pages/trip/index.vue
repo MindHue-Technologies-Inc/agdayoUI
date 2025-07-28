@@ -1,71 +1,74 @@
 <template>
-  <transition name="fade" appear>
-    <div class="grow mt-8 md:mt-16">
-      <!-- PAYMENT BUTTON -->
-      <!--<PaymentButton description="Premium Subscription" :amount="999"/>-->
-
-      <!-- MAIN CARD -->
-      <Card :customClass='cardClass + " max-w-4xl mx-auto p-0! overflow-hidden rounded-4xl bg-white"'>
-        <!-- TRIP HEADER -->
-        <TripDetailsHeader
-            :trip-config="tripConfig"
-            :planning-progress="planningProgress"
-            @show-settings="settingsShowSheet = true"
-            @show-map="mapShowSheet = true"
-        />
-
-        <!-- TRIP SECTION -->
-        <TripSections
-
-            @show-accommodation="accommodationShowSheet=true"
-            @show-budget="budgetShowSheet=true"
-            @show-companions="companionsShowSheet=true"
-            @show-preparation="preparationShowSheet=true"
-            @show-roles="rolesShowSheet=true"
-            @show-transportation="transportationShowSheet=true"
-
-            :preparation="preparation"
-            :budget="budget"
-            :accommodation="accommodation"
-            :companions="companions"
-            :roles="roles"
-            :transportation="transportation"
-
-        />
-
-        <!-- DAY PLANS -->
-        <ActivityTimeline
-            :trip-config="tripConfig"
-            :activities="activities"
-
-            @show-add-activity="addActivityShowSheet=true"
-            @show-day-note="dayNoteShowSheet=true"
-            @show-view-activity="showViewActivitySheet"
-        />
-      </Card>
-      <!-- END OF MAIN CARD -->
-
-
-      <!--TOAST-->
-      <ToastContainer>
-        <Toast
-            :variant="'error'"
-            ref="dangerToast"
-            :message="dangerToast.message"
-        />
-      </ToastContainer>
-
-
-      <!--TOAST-->
-      <ToastContainer>
-        <Toast
-            :variant="'success'"
-            ref="successToast"
-            :message="successToast.message"
-        />
-      </ToastContainer>
+  <template v-if="isLoading">
+    <div class="flex items-center justify-center w-full h-[32rem]">
+      <Spinner label="Loading your trips"/>
     </div>
-  </transition>
+  </template>
+  <template v-else>
+    <transition name="fade" appear>
+
+      <div class="grow mt-8 md:mt-16 fadeIn" v-if="tripConfig.name">
+        <!-- PAYMENT BUTTON -->
+        <!--<PaymentButton description="Premium Subscription" :amount="999"/>-->
+
+        <!-- MAIN CARD -->
+        <Card :customClass='cardClass + " max-w-4xl mx-auto p-0! overflow-hidden rounded-4xl bg-white"'>
+          <!-- TRIP HEADER -->
+          <TripDetailsHeader
+              :trip-config="tripConfig"
+              :planning-progress="progressOfPlanning"
+              @show-settings="settingsShowSheet = true"
+              @show-map="mapShowSheet = true"
+          />
+
+          <!-- TRIP SECTION -->
+          <TripSections
+
+              @show-accommodation="accommodationShowSheet=true"
+              @show-budget="budgetShowSheet=true"
+              @show-companions="companionsShowSheet=true"
+              @show-preparation="preparationShowSheet=true"
+              @show-roles="rolesShowSheet=true"
+              @show-transportation="transportationShowSheet=true"
+
+              :preparation="preparation"
+              :budget="budget"
+              :accommodation="accommodation"
+              :companions="companions"
+              :roles="roles"
+              :transportation="transportation"
+
+          />
+
+          <!-- DAY PLANS -->
+          <ActivityTimeline
+              :trip-config="tripConfig"
+              :activities="activities"
+
+              @show-add-activity="addActivityShowSheet=true"
+              @show-day-note="dayNoteShowSheet=true"
+              @show-view-activity="showViewActivitySheet"
+          />
+        </Card>
+        <!-- END OF MAIN CARD -->
+      </div>
+    </transition>
+  </template>
+
+
+  <!--TOAST-->
+  <ToastContainer>
+    <Toast
+        :variant="'error'"
+        ref="dangerToast"
+        :message="dangerToast.message"
+    />
+    <Toast
+        :variant="'success'"
+        ref="successToast"
+        :message="successToast.message"
+    />
+  </ToastContainer>
 
 
   <SheetTripSettings v-model:showSheet="settingsShowSheet" v-model="settings" @save="saveSettings" @delete="deleteTrip"/>
@@ -138,9 +141,11 @@ import SheetDayNote from "./components/sheets/SheetDayNote.vue";
 import SheetMap from "./components/sheets/SheetMap.vue";
 import CardActivity from "./components/timeline/CardActivity.vue";
 import TimelineDot from "./components/timeline/TimelineDot.vue";
+import Spinner from "../../UI/Spinner.vue";
 
 export default {
   components: {
+    Spinner,
     AdvSquareCard,
     Card,
     Tag,
@@ -171,7 +176,11 @@ export default {
   props: {
     index: {
       type: Number,
-      required: true,
+      required: false,
+    },
+    tripId: {
+      type: String,
+      required: true
     }
   },
 
@@ -248,28 +257,6 @@ export default {
       deep: true,
       immediate: true,
     },
-
-    //--------------------------------------------- Watcher for 'activities'
-    // activities: {
-    //   handler(newValue) {
-    //     if (newValue !== undefined && newValue !== null) {
-    //       setActivities(this.index, newValue);
-    //     }
-    //   },
-    //   deep: true,
-    //   immediate: true,
-    // },
-
-    //--------------------------------------------- Watcher for 'planningProgress'
-    planningProgress: {
-      handler(newValue) {
-        if (newValue !== undefined && newValue !== null) {
-          setPlanningProgress(this.index, newValue);
-        }
-      },
-      deep: true,
-      immediate: true,
-    },
   },
 
   data() {
@@ -280,6 +267,7 @@ export default {
       successToast: {
         message: '',
       },
+      isLoading: true,
       useDb: useDbStore.get(), // Initialize with the current state
       unsubscribeFromDbStore: null, // 2. Property to hold the unsubscribe function
       tripConfig: {
@@ -325,7 +313,7 @@ export default {
         type: '',
 
         location: '',
-        numberOfRooms: 1,
+        numberOfRooms: 0,
         totalCost: 0,
         // currency: 'PHP', // If you plan to make currency selectable or dynamic
 
@@ -389,6 +377,25 @@ export default {
   },
   computed: {
 
+    progressOfPlanning() {
+      const conditions = [
+        this.activities?.length > 0,
+        this.budget.categories?.length > 0,
+        this.companions?.length > 1,
+        this.preparation?.preparationsChecklist.length > 0,
+        !!this.accommodation?.name,
+        // Add other conditions here
+      ];
+
+      const completed = conditions.filter(Boolean).length;
+      const total = conditions.length;
+
+      return {
+        completed: completed,
+        total: 7
+      };
+    },
+
     cardClass() {
       switch (this.tripConfig.theme) {
         case 'peach':
@@ -410,7 +417,7 @@ export default {
           this.accommodationShowSheet ||
           // this.companionsShowSheet ||
           this.budgetShowSheet ||
-          // this.transportationShowSheet ||
+          this.transportationShowSheet ||
           // this.rolesShowSheet ||
           // this.dayNoteShowSheet ||
           this.addActivityShowSheet ||
@@ -425,37 +432,58 @@ export default {
       this.selectedActivity.activity = activity
     },
 
-    deleteTrip() {
+    async deleteTrip() {
       if (confirm("Do you want to delete this trip?")) {
-        removeTrip(this.index)
+        const response = await fetch(`/api/v1/trip?tripId=${this.tripId}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+
+        if (!response.ok) {
+          const error = await response.json()
+          console.error(error.message)
+          this.dangerToast.message = error.message
+          return
+        }
+
+        this.successToast.message = 'Trip Deleted!'
+
+        // removeTrip(this.index)
         window.location.href = '/trips'
       }
     },
 
-    updateActivity(activity) {
-      console.log('Incoming activity for update:', activity);
+    async updateActivity(activity) {
+      try {
+        const response = await fetch('/api/v1/activity', {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(activity)
+        })
 
-      // -- FIND THE ACTIVITY TO BE UPDATED
-      let activityToUpdate = this.activities.find(act => act.id === activity.id);
-
-      // -- CHECK IF THE ACTIVITY WAS FOUND
-      if (activityToUpdate) {
-        console.log('Activity found for update:', activityToUpdate);
-
-        // -- UPDATE THE PROPERTIES OF THE FOUND ACTIVITY
-        for (const key in activity) {
-          if (Object.prototype.hasOwnProperty.call(activity, key) && key !== 'id') {
-            activityToUpdate[key] = activity[key];
-          }
+        if (!response.ok) {
+          const error = await response.json()
+          console.error('Error updating an activity:', error.message)
+          throw new Error(`Error updating an activity: ${error.message}`)
         }
-        console.log('Activity after update:', activityToUpdate);
 
-        // -- UPDATE THE LOCALSTORAGE WITH NEW ACTIVITIES ARRAY
-        setActivities(this.index, this.activities);
+        const jsonResponse = await response.json()
 
-        console.log('Activities updated in store/localStorage.');
-      } else {
-        console.warn(`Activity with ID ${activity.id} not found for update.`);
+        // -- GET THE INDEX OF THE OLD ACTIVITY
+        const indexOfOriginal = this.activities.findIndex(activity=>{
+          return activity.id === jsonResponse?.updatedActivity?.id
+        })
+
+        this.activities[indexOfOriginal] = jsonResponse.updatedActivity
+
+        this.successToast.message = jsonResponse.message
+      } catch (error) {
+        console.error(error)
+        this.dangerToast.message = error
       }
     },
 
@@ -464,19 +492,68 @@ export default {
       this.editActivity = {activity: activity}
     },
 
-    deleteActivity(id) {
-      this.activities = this.activities.filter(activity=>activity.id !== id)
-      setActivities(this.index, this.activities)
+    async deleteActivity(id) {
+      try {
+        // -- SEND DELETE CALL TO BACKEND
+        const response = await fetch(`/api/v1/activity?activityId=${id}&tripId=${this.tripId}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+
+        if (!response.ok) {
+          const error = await response.json()
+          throw new Error(`Error delete activity: ${error.message}`)
+        }
+
+        const jsonResponse = await response.json()
+
+        // -- SUCCESS TOAST
+        this.successToast.message = jsonResponse.message
+
+        this.activities = this.activities.filter(activity=>activity.id !== id)
+      } catch (error) {
+        console.error(error)
+      }
     },
 
-    addNewActivity(activity) {
+    async addNewActivity(activity) {
       try {
-        this.activities.push(activity)
-        this.successToast.message = 'Activity Added'
-        setActivities(this.index, this.activities)
-      } catch (e) {
-        this.dangerToast.message = `${e}`
+        const response = await fetch('/api/v1/activity', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({...activity, tripId:this.tripId})
+        })
+
+        if (!response.ok) {
+          const error = await response.json()
+          console.error('Error saving activity:', error.message)
+          throw new Error(`Error saving activity: ${error.message}`)
+        }
+
+        const jsonResponse = await response.json()
+        console.log(jsonResponse)
+
+        // -- SAVE THE NEW ACTIVITY TO THE ACTIVITIES
+        this.activities.push(jsonResponse.createdActivity)
+
+        // -- SUCCESS TOAST
+        this.successToast.message = jsonResponse.message
+
+      } catch (error) {
+        console.error(error)
+        this.dangerToast.message = error
       }
+      // try {
+      //   this.activities.push(activity)
+      //   this.successToast.message = 'Activity Added'
+      //   setActivities(this.index, this.activities)
+      // } catch (e) {
+      //   this.dangerToast.message = `${e}`
+      // }
     },
 
     hasPayload(payload) {
@@ -535,7 +612,7 @@ export default {
       this.activities = payload.trip.activities
     },
 
-    saveSettings(payload){
+    async saveSettings(payload){
       try {
         this.tripConfig.name = payload.name ?? this.tripConfig.name;
         this.tripConfig.location = payload.location ?? this.tripConfig.location;
@@ -547,48 +624,80 @@ export default {
           this.tripConfig.date.end = payload.date.end ?? this.tripConfig.date.end;
         }
 
-        setName(this.index, this.tripConfig.name)
-        setLocation(this.index, this.tripConfig.location)
-        setTheme(this.index, this.tripConfig.theme)
-        setDate(this.index, this.tripConfig.date)
+        const response = await fetch('/api/v1/trip', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({tripData: this.tripConfig, tripId: this.tripId})
+        })
       } catch (err) {
         console.error('Error at Saving Settings', err)
+        this.dangerToast.message = `Error at saving settings.`
       }
+    },
+
+    setTripConfig(data) {
+      this.tripConfig.name = data.name
+      this.tripConfig.location = data.location
+      this.tripConfig.theme = data.theme
+      this.tripConfig.date.start = new Date(data.date.start)
+      this.tripConfig.date.end = new Date(data.date.end)
+    },
+
+    setTripSettings(data) {
+      this.settings.trip = {...this.tripConfig}
+    },
+
+    setActivities(data) {
+      this.activities = data.activities
+    },
+
+    setPreparation(data) {
+      this.preparation.preparationsChecklist = data.tasks
+    },
+
+    setAccommodation(data) {
+      try {
+        const accommodation = data.accommodations.sort((a,b)=>a.createdAt._seconds - b.createdAt._seconds)[data.accommodations.length - 1]
+        this.accommodation = {
+          ...accommodation,
+          dates: {
+            start: new Date(accommodation.dates.start),
+            end: new Date(accommodation.dates.end)
+          }
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
+
+    setBudget(data) {
+      this.budget.totalBudget = data.overallBudget;
+      this.budget.categories = data.budget;
     }
   },
 
-  mounted() {
-    // SUBSCRIBE TO NANOTSTORES
-    this.unsubscribeFromDbStore = useDbStore.listen(newValue => {
-      // Update the component's reactive data property with the new store value
-      this.useDb = newValue;
-    });
+  async mounted() {
+    const response = await fetch(`/api/v1/trip?tripId=${this.tripId}`, {
+      method: 'GET',
+      header: {
+        'Content-Type': 'application/json'
+      }
+    })
 
-    // SIMULATE API CALL
-    const payload = {
-      trip: {
-        name: this.useDb.trips[this.index].name,
-        start_date: new Date(this.useDb.trips[this.index].date.start),
-        end_date: new Date(this.useDb.trips[this.index].date.end),
-        status: '',
-        location: this.useDb.trips[this.index].location,
-        created_by: 'Albert Sobreo',
-        theme: this.useDb.trips[this.index].theme,
-        preparation: this.useDb.trips[this.index].preparation,
-        budget: this.useDb.trips[this.index].budget,
-        activities: this.useDb.trips[this.index].activities,
-        accommodation: this.useDb.trips[this.index].accommodation,
-      },
-    }
+    const data = await response.json()
 
+    console.log(data)
 
+    this.setTripConfig(data)
+    this.setTripSettings(data)
+    this.setActivities(data)
+    this.setPreparation(data)
+    this.setAccommodation(data)
+    this.setBudget(data)
 
-    this.initTripConfig(payload)
-    this.initAccommodation(payload)
-    this.initSettings(payload)
-    this.initPreparation(payload)
-    this.initBudget(payload)
-    this.initActivities(payload)
+    this.isLoading = false
   }
 }
 </script>

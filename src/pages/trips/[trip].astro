@@ -9,7 +9,7 @@ export const prerender = false;
 
 <Layout>
   <Main>
-    <Topbar title="Trip" client:visible/>
-    <TripPage index={Number(trip)} client:only/>
+    <Topbar title="Trip" client:only/>
+    <TripPage index={Number(trip)} trip-id={trip} client:only/>
   </Main>
 </Layout>
