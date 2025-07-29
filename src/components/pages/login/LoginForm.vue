@@ -199,7 +199,20 @@ export default {
           token: idToken, // This token is primarily for client-side use if needed. The cookie is the real source of truth for SSR.
         });
 
-        window.location.href='/active-trip'
+        // Get the current URL's query string (e.g., "?redirect_to=%2Ftrips%2F...")
+        const queryString = window.location.search;
+
+        // Create a URLSearchParams object from the query string
+        const urlParams = new URLSearchParams(queryString);
+
+        // Retrieve the value of the 'redirect_to' parameter
+        const redirectTo = urlParams.get('redirect_to');
+
+        if (redirectTo) {
+          window.location.href = decodeURIComponent(redirectTo);
+        } else {
+          window.location.href='/active-trip'
+        }
       } catch (error) {
         console.error("Google Login Error:", error.code, error.message);
         let userFacingMessage = "An error occurred during Google sign-in. Please try again.";
