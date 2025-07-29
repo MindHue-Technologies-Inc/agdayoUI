@@ -1,5 +1,7 @@
 import type { APIRoute } from "astro";
 import { adminAuth } from "../../../../lib/firebase/server.ts";
+import { getCache, setCache, deleteCache } from "../../../../cache/simple-cache.ts";
+
 export const prerender = false;
 
 export const POST: APIRoute = async ({cookies, request}) => {
@@ -17,6 +19,7 @@ export const POST: APIRoute = async ({cookies, request}) => {
       try {
         const decodedClaims = await adminAuth.verifySessionCookie(sessionCookie);
         await adminAuth.revokeRefreshTokens(decodedClaims.uid);
+        deleteCache(sessionCookie);
         console.log(`User ${decodedClaims.uid} refresh tokens revoked. Session cleared.`);
       } catch (error) {
         console.warn('Could not revoke refresh tokens (session might already be invalid/expired):', error);
