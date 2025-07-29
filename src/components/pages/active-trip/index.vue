@@ -160,9 +160,10 @@ function checkUpcoming(dateStart, dateEnd) {
   const currentDate = new Date()
   const startDate = new Date(dateStart)
   const endDate = new Date(dateEnd)
+  endDate.setDate(endDate.getDate() + 1);
 
   if ( currentDate < startDate) return 'Upcoming'
-  if ( startDate <= currentDate && currentDate <= endDate ) return 'Active'
+  if ( startDate <= currentDate && currentDate < endDate ) return 'Active'
   if ( endDate < currentDate ) return 'Completed'
 }
 
