@@ -42,7 +42,7 @@
         <span class="text-lg text-zinc-800 font-semibold">Current Activity</span>
 
         <!-- ACTIVITY -->
-        <Card v-if="currentActivity(trip)" class="md:!p-6 !p-2 gap-2 grow rounded-[1.2rem] border border-peach-400 shadow-sm
+        <Card v-if="currentActivity(trip)" class="md:!p-6 !p-3 gap-2 grow rounded-[1.2rem] border border-peach-400 shadow-sm
    transition-all duration-200 hover:shadow-md cursor-pointer flex-row!">
           <!-- ENHANCED CLOCK SECTION -->
           <div class="flex flex-col items-center justify-start pt-1 pr-3 md:pr-6 border-r border-zinc-200">
@@ -61,7 +61,7 @@
             <!-- B0SS -->
             <div class="flex items-center gap-1 text-sm text-zinc-500 mt-1">
               <i class="ph ph-map-pin text-peach-400 flex-shrink-0"></i>
-              <span>{{ currentActivity(trip)?.location }}</span>
+              <span>{{ currentActivity(trip)?.location.split(',')[0] }}</span>
             </div>
 
             <div v-if="currentActivity(trip)?.costNote || currentActivity(trip)?.cost" class="flex items-center gap-1 text-sm text-zinc-500 mt-1">
@@ -84,7 +84,7 @@
         <span v-if="nextActivity(trip)" class="text-lg text-zinc-800 font-semibold">Next Activity</span>
 
         <!-- NEXT ACTIVITY -->
-        <Card v-if="nextActivity(trip)" class="md:!p-6 !p-2 gap-2 grow rounded-[1.2rem] border border-peach-400 shadow-sm
+        <Card v-if="nextActivity(trip)" class="md:!p-6 !p-3 gap-2 grow rounded-[1.2rem] border border-peach-400 shadow-sm
    transition-all duration-200 hover:shadow-md cursor-pointer flex-row!">
           <!-- ENHANCED CLOCK SECTION -->
           <div class="flex flex-col items-center justify-start pt-1 pr-3 md:pr-6 border-r border-zinc-200">
@@ -103,7 +103,7 @@
             <!-- B0SS -->
             <div class="flex items-center gap-1 text-sm text-zinc-500 mt-1">
               <i class="ph ph-map-pin text-peach-400 flex-shrink-0"></i>
-              <span>{{ nextActivity(trip)?.location }}</span>
+              <span>{{ nextActivity(trip)?.location.split(',')[0] }}</span>
             </div>
 
             <div v-if="nextActivity(trip)?.costNote || nextActivity(trip)?.cost" class="flex items-center gap-1 text-sm text-zinc-500 mt-1">
