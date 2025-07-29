@@ -212,8 +212,6 @@ export default {
       handler(newActivities) {
         if (newActivities.length > 0) {
           this.loadGoogleMapsScript(); // Load script only when needed
-          this.clearMarkers();
-          this.initMapAndMarkers();
         } else {
           this.clearMap(); // Clear map when activities are empty
         }
