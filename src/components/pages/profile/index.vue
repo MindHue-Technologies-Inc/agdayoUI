@@ -12,9 +12,13 @@
       <div class="grow mt-8 md:mt-16 fadeIn">
 
         <!-- MAIN CARD; HOUSES PROFILE -->
-        <Card :customClass='"border-secondary-sm shadow-secondary-md relative max-w-4xl mx-auto overflow-hidden rounded-4xl bg-white flex flex-col gap-8 p-4 md:p-6!"'>
+        <Card
+            :customClass='"border-secondary-sm shadow-secondary-md relative max-w-4xl mx-auto " +
+             "overflow-hidden rounded-4xl bg-white flex flex-col gap-8 p-4 md:p-6!"'>
           <!--SETTINGS BUTTON-->
-          <div class="absolute top-0 right-0 m-2 md:m-3 p-2 md:p-3 flex items-center text-2xl hover:bg-zinc-100 transition rounded-full justify-center cursor-pointer">
+          <div
+              class="absolute top-0 right-0 m-2 md:m-3 p-2 md:p-3 flex items-center text-2xl
+              hover:bg-zinc-100 transition rounded-full justify-center cursor-pointer">
             <i class="ph ph-gear"></i>
           </div>
 
@@ -22,7 +26,7 @@
           <div class="flex gap-4 flex-col sm:flex-row items-center sm:items-start">
             <!--PHOTO-->
             <div :class="[
-              'text-2xl transition rounded-full ',
+              'text-6xl transition rounded-full flex items-center justify-center',
               'bg-none hover:text-zinc-500 cursor-pointer',
               'bg-zinc-200 aspect-square border-2 border-zinc-300',
               'shadow-secondary-sm',
@@ -36,8 +40,8 @@
             <!--USER INFO-->
             <div class="flex flex-col gap-4 items-start justify-center">
               <div class="flex flex-col gap-1 items-start justify-center">
-                <span class="text-zinc-800 text-4xl font-extrabold text-shadow-secondary-md">{{displayName}}</span>
-                <span class="text-zinc-400 text-xs">@{{uid}}</span>
+                <span class="text-zinc-800 text-4xl font-extrabold text-shadow-secondary-md">{{ displayName }}</span>
+                <span class="text-zinc-400 text-xs">{{ email }}</span>
               </div>
 
               <!--COUNT FOR FRIENDS TRIPS AND DATE JOINED-->
@@ -45,7 +49,7 @@
                 <!--DATE JOINED-->
                 <div class="flex items-center justify-center gap-1">
                   <i class="ph ph-calendar-dots"></i>
-                  <span>Joined {{formatDate(user.createdAt)}}</span>
+                  <span>Joined {{ formatDate(user.createdAt) }}</span>
                 </div>
 
                 <!--FRIEND COUNT-->
@@ -57,7 +61,7 @@
                 <!--NUMBER OF TRIPS-->
                 <div class="flex items-center justify-center gap-1">
                   <i class="ph ph-island"></i>
-                  <span>{{user.tripCount}} Trips</span>
+                  <span>{{ user.tripCount }} Trips</span>
                 </div>
               </div>
             </div>
@@ -73,13 +77,21 @@
             />
 
             <!--FRIENDS COMPONENT-->
-            <Friends v-if="activeTab === 'friends'" />
+            <Friends
+                @friend-accepted="friendAccepted"
+                @friend-request-cancelled="friendRequestCancelled"
+                :accepted-friendships="user.acceptedFriendships"
+                :pending-friendships="user.pendingFriendships"
+                :uid="user.uid"
+                v-if="activeTab === 'friends'"
+            />
 
             <!--PEOPLE COMPONENT-->
             <People
                 @friend-request-failed="friendRequestFailed"
                 @friend-requested="friendRequestSuccess"
-                :friendships="user.friendships"
+                :accepted-friendships="user.acceptedFriendships"
+                :pending-friendships="user.pendingFriendships"
                 v-else-if="activeTab === 'people'"/>
           </div>
         </Card>
@@ -102,9 +114,9 @@
 
 <script setup lang="ts">
 import Spinner from "../../UI/Spinner.vue";
-import { ref, onMounted, computed, markRaw, reactive } from 'vue'
+import {ref, onMounted, computed, markRaw, reactive} from 'vue'
 import Card from "../../UI/Card.vue";
-import { useAuthStore } from "../../../stores/auth";
+import {useAuthStore} from "../../../stores/auth";
 import NavigationMenu from "../../UI/NavigationMenu.vue";
 import Friends from "./components/Friends.vue";
 import People from "./components/People.vue";
@@ -123,20 +135,25 @@ const successToast = reactive({
 })
 
 // -- COMPUTED PHOTO URL
-const photoURL = computed(()=>{
+const photoURL = computed(() => {
   return useAuth.value.user?.user?.photoURL
 })
 
 
 // -- COMPUTED FOR DISPLAY NAME
-const displayName = computed(()=>{
+const displayName = computed(() => {
   return useAuth.value.user?.user?.displayName
 })
 
 
 // -- COMPUTED FOR UID
-const uid = computed(()=>{
+const uid = computed(() => {
   return useAuth.value.user?.user?.id
+})
+
+// -- COMPUTED FOR EMAIL
+const email = computed(() => {
+  return useAuth.value.user?.user?.email
 })
 
 const user = ref({})
@@ -145,7 +162,7 @@ const user = ref({})
 const fetchUser = async () => {
   const response = await fetch('/api/v1/me')
 
-  if(!response.ok) {
+  if (!response.ok) {
     const error = await response.json()
     console.error(error)
   }
@@ -197,11 +214,21 @@ const friendRequestFailed = () => {
 
 const friendRequestSuccess = () => {
   successToast.message = 'Sent Friend Request'
+  fetchUser()
+}
+
+const friendAccepted = () => {
+  successToast.message = 'Friend request accepted'
+  fetchUser()
+}
+
+const friendRequestCancelled = () => {
+  fetchUser()
 }
 
 
 // -- MOUNTED HOOK
-onMounted(async ()=>{
+onMounted(async () => {
   // -- FETCH USER
   await fetchUser()
   isLoading.value = false

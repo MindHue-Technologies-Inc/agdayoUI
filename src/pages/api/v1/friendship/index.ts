@@ -45,14 +45,22 @@ export const POST = async ({request, locals}: {request:Request, locals:locals}) 
 
   try {
     // -- GET PAYLOAD
-    const { user2Uid } = await request.json()
+    const { user2 } = await request.json()
 
-    if (!user2Uid) return badRequestResponse('Missing Person ID')
+    if (!user2) return badRequestResponse('Missing Person ID')
 
     // -- BUILD THE PAYLOAD
     const payload = {
       user1Uid: uid,
-      user2Uid: user2Uid,
+      user1DisplayName: locals.user.displayName || null,
+      user1Email: locals.user.email || null,
+      user1PhotoURL: locals.user.photoURL || null,
+
+      user2Uid: user2.uid,
+      user2DisplayName: user2.displayName || null,
+      user2Email: user2.email || null,
+      user2PhotoURL: user2.photoURL || null,
+
       status: 'pending',
       requestedBy: uid,
       createdAt: FieldValue.serverTimestamp(),
@@ -75,6 +83,61 @@ export const POST = async ({request, locals}: {request:Request, locals:locals}) 
     })
   } catch (error) {
     console.log(error)
+    return serverErrorResponse(error)
+  }
+}
+
+export const PUT = async ({request, locals}: {request:Request, locals:locals}) => {
+  // -- 1. AUTH THE USEr
+  if (!locals.user) return unauthorizedResponse()
+
+  // -- 2. GET UID
+  const uid = locals.user.uid
+
+  try {
+    const { friendshipId, status } = await request.json()
+    console.log(friendshipId)
+
+    // -- GET FRIENDSHIP REF
+    const friendshipRef = adminDb
+        .collection('friendships')
+        .doc(friendshipId)
+
+    await friendshipRef.update({status: status, acceptedBy: uid})
+
+    return new Response(JSON.stringify({
+      message: 'Friendship updated'
+    }), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    })
+
+  } catch (error) {
+    console.error(error)
+    return serverErrorResponse(error)
+  }
+}
+
+export const DELETE = async ({url, locals}: {url: URL, locals: locals}) => {
+  // -- 1. AUTH THE USEr
+  if (!locals.user) return unauthorizedResponse()
+
+  try {
+    const friendshipId = url.searchParams.get('id')
+
+    if (!friendshipId) return badRequestResponse()
+
+    const friendshipRef = adminDb.collection('friendships').doc(friendshipId)
+
+    await friendshipRef.delete()
+
+    return new Response(JSON.stringify({
+      message: 'Friendship deleted'
+    }))
+  } catch (error) {
+    console.error(error)
     return serverErrorResponse(error)
   }
 }

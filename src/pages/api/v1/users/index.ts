@@ -53,7 +53,11 @@ export const GET = async({url, locals}: {url:URL, locals:locals}) => {
 
     return new Response(JSON.stringify({
       message: 'Successfully fetched users',
-      users: [...new Set(combinedArray)]
+
+      // GET UNIQUE PROFILES
+      users: Array.from(
+          new Map(combinedArray.map(user => [user.uid, user])).values()
+      )
     }), {
       status: 200,
       headers: {

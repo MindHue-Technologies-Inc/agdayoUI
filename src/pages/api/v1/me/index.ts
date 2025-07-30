@@ -40,12 +40,23 @@ export const GET = async ({url, locals}: {url:URL, locals:locals}) => {
       )
       .get()
 
-  const friendships = friendshipSnapshot.docs.map(doc=>doc.data())
+  const friendships = friendshipSnapshot.docs.map(doc=>{
+    const data = doc.data()
+    return {
+      ...data,
+      id: doc.id
+    }
+  })
+
+  // -- GET PENDING FRIENDSHIP
+  const pendingFriendships = friendships.filter(f=>f.status === 'pending')
+  const acceptedFriendships = friendships.filter(f=>f.status === 'accepted')
 
   const newUserData = {
     ...user.data(),
     tripCount: tripCount,
-    friendships: friendships
+    pendingFriendships: pendingFriendships,
+    acceptedFriendships: acceptedFriendships,
   }
 
   // -- 4. VERIFY USER REF
