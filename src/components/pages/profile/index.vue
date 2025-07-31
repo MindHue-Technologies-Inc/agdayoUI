@@ -57,7 +57,7 @@
                 <!--FRIEND COUNT-->
                 <div class="flex items-center justify-center gap-1">
                   <i class="ph ph-users"></i>
-                  <span>5 Friends</span>
+                  <span>{{user.acceptedFriendships.length}} Friend{{user.acceptedFriendships.length>1 ? 's' : ''}}</span>
                 </div>
 
                 <!--NUMBER OF TRIPS-->

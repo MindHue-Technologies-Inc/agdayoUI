@@ -27,20 +27,20 @@
         tagVariant="purple"
         @card-click="$emit('show-companions')"
     />
-    <AdvSquareCard
-        iconName="ph-bus"
-        cardName="Transportation"
-        tagName="3 Pending"
-        tagVariant="blue"
-        @card-click="$emit('show-transportation')"
-    />
-    <AdvSquareCard
-        iconName="ph-hand-palm"
-        cardName="Roles"
-        tagName="4 Roles"
-        tagVariant="primary"
-        @card-click="$emit('show-roles')"
-    />
+    <!--<AdvSquareCard-->
+    <!--    iconName="ph-bus"-->
+    <!--    cardName="Transportation"-->
+    <!--    tagName="3 Pending"-->
+    <!--    tagVariant="blue"-->
+    <!--    @card-click="$emit('show-transportation')"-->
+    <!--/>-->
+    <!--<AdvSquareCard-->
+    <!--    iconName="ph-hand-palm"-->
+    <!--    cardName="Roles"-->
+    <!--    tagName="4 Roles"-->
+    <!--    tagVariant="primary"-->
+    <!--    @card-click="$emit('show-roles')"-->
+    <!--/>-->
   </div>
 </template>
 

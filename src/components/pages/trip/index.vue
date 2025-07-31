@@ -201,71 +201,6 @@ export default {
         document.body.classList.remove('no-scroll')
       }
     },
-    //--------------------------------------------- Watcher for 'preparation'
-    preparation: {
-      handler(newValue) {
-        if (!newValue) return
-
-        setPreparation(this.index, newValue)
-      },
-      deep: true,
-      immediate: true,
-    },
-
-    //--------------------------------------------- Watcher for 'accommodation'
-    accommodation: {
-      handler(newValue) {
-        if (newValue !== undefined && newValue !== null && newValue.name !== '') {
-          setAccommodation(this.index, newValue);
-        }
-      },
-      deep: true,
-      immediate: true,
-    },
-
-    //--------------------------------------------- Watcher for 'companions'
-    companions: {
-      handler(newValue) {
-        if (newValue !== undefined && newValue !== null) {
-          setCompanions(this.index, newValue);
-        }
-      },
-      deep: true,
-      immediate: true,
-    },
-
-    //--------------------------------------------- Watcher for 'budget'
-    budget: {
-      handler(newValue) {
-        if (newValue !== undefined && newValue !== null) {
-          setBudget(this.index, newValue);
-        }
-      },
-      deep: true,
-      immediate: true,
-    },
-
-    //--------------------------------------------- Watcher for 'transportation'
-    transportation: {
-      handler(newValue) {
-        if (newValue !== undefined && newValue !== null) {
-          setTransportation(this.index, newValue);
-        }
-      },
-      deep: true,
-      immediate: true,
-    },
-
-    //--------------------------------------------- Watcher for 'roles'
-    roles: {
-      handler(newValue) {
-        if (newValue !== undefined && newValue !== null) {
-          setRoles(this.index, newValue);
-        }
-      },
-      deep: true,
-      immediate: true,
-    },
   },
 
   data() {
@@ -428,7 +363,7 @@ export default {
           this.accommodationShowSheet ||
           this.companionsShowSheet ||
           this.budgetShowSheet ||
-          this.transportationShowSheet ||
+          // this.transportationShowSheet ||
           // this.rolesShowSheet ||
           // this.dayNoteShowSheet ||
           this.addActivityShowSheet ||
@@ -554,7 +489,6 @@ export default {
         }
 
         const jsonResponse = await response.json()
-        console.log(jsonResponse)
 
         // -- SAVE THE NEW ACTIVITY TO THE ACTIVITIES
         this.activities.push(jsonResponse.createdActivity)
@@ -724,8 +658,6 @@ export default {
       })
 
       const data = await response.json()
-
-      console.log(data)
 
       this.setTripConfig(data)
       this.setTripSettings(data)
