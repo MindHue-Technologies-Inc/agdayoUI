@@ -16,10 +16,12 @@
             :customClass='"border-secondary-sm shadow-secondary-md relative max-w-4xl mx-auto " +
              "overflow-hidden rounded-4xl bg-white flex flex-col gap-8 p-4 md:p-6!"'>
           <!--SETTINGS BUTTON-->
-          <div
-              class="absolute top-0 right-0 m-2 md:m-3 p-2 md:p-3 flex items-center text-2xl
+          <div class="absolute top-0 right-0 flex flex-row">
+            <Anchor href="javascript:void(0)" @click="logoutUser" class="text-sm my-2 md:my-3 py-2 md:py-3">Logout</Anchor>
+            <div class="m-2 md:m-3 p-2 md:p-3 flex items-center text-2xl
               hover:bg-zinc-100 transition rounded-full justify-center cursor-pointer">
-            <i class="ph ph-gear"></i>
+              <i class="ph ph-gear"></i>
+            </div>
           </div>
 
           <!--HEADER-->
@@ -122,6 +124,10 @@ import Friends from "./components/Friends.vue";
 import People from "./components/People.vue";
 import ToastContainer from "../../UI/ToastContainer.vue";
 import Toast from "../../UI/Toast.vue";
+import Anchor from "../../UI/Anchor.vue";
+import {auth} from "../../../lib/firebase/client.ts";
+
+
 
 
 // -- some states
@@ -156,6 +162,18 @@ const email = computed(() => {
   return useAuth.value.user?.user?.email
 })
 
+interface user {
+  uid: string,
+  email: string,
+  photoUrl: string,
+  displayName: string,
+  displayNameLowercase: string,
+  createdAt: string
+  tripCount: number,
+  pendingFriendships: any,
+  acceptedFriendships: any,
+}
+
 const user = ref({})
 
 // -- FUNCTION TO FETCH USER
@@ -171,7 +189,7 @@ const fetchUser = async () => {
 }
 
 // -- FUNCTION TO RETURN DATE FROM CREATED AT
-const formatDate = (datetime) => {
+const formatDate = (datetime:string) => {
   if (!datetime) return ''
 
   return new Intl.DateTimeFormat('en-US', {
@@ -224,6 +242,38 @@ const friendAccepted = () => {
 
 const friendRequestCancelled = () => {
   fetchUser()
+}
+
+const logoutUser = async () => {
+  try {
+    // -- 1. SIGN OUT FROM FIREBASE CLIENT SDK
+    await auth.signOut()
+    console.log('FIREBASE CLIENT-SIDE SIGN OUT SUCCESSFUL')
+
+    // -- 2. SEND REQUEST TO YOUR SERVER-SIDE LOGOUT API TO CLEAR THE HTTPONLY COOKIE
+    const response = await fetch('/api/v1/auth/session-logout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Server-side logout failed.');
+    }
+
+    console.log('SERVER-SIDE SESSION CLEARED')
+
+    // -- 3. CLEAR NANOSTORES
+    localStorage.removeItem('auth')
+
+    // -- 4. REDIRECT TO LOGIN
+    window.location.href = '/login'
+  } catch (error) {
+    console.error("Logout Error:", error);
+    alert("An error occurred during logout. Please try again.");
+  }
 }
 
 

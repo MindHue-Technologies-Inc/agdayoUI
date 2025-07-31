@@ -23,7 +23,7 @@
     <AdvSquareCard
         iconName="ph-users"
         cardName="Companions"
-        tagName="4 Travelers"
+        :tagName="`${companions.length} Travelers`"
         tagVariant="purple"
         @card-click="$emit('show-companions')"
     />

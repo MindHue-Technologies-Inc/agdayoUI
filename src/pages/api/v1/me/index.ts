@@ -7,6 +7,23 @@ import {unauthorizedResponse, serverErrorResponse, notFoundResponse} from "../..
 
 export const prerender = false;
 
+interface Friendship {
+  id: string,
+  user1Uid: string,
+  user1Email: string,
+  user1DisplayName: string,
+  user1DisplayNameLower: string,
+  user1PhotoURL: string,
+  user2Uid: string,
+  user2Email: string,
+  user2DisplayName: string,
+  user2DisplayNameLower: string,
+  user2PhotoURL: string,
+  status: string,
+  requestedBy: string,
+
+}
+
 export const GET = async ({url, locals}: {url:URL, locals:locals}) => {
   // -- 1. AUTH THE USER
   if (!locals.user) return unauthorizedResponse()
@@ -15,7 +32,7 @@ export const GET = async ({url, locals}: {url:URL, locals:locals}) => {
   const uid = locals.user.uid
 
   // -- 3. QUERY THE USER IN FIRESTORE
-  const userRef = await adminDb
+  const userRef = adminDb
       .collection('users')
       .doc(uid)
 
@@ -49,8 +66,8 @@ export const GET = async ({url, locals}: {url:URL, locals:locals}) => {
   })
 
   // -- GET PENDING FRIENDSHIP
-  const pendingFriendships = friendships.filter(f=>f.status === 'pending')
-  const acceptedFriendships = friendships.filter(f=>f.status === 'accepted')
+  const pendingFriendships = friendships.filter((f)=>f.status === 'pending')
+  const acceptedFriendships = friendships.filter((f)=>f.status === 'accepted')
 
   const newUserData = {
     ...user.data(),

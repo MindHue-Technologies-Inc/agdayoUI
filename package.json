@@ -12,8 +12,6 @@
   "dependencies": {
     "@astrojs/node": "^9.2.0",
     "@astrojs/vue": "^5.0.10",
-    "@clerk/astro": "^2.6.7",
-    "@formkit/auto-animate": "^0.8.2",
     "@google/genai": "^1.7.0",
     "@prisma/client": "^6.12.0",
     "@prisma/extension-accelerate": "^2.0.2",
@@ -26,7 +24,6 @@
     "nanostores": "^1.0.1",
     "philippines": "^1.0.0",
     "random-js": "^2.1.0",
-    "remixicon": "^4.6.0",
     "tailwindcss": "^4.1.4",
     "vue": "^3.5.13",
     "vue3-apexcharts": "^1.8.0"

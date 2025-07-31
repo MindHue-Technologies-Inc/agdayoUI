@@ -174,7 +174,7 @@ const props = defineProps({
 
 const searchQuery = ref<string>('')
 const debouncedSearchQuery = ref<string>('')
-let timeoutId = null
+let timeoutId:any = null
 const DELAY_MS = 600
 
 // DEBOUNCE THE INPUT
