@@ -11,6 +11,8 @@
           id="friends-search"
           prefix-icon="ph ph-magnifying-glass"
           placeholder="Search friends"
+          v-model="searchQuery"
+          @input="debounceInput"
       />
 
       <!--LIST OF FRIENDS-->
@@ -36,7 +38,6 @@
           <div class="flex flex-col gap-0 grow">
             <span v-if="person.user1DisplayName" class="font-semibold">{{ person.user1DisplayName }}</span>
             <span v-else-if="person.user1Email" class="font-semibold">{{ person.user1Email }}</span>
-            <span class="text-zinc-400 text-xs">@{{ person.user1Uid }}</span>
           </div>
 
           <button
@@ -86,7 +87,7 @@
       <span>Your Friends</span>
 
       <!--YOUR ACCEPTED FRIENDS-->
-      <template v-if="acceptedFriendships.length > 0" v-for="(person, index) in acceptedFriendships">
+      <template v-if="filteredAcceptedFriendships.length > 0" v-for="(person, index) in filteredAcceptedFriendships">
         <div
             v-if="person.user1Uid != uid"
             class="fadeIn p-3 rounded-3xl gap-3 shadow-secondary-md border-secondary-xs flex flex-col md:flex-row items-center justify-start md:justify-between"
@@ -150,7 +151,7 @@
 <script setup lang="ts">
 import Input from "../../../UI/Input.vue";
 import Button from "../../../UI/Button.vue";
-import {ref, defineProps, computed} from 'vue'
+import {ref, defineProps, computed, watch} from 'vue'
 import Tag from "../../../UI/Tag.vue";
 import Anchor from "../../../UI/Anchor.vue";
 
@@ -169,6 +170,24 @@ const props = defineProps({
     type: String,
     default: '',
   }
+})
+
+const searchQuery = ref<string>('')
+const debouncedSearchQuery = ref<string>('')
+let timeoutId = null
+const DELAY_MS = 600
+
+// DEBOUNCE THE INPUT
+const debounceInput = () => {
+  if (timeoutId) clearTimeout(timeoutId)
+  timeoutId = setTimeout(()=>{
+    debouncedSearchQuery.value = searchQuery.value
+  }, DELAY_MS)
+}
+
+const filteredAcceptedFriendships = computed(()=>{
+  if (!debouncedSearchQuery) return props.acceptedFriendships
+  return props.acceptedFriendships.filter(f=>f.user2DisplayName.toLowerCase().includes(debouncedSearchQuery.value.toLowerCase()))
 })
 
 const emit = defineEmits(['friendAccepted', 'friendRequestCancelled'])
