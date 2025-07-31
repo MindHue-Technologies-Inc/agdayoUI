@@ -62,3 +62,58 @@ export const POST = async ({request, locals}: {request:Request, locals:locals}) 
     return serverErrorResponse(error)
   }
 }
+
+export const DELETE = async ({url, locals}: {url:URL, locals:locals}) => {
+  // -- 1. AUTH USER
+  if (!locals.user) {
+    return unauthorizedResponse()
+  }
+
+  // -- 2. GET USER ID
+  const uid = locals.user.uid
+
+  try {
+    // -- GET DATA
+    const companionUid = url.searchParams.get('companionUid')
+    const tripId = url.searchParams.get('tripId')
+
+    // -- VERIFY DATA
+    if (!companionUid || !tripId) return badRequestResponse('Missing IDs')
+
+    // -- GET TRIP REF
+    const tripRef = adminDb
+        .collection('trips')
+        .doc(tripId)
+
+    // -- GET COMPANION REF
+    const companionRef = tripRef
+        .collection('companions')
+        .doc(companionUid)
+
+    // -- INIT BATCH
+    const batch = adminDb.batch()
+
+    // -- DO UPDATES
+    batch.delete(companionRef)
+
+    batch.update(tripRef, {
+      companionsUids: FieldValue.arrayRemove(companionUid),
+      updatedAt: FieldValue.serverTimestamp(),
+    })
+
+    // -- COMMIT BATCH
+    await batch.commit()
+
+    return new Response(JSON.stringify({
+      message: 'Companion removed from trip successfully'
+    }), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+  } catch (error:any) {
+    console.error(error)
+    return serverErrorResponse(error)
+  }
+}

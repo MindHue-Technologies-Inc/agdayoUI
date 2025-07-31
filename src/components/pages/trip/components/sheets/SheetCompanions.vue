@@ -38,8 +38,17 @@
                 <span v-if="companion.displayName" class="font-semibold">{{ companion.displayName }}</span>
                 <span v-else-if="companion.email" class="font-semibold">{{ companion.email }}</span>
               </div>
-              <Tag v-if="ownerUid !== companion.uid" mode="button" label="Remove" icon="ph ph-x" />
-              <Tag v-else label="Organizer" icon="ph ph-crown" variant="yellow" />
+              <Tag
+                  v-if="ownerUid !== companion.uid && (uid === ownerUid || uid === companion.uid)"
+                  @click="removeCompanion(companion)"
+                  mode="button"
+                  label="Remove"
+                  icon="ph ph-x" />
+              <Tag
+                  v-else-if="ownerUid === companion.uid"
+                  label="Organizer"
+                  icon="ph ph-crown"
+                  variant="yellow" />
             </div>
           </div>
         </div>
@@ -204,7 +213,7 @@ export default {
     }
   },
 
-  emits: ['update:modelValue', 'companionAdded'],
+  emits: ['update:modelValue', 'companionAdded', 'companionRemoved'],
 
   data() {
     return {
@@ -281,6 +290,21 @@ export default {
       })
 
       this.$emit('companionAdded')
+    },
+
+    async removeCompanion(companion) {
+      // -- GET TRIP ID
+      const pathname = window.location.pathname
+      const tripId = pathname.split('/')[2]
+      const companionUid = companion.uid
+      const response = await fetch(`/api/v1/trip/companions?tripId=${tripId}&companionUid=${companionUid}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+
+      this.$emit('companionRemoved')
     },
 
     removeCompanionRow(id) {

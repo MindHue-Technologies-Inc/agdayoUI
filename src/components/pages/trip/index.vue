@@ -75,7 +75,15 @@
   <SheetTripSettings v-model:showSheet="settingsShowSheet" v-model="settings" @save="saveSettings" @delete="deleteTrip"/>
   <SheetPreparation v-model:showSheet="preparationShowSheet" v-model="preparation"/>
   <SheetAccom v-model:showSheet="accommodationShowSheet" @update:showSheet="accommodationShowSheet" v-model="accommodation" />
-  <SheetCompanions @companion-added="companionAdded" :uid="user.uid" :accepted-friendships="user.acceptedFriendships" :ownerUid="ownerUid" v-model:showSheet="companionsShowSheet" v-model="companions"/>
+  <SheetCompanions
+      @companion-added="companionAdded"
+      @companion-removed="companionRemoved"
+      :uid="user.uid"
+      :accepted-friendships="user.acceptedFriendships"
+      :ownerUid="ownerUid"
+      v-model:showSheet="companionsShowSheet"
+      v-model="companions"
+  />
   <SheetBudget v-model:showSheet="budgetShowSheet" v-model="budget"/>
   <SheetTransportation v-model:showSheet="transportationShowSheet" v-model="transportation"/>
   <SheetRoles v-model:showSheet="rolesShowSheet" v-model="roles"/>
@@ -459,6 +467,10 @@ export default {
     },
 
     async companionAdded() {
+      await this.fetchTrip()
+    },
+
+    async companionRemoved() {
       await this.fetchTrip()
     },
 
