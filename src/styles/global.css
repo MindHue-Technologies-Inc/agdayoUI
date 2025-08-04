@@ -75,6 +75,137 @@ body {
   font-style: normal;
 }
 
+/* === Text Shadow - Peach (Primary) === */
+.text-shadow-primary-xs   { text-shadow: 1px 1px 0 #B77B6C; }
+.text-shadow-primary-sm   { text-shadow: 2px 2px 0 #B77B6C; }
+.text-shadow-primary-md   { text-shadow: 4px 4px 0 #B77B6C; }
+.text-shadow-primary-lg   { text-shadow: 6px 6px 0 #B77B6C; }
+.text-shadow-primary-xl   { text-shadow: 8px 8px 0 #B77B6C; }
+
+/* === Text Shadow - Peach (LIGHT) === */
+.text-shadow-primary-light-xs   { text-shadow: 1px 1px 0 #F1E3E0; }
+.text-shadow-primary-light-sm   { text-shadow: 2px 2px 0 #F1E3E0; }
+.text-shadow-primary-light-md   { text-shadow: 4px 4px 0 #F1E3E0; }
+.text-shadow-primary-light-lg   { text-shadow: 6px 6px 0 #F1E3E0; }
+.text-shadow-primary-light-xl   { text-shadow: 8px 8px 0 #F1E3E0; }
+
+/* === Text Shadow - Peach (Primary) - Dark === */
+.text-shadow-primary-dark-xs    { text-shadow: 1px 1px 0 #995F52; }
+.text-shadow-primary-dark-sm    { text-shadow: 2px 2px 0 #995F52; }
+.text-shadow-primary-dark-md    { text-shadow: 4px 4px 0 #995F52; }
+.text-shadow-primary-dark-lg    { text-shadow: 6px 6px 0 #995F52; }
+.text-shadow-primary-dark-xl    { text-shadow: 8px 8px 0 #995F52; }
+
+
+/* === Text Shadow - Zinc (Secondary) === */
+.text-shadow-secondary-xs   { text-shadow: 1px 1px 0 #d4d4d8; }
+.text-shadow-secondary-sm   { text-shadow: 2px 2px 0 #d4d4d8; }
+.text-shadow-secondary-md   { text-shadow: 4px 4px 0 #d4d4d8; }
+.text-shadow-secondary-lg   { text-shadow: 6px 6px 0 #d4d4d8; }
+.text-shadow-secondary-xl   { text-shadow: 8px 8px 0 #d4d4d8; }
+
+/* === Text Shadow - Zinc (LIGHT) === */
+.text-shadow-secondary-light-xs   { text-shadow: 1px 1px 0 #F2F2F4; }
+.text-shadow-secondary-light-sm   { text-shadow: 2px 2px 0 #F2F2F4; }
+.text-shadow-secondary-light-md   { text-shadow: 4px 4px 0 #F2F2F4; }
+.text-shadow-secondary-light-lg   { text-shadow: 6px 6px 0 #F2F2F4; }
+.text-shadow-secondary-light-xl   { text-shadow: 8px 8px 0 #F2F2F4; }
+
+/* === Text Shadow - Zinc (Secondary) - Dark === */
+.text-shadow-secondary-dark-xs    { text-shadow: 1px 1px 0 #3F3F46; }
+.text-shadow-secondary-dark-sm    { text-shadow: 2px 2px 0 #3F3F46; }
+.text-shadow-secondary-dark-md    { text-shadow: 4px 4px 0 #3F3F46; }
+.text-shadow-secondary-dark-lg    { text-shadow: 6px 6px 0 #3F3F46; }
+.text-shadow-secondary-dark-xl    { text-shadow: 8px 8px 0 #3F3F46; }
+
+
+/* === Text Shadow - Rose (Danger) === */
+.text-shadow-danger-xs   { text-shadow: 1px 1px 0 #E11D48; }
+.text-shadow-danger-sm   { text-shadow: 2px 2px 0 #E11D48; }
+.text-shadow-danger-md   { text-shadow: 4px 4px 0 #E11D48; }
+.text-shadow-danger-lg   { text-shadow: 6px 6px 0 #E11D48; }
+.text-shadow-danger-xl   { text-shadow: 8px 8px 0 #E11D48; }
+
+/* === Text Shadow - Rose (LIGHT) === */
+.text-shadow-danger-light-xs   { text-shadow: 1px 1px 0 #FDE9ED; }
+.text-shadow-danger-light-sm   { text-shadow: 2px 2px 0 #FDE9ED; }
+.text-shadow-danger-light-md   { text-shadow: 4px 4px 0 #FDE9ED; }
+.text-shadow-danger-light-lg   { text-shadow: 6px 6px 0 #FDE9ED; }
+.text-shadow-danger-light-xl   { text-shadow: 8px 8px 0 #FDE9ED; }
+
+/* === Text Shadow - Rose (Danger) - Dark === */
+.text-shadow-danger-dark-xs    { text-shadow: 1px 1px 0 #9F1239; }
+.text-shadow-danger-dark-sm    { text-shadow: 2px 2px 0 #9F1239; }
+.text-shadow-danger-dark-md    { text-shadow: 4px 4px 0 #9F1239; }
+.text-shadow-danger-dark-lg    { text-shadow: 6px 6px 0 #9F1239; }
+.text-shadow-danger-dark-xl    { text-shadow: 8px 8px 0 #9F1239; }
+
+
+/* === Text Shadow - Emerald (Success) === */
+.text-shadow-success-xs   { text-shadow: 1px 1px 0 #10B981; }
+.text-shadow-success-sm   { text-shadow: 2px 2px 0 #10B981; }
+.text-shadow-success-md   { text-shadow: 4px 4px 0 #10B981; }
+.text-shadow-success-lg   { text-shadow: 6px 6px 0 #10B981; }
+.text-shadow-success-xl   { text-shadow: 8px 8px 0 #10B981; }
+
+/* === Text Shadow - Emerald (LIGHT) ===
+.text-shadow-success-light-xs   { text-shadow: 1px 1px 0 #E6FAF2; }
+.text-shadow-success-light-sm   { text-shadow: 2px 2px 0 #E6FAF2; }
+.text-shadow-success-light-md   { text-shadow: 4px 4px 0 #E6FAF2; }
+.text-shadow-success-light-lg   { text-shadow: 6px 6px 0 #E6FAF2; }
+.text-shadow-success-light-xl   { text-shadow: 8px 8px 0 #E6FAF2; }
+
+/* === Text Shadow - Emerald (Success) - Dark === */
+.text-shadow-success-dark-xs    { text-shadow: 1px 1px 0 #047857; }
+.text-shadow-success-dark-sm    { text-shadow: 2px 2px 0 #047857; }
+.text-shadow-success-dark-md    { text-shadow: 4px 4px 0 #047857; }
+.text-shadow-success-dark-lg    { text-shadow: 6px 6px 0 #047857; }
+.text-shadow-success-dark-xl    { text-shadow: 8px 8px 0 #047857; }
+
+
+/* === Text Shadow - Sky (Info) === */
+.text-shadow-info-xs   { text-shadow: 1px 1px 0 #0EA5E9; }
+.text-shadow-info-sm   { text-shadow: 2px 2px 0 #0EA5E9; }
+.text-shadow-info-md   { text-shadow: 4px 4px 0 #0EA5E9; }
+.text-shadow-info-lg   { text-shadow: 6px 6px 0 #0EA5E9; }
+.text-shadow-info-xl   { text-shadow: 8px 8px 0 #0EA5E9; }
+
+/* === Text Shadow - Sky (LIGHT) === */
+.text-shadow-info-light-xs   { text-shadow: 1px 1px 0 #E0F2FE; }
+.text-shadow-info-light-sm   { text-shadow: 2px 2px 0 #E0F2FE; }
+.text-shadow-info-light-md   { text-shadow: 4px 4px 0 #E0F2FE; }
+.text-shadow-info-light-lg   { text-shadow: 6px 6px 0 #E0F2FE; }
+.text-shadow-info-light-xl   { text-shadow: 8px 8px 0 #E0F2FE; }
+
+/* === Text Shadow - Sky (Info) - Dark === */
+.text-shadow-info-dark-xs    { text-shadow: 1px 1px 0 #0369A1; }
+.text-shadow-info-dark-sm    { text-shadow: 2px 2px 0 #0369A1; }
+.text-shadow-info-dark-md    { text-shadow: 4px 4px 0 #0369A1; }
+.text-shadow-info-dark-lg    { text-shadow: 6px 6px 0 #0369A1; }
+.text-shadow-info-dark-xl    { text-shadow: 8px 8px 0 #0369A1; }
+
+
+/* === Text Shadow - Amber (Warning) === */
+.text-shadow-warning-xs   { text-shadow: 1px 1px 0 #F59E0B; }
+.text-shadow-warning-sm   { text-shadow: 2px 2px 0 #F59E0B; }
+.text-shadow-warning-md   { text-shadow: 4px 4px 0 #F59E0B; }
+.text-shadow-warning-lg   { text-shadow: 6px 6px 0 #F59E0B; }
+.text-shadow-warning-xl   { text-shadow: 8px 8px 0 #F59E0B; }
+
+/* === Text Shadow - Amber (LIGHT) === */
+.text-shadow-warning-light-xs   { text-shadow: 1px 1px 0 #FEF3C7; }
+.text-shadow-warning-light-sm   { text-shadow: 2px 2px 0 #FEF3C7; }
+.text-shadow-warning-light-md   { text-shadow: 4px 4px 0 #FEF3C7; }
+.text-shadow-warning-light-lg   { text-shadow: 6px 6px 0 #FEF3C7; }
+.text-shadow-warning-light-xl   { text-shadow: 8px 8px 0 #FEF3C7; }
+
+/* === Text Shadow - Amber (Warning) - Dark === */
+.text-shadow-warning-dark-xs    { text-shadow: 1px 1px 0 #B45309; }
+.text-shadow-warning-dark-sm    { text-shadow: 2px 2px 0 #B45309; }
+.text-shadow-warning-dark-md    { text-shadow: 4px 4px 0 #B45309; }
+.text-shadow-warning-dark-lg    { text-shadow: 6px 6px 0 #B45309; }
+.text-shadow-warning-dark-xl    { text-shadow: 8px 8px 0 #B45309; }
+
 /* === Peach (Primary) === */
 .shadow-primary-xs   { box-shadow: 1px 1px 0 0 #B77B6C; }
 .shadow-primary-sm   { box-shadow: 2px 2px 0 0 #B77B6C; }

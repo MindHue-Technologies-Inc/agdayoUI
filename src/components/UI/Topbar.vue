@@ -15,7 +15,7 @@
       <span class="text-xl font-bold">{{ title }}</span>
     </div>
 
-    <div :class="[
+    <div @click="redirectToProfile()" :class="[
         'flex items-center justify-center ',
          'text-2xl transition rounded-full ',
           'bg-none hover:text-zinc-500 cursor-pointer',
@@ -58,6 +58,10 @@ export default {
     goBack() {
       window.history.back();
     },
+
+    redirectToProfile() {
+      window.location.href = '/user-profile'
+    }
   }
 }
 </script>

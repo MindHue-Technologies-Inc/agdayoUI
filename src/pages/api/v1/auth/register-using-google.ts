@@ -8,8 +8,11 @@ export const POST: APIRoute = async ({request}) => {
     await adminDb.collection('users').doc(user.uid).set({
       uid: user.uid,
       email: user.email,
+      displayName: user.displayName,
+      displayNameLowercase: user.displayName.toLowerCase(),
       createdAt: new Date().toISOString(),
       lastLogin: new Date().toISOString(),
+      photoURL: user.photoURL
     });
 
     console.log(`Server: Firestore user document created for UID: ${user.uid}`);

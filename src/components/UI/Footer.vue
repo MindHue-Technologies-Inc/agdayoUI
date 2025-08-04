@@ -46,7 +46,7 @@ export default {
         console.log('SERVER-SIDE SESSION CLEARED')
 
         // -- 3. CLEAR NANOSTORES
-
+        localStorage.removeItem('auth')
 
         // -- 4. REDIRECT TO LOGIN
         window.location.href = '/login'
