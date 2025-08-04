@@ -1,0 +1,14 @@
+---
+import Layout from "../../layouts/LayoutWSidebar.astro";
+import Topbar from "../../components/UI/Topbar.vue"
+import Main from "../../components/layout/Main.vue"
+import Profile from "../../components/pages/profile/index.vue"
+export const prerender = false;
+---
+
+<Layout>
+  <Main>
+    <Topbar title="Profile" client:only/>
+    <Profile client:only/>
+  </Main>
+</Layout>

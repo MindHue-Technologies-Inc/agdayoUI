@@ -75,7 +75,15 @@
   <SheetTripSettings v-model:showSheet="settingsShowSheet" v-model="settings" @save="saveSettings" @delete="deleteTrip"/>
   <SheetPreparation v-model:showSheet="preparationShowSheet" v-model="preparation"/>
   <SheetAccom v-model:showSheet="accommodationShowSheet" @update:showSheet="accommodationShowSheet" v-model="accommodation" />
-  <SheetCompanions v-model:showSheet="companionsShowSheet" v-model="companions"/>
+  <SheetCompanions
+      @companion-added="companionAdded"
+      @companion-removed="companionRemoved"
+      :uid="user.uid"
+      :accepted-friendships="user.acceptedFriendships"
+      :ownerUid="ownerUid"
+      v-model:showSheet="companionsShowSheet"
+      v-model="companions"
+  />
   <SheetBudget v-model:showSheet="budgetShowSheet" v-model="budget"/>
   <SheetTransportation v-model:showSheet="transportationShowSheet" v-model="transportation"/>
   <SheetRoles v-model:showSheet="rolesShowSheet" v-model="roles"/>
@@ -193,75 +201,11 @@ export default {
         document.body.classList.remove('no-scroll')
       }
     },
-    //--------------------------------------------- Watcher for 'preparation'
-    preparation: {
-      handler(newValue) {
-        if (!newValue) return
-
-        setPreparation(this.index, newValue)
-      },
-      deep: true,
-      immediate: true,
-    },
-
-    //--------------------------------------------- Watcher for 'accommodation'
-    accommodation: {
-      handler(newValue) {
-        if (newValue !== undefined && newValue !== null && newValue.name !== '') {
-          setAccommodation(this.index, newValue);
-        }
-      },
-      deep: true,
-      immediate: true,
-    },
-
-    //--------------------------------------------- Watcher for 'companions'
-    companions: {
-      handler(newValue) {
-        if (newValue !== undefined && newValue !== null) {
-          setCompanions(this.index, newValue);
-        }
-      },
-      deep: true,
-      immediate: true,
-    },
-
-    //--------------------------------------------- Watcher for 'budget'
-    budget: {
-      handler(newValue) {
-        if (newValue !== undefined && newValue !== null) {
-          setBudget(this.index, newValue);
-        }
-      },
-      deep: true,
-      immediate: true,
-    },
-
-    //--------------------------------------------- Watcher for 'transportation'
-    transportation: {
-      handler(newValue) {
-        if (newValue !== undefined && newValue !== null) {
-          setTransportation(this.index, newValue);
-        }
-      },
-      deep: true,
-      immediate: true,
-    },
-
-    //--------------------------------------------- Watcher for 'roles'
-    roles: {
-      handler(newValue) {
-        if (newValue !== undefined && newValue !== null) {
-          setRoles(this.index, newValue);
-        }
-      },
-      deep: true,
-      immediate: true,
-    },
   },
 
   data() {
     return {
+      user: {},
       dangerToast: {
         message: '',
       },
@@ -304,6 +248,7 @@ export default {
           },
         }
       },
+      ownerUid: '',
       preparation: {
         showSheet: false,
         preparationsChecklist: [],
@@ -416,9 +361,9 @@ export default {
       return this.settingsShowSheet ||
           this.preparationShowSheet ||
           this.accommodationShowSheet ||
-          // this.companionsShowSheet ||
+          this.companionsShowSheet ||
           this.budgetShowSheet ||
-          this.transportationShowSheet ||
+          // this.transportationShowSheet ||
           // this.rolesShowSheet ||
           // this.dayNoteShowSheet ||
           this.addActivityShowSheet ||
@@ -454,6 +399,14 @@ export default {
         // removeTrip(this.index)
         window.location.href = '/trips'
       }
+    },
+
+    async companionAdded() {
+      await this.fetchTrip()
+    },
+
+    async companionRemoved() {
+      await this.fetchTrip()
     },
 
     async updateActivity(activity) {
@@ -536,7 +489,6 @@ export default {
         }
 
         const jsonResponse = await response.json()
-        console.log(jsonResponse)
 
         // -- SAVE THE NEW ACTIVITY TO THE ACTIVITIES
         this.activities.push(jsonResponse.createdActivity)
@@ -638,6 +590,17 @@ export default {
       }
     },
 
+    async fetchUser() {
+      const response = await fetch('/api/v1/me')
+
+      if (!response.ok) {
+        const error = await response.json()
+        console.error(error)
+      }
+
+      this.user = await response.json()
+    },
+
     setTripConfig(data) {
       this.tripConfig.name = data.name
       this.tripConfig.location = data.location
@@ -676,27 +639,40 @@ export default {
     setBudget(data) {
       this.budget.totalBudget = data.overallBudget;
       this.budget.categories = data.budget;
+    },
+
+    setCompanions(data) {
+      this.companions = data.companions
+    },
+
+    setOwnerUid(data) {
+      this.ownerUid = data.ownerUid
+    },
+
+    async fetchTrip() {
+      const response = await fetch(`/api/v1/trip?tripId=${this.tripId}`, {
+        method: 'GET',
+        header: {
+          'Content-Type': 'application/json'
+        }
+      })
+
+      const data = await response.json()
+
+      this.setTripConfig(data)
+      this.setTripSettings(data)
+      this.setActivities(data)
+      this.setPreparation(data)
+      this.setAccommodation(data)
+      this.setBudget(data)
+      this.setCompanions(data)
+      this.setOwnerUid(data)
     }
   },
 
   async mounted() {
-    const response = await fetch(`/api/v1/trip?tripId=${this.tripId}`, {
-      method: 'GET',
-      header: {
-        'Content-Type': 'application/json'
-      }
-    })
-
-    const data = await response.json()
-
-    console.log(data)
-
-    this.setTripConfig(data)
-    this.setTripSettings(data)
-    this.setActivities(data)
-    this.setPreparation(data)
-    this.setAccommodation(data)
-    this.setBudget(data)
+    await this.fetchTrip()
+    await this.fetchUser()
 
     this.isLoading = false
   }

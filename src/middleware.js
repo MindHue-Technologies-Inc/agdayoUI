@@ -24,7 +24,7 @@ const inPublicRoute = [
     '/register/otp',
     '/404',
     '/what-is-agdayo',
-    '/features'
+    '/features',
 ];
 
 // -- MAIN AUTHENTICATION MIDDLEWARE
