@@ -28,7 +28,7 @@
       <!-- COUNTERS -->
       <div class="flex flex-nowrap gap-2 md:gap-4">
         <!-- ACTIVE TRIPS -->
-        <AgdayoCard custom-class="flex flex-col items-start justify-between relative">
+        <AgdayoCard class="fadeIn fadeIn-0" custom-class="flex flex-col items-start justify-between relative">
           <div class="flex flex-col items-start justify-between">
             <span class="font-medium text-normal md:text-lg text-zinc-700">Active Trips</span>
             <span class="font-bold text-4xl md:text-6xl">{{activeTrips.length}}</span>
@@ -39,7 +39,7 @@
         </AgdayoCard>
 
         <!-- UPCOMING TRIPS -->
-        <AgdayoCard custom-class="flex flex-col items-start justify-between relative">
+        <AgdayoCard class="fadeIn fadeIn-1" custom-class="flex flex-col items-start justify-between relative">
           <div class="flex flex-col items-start justify-between">
             <span class="font-medium text-normal md:text-lg text-zinc-700">Upcoming Trips</span>
             <span class="font-bold text-4xl md:text-6xl">{{upcomingTrips.length}}</span>
@@ -50,7 +50,7 @@
         </AgdayoCard>
 
         <!-- NUMBER OF COMPANIONS FOR ACTIVE TRIPS -->
-        <AgdayoCard class="hidden md:flex" custom-class="flex flex-col items-start justify-between relative">
+        <AgdayoCard class="fadeIn fadeIn-2 hidden md:flex" custom-class="flex flex-col items-start justify-between relative">
           <div class="flex flex-col items-start justify-between">
             <span class="font-medium text-normal md:text-lg text-zinc-700">Companions</span>
             <span class="font-bold text-4xl md:text-6xl">{{companions.length}}</span>
@@ -61,7 +61,7 @@
         </AgdayoCard>
       </div>
 
-      <span class="font-bold text-4xl">Active Trips</span>
+      <span class="font-bold text-4xl fadeIn">Active Trips</span>
       <ActiveTripCard :trips="activeTrips"/>
     </div>
 </template>
@@ -85,55 +85,45 @@ defineOptions({
   name: 'ActiveTrips'
 })
 
-const trips = ref<object[]>([])
-const activeTrips = ref<object[]>([])
-const upcomingTrips = ref<object[]>([])
-const companions = ref<string[]>([])
-const isLoading = ref<boolean>(true)
+const trips = ref([]);
+const isLoading = ref<boolean>(true);
 
-const fetchTrips = async ():void => {
+// COMPUTED STATES
+const activeTrips = computed(()=>{
+  return trips.value.filter((trip:any) => {
+    return checkUpcoming(trip.date.start, trip.date.end) === 'Active'
+  })
+})
+
+const upcomingTrips = computed(()=>{
+  return trips.value.filter((trip:any) => {
+    return checkUpcoming(trip.date.start, trip.date.end) === 'Upcoming'
+  })
+})
+
+const companions = computed(()=>{
+  return [...new Set(activeTrips.value.map(trip=>trip.companionsUids).flat())]
+})
+
+const fetchTrips = async () => {
   try {
-    const response = await fetch('/api/v1/trips')
+    const response = await fetch('/api/v1/active-trips');
+
+    // Check if the response is valid
     if (!response.ok) {
-      const error = await response.json()
-      console.error('Something went wrong', error.message)
-      throw new Error(`Something went wrong: ${error.message}`)
+      console.error(`Failed to fetch trips. Status: ${response.status}`);
+      // Throwing an error here will be caught by the outer try/catch
+      throw new Error(`Failed to fetch trips: ${response.statusText}`);
     }
 
-    trips.value = await response.json()
-
-    activeTrips.value = trips.value.filter(trip => {
-      return checkUpcoming(trip.date.start, trip.date.end) === 'Active'
-    })
-
-    upcomingTrips.value = trips.value.filter(trip => {
-      return checkUpcoming(trip.date.start, trip.date.end) === 'Upcoming'
-    })
-
-    companions.value = [...new Set(activeTrips.value.map(trip=>trip.companionsUids).flat())]
-
-    const detailedActiveTrips = []
-
-    for (const trip of activeTrips.value) {
-      const response = await fetch(`/api/v1/trip?tripId=${trip.id}`)
-      if (!response.ok) continue
-
-      const newData = await response.json()
-
-      const dateToPush = {
-        ...trip,
-        ...newData
-      }
-
-      detailedActiveTrips.push(dateToPush)
-    }
-
-    activeTrips.value = detailedActiveTrips
-    console.log(trips.value)
-  } catch (error) {
-    console.error(error)
-  } finally {
     isLoading.value = false
+    // Return the parsed JSON data
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching trips:', error);
+    isLoading.value = false
+    // Return null to indicate a failure and allow the page to render an error state
+    return null;
   }
 }
 
@@ -168,7 +158,7 @@ function checkUpcoming(dateStart, dateEnd) {
 }
 
 onMounted( async () => {
-  await fetchTrips();
+  trips.value = await fetchTrips()
 })
 
 </script>

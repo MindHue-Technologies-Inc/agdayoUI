@@ -1,37 +1,35 @@
 <template>
-  <Transition name="fade" appear>
-    <div class="flex flex-col grow place-content-center">
-      <h1 class="fadeIn text-4xl sm:text-5xl font-extrabold text-zinc-800 mb-8 sm:mb-12 text-center tracking-tight outfit">
-        Plan Your Next Adventure
-      </h1>
+  <div class="flex flex-col grow place-content-center">
+    <h1 class="fadeIn text-4xl sm:text-5xl font-extrabold text-zinc-800 mb-8 sm:mb-12 text-center tracking-tight outfit">
+      Plan Your Next Adventure
+    </h1>
 
-      <Card customClass="rounded-4xl border-secondary-xs shadow-secondary-lg">
-        <AdvInput
-            label="Trip Name"
-            icon="ph-paper-plane-tilt"
-            ref="advInputName"
-        >
-          <div class="p-1">
-            <InputTitle
-                v-model="name"
-                placeholder="e.g., Island Hopping Palawan"
-                id="name"
-                class="w-full text-2xl font-bold text-zinc-800"
-            />
-            <span class="text-sm text-zinc-500 mt-2 block">
+    <Card class="fadeIn fadeIn-1" customClass="rounded-4xl border-secondary-xs shadow-secondary-lg">
+      <AdvInput
+          label="Trip Name"
+          icon="ph-paper-plane-tilt"
+          ref="advInputName"
+      >
+        <div class="p-1">
+          <InputTitle
+              v-model="name"
+              placeholder="e.g., Island Hopping Palawan"
+              id="name"
+              class="w-full text-2xl font-bold text-zinc-800"
+          />
+          <span class="text-sm text-zinc-500 mt-2 block">
               You can add preparations, activities, and routes after creating the trip.
             </span>
-          </div>
-        </AdvInput>
+        </div>
+      </AdvInput>
 
-        <Destination ref="destination" v-model="location" @next="proceedNext('destination')"/>
+      <Destination ref="destination" v-model="location" @next="proceedNext('destination')"/>
 
-        <Dates ref="dates" v-model="date" @next="proceedNext('dates')"/>
+      <Dates ref="dates" v-model="date" @next="proceedNext('dates')"/>
 
-        <Button :loading="btnLoading" ref="submit" @click="saveTrip">Start Planning</Button>
-      </Card>
-    </div>
-  </Transition>
+      <Button :loading="btnLoading" ref="submit" @click="saveTrip">Start Planning</Button>
+    </Card>
+  </div>
 
   <ToastContainer>
     <Toast
@@ -86,7 +84,7 @@ export default {
     Toast,
   },
 
-  data(){
+  data() {
     return {
       // 1. Create a data property to hold the store's state reactively
       useDb: useDbStore.get(), // Initialize with the current state
@@ -178,11 +176,11 @@ export default {
         }
 
         // -- 4. GET THE ID OF THE NEWLY CREATED TRIP
-        const { tripId, tripData } = await response.json()
+        const {tripId, tripData} = await response.json()
 
         console.log(tripId, tripData)
 
-        window.location.href=`/trips/${tripId}`
+        window.location.href = `/trips/${tripId}`
 
       } catch (error) {
         console.error(error)

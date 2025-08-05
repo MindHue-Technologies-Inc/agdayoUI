@@ -15,6 +15,7 @@
       <span class="text-xl font-bold">{{ title }}</span>
     </div>
 
+    <!-- USER PROFILE PHOTO / ICON -->
     <div @click="redirectToProfile()" :class="[
         'flex items-center justify-center ',
          'text-2xl transition rounded-full ',
@@ -22,14 +23,15 @@
           'absolute right-0 bg-zinc-200 aspect-square border-2 border-zinc-300',
           'overflow-hidden h-8 w-8'
     ]">
-      <img v-if="photoURL" :src="photoURL" alt="">
+      <!-- Use the prop directly for the photo URL -->
+      <img v-if="photoURL" :src="photoURL" alt="User Profile Photo">
       <i v-else class="ph ph-user"></i>
     </div>
   </div>
 </template>
 
 <script>
-import {useAuthStore} from "../../stores/auth.js";
+// We no longer need to import the useAuthStore here
 export default {
   props: {
     title: {
@@ -39,19 +41,22 @@ export default {
     hideBackButton: {
       type: Boolean,
       default: false
+    },
+    // Add a prop for the user's photo URL
+    photoURL: {
+      type: String,
+      default: null
     }
   },
 
   data() {
     return {
-      useAuth: useAuthStore.get()
+      // The store is no longer needed in the component's data
     }
   },
 
   computed: {
-    photoURL() {
-      return this.useAuth.user?.user?.photoURL
-    }
+    // The photoURL is now a prop, so this computed property is no longer necessary
   },
 
   methods: {

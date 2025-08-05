@@ -1,16 +1,15 @@
 <template>
   <footer class="flex flex-col gap-10 bottom-0 w-full text-center text-sm text-zinc-500 py-4">
     <p>
-      &copy; {{ currentYear }} MindHue Technologies Inc. All rights reserved. |
+      &copy; {{ currentYear }} MindHue Technologies Inc. All rights reserved.
       <!--<Anchor href="/subscribe" class="text-blue-500 hover:underline">Subscribe</Anchor> |-->
-      <Anchor href="" @click="logoutUser" class="text-blue-500 hover:underline">Logout</Anchor>
+      <!--<Anchor href="" @click="logoutUser" class="text-blue-500 hover:underline">Logout</Anchor>-->
     </p>
   </footer>
 </template>
 
 <script>
 import Anchor from "./Anchor.vue";
-import {auth} from "../../lib/firebase/client.js";
 import {logout} from "../../stores/auth.js";
 export default {
   name: "AppFooter",
@@ -26,6 +25,7 @@ export default {
   methods: {
     async logoutUser() {
       try {
+        const { auth } = await import("../../lib/firebase/client.js");
         // -- 1. SIGN OUT FROM FIREBASE CLIENT SDK
         await auth.signOut()
         console.log('FIREBASE CLIENT-SIDE SIGN OUT SUCCESSFUL')

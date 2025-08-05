@@ -5,11 +5,18 @@ import Topbar from "../../components/UI/Topbar.vue"
 import TripPage from "../../components/pages/trip/index.vue"
 const { trip } = Astro.params;
 export const prerender = false;
+
+// Get the user data that the middleware attached to `Astro.locals`
+// This is now the definitive source for user information.
+const user = Astro.locals.user;
+
+// Pass the user's photo URL to the Topbar component
+const userPhotoURL = user?.photoURL || null;
 ---
 
 <Layout>
   <Main>
-    <Topbar title="Trip" client:only/>
-    <TripPage index={Number(trip)} trip-id={trip} client:only/>
+    <Topbar title="Trip" photoURL={userPhotoURL} client:load />
+    <TripPage trip-id={trip} client:load/>
   </Main>
 </Layout>
