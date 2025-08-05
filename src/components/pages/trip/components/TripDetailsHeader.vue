@@ -1,41 +1,55 @@
 <template>
-    <div :class="['flex flex-col gap-3 p-4 md:p-6 sm:p-8', headerClass]">
-      <div class="fadeIn flex flex-row items-center justify-between">
-        <div class="flex flex-row gap-2 items-center">
-          <!--<Tag label="Upcoming" class="bg-white border-primary-light-xs"/>-->
-          <Tag label="View on Map" @click="$emit('showMap', true)" variant="green" mode="button" icon="ph-map-trifold" />
-          <Tag label="Share" variant="peach" mode="button" icon="ph-share-fat"/>
-        </div>
-
-        <button @click="$emit('show-settings')" class="flex justify-center items-center text-2xl text-zinc-600 cursor-pointer transition hover:text-peach-500 active:text-peach-600 focus:outline-none focus:ring-2 focus:ring-peach-300 rounded-full p-1 -mr-1">
-          <i class="ph ph-gear-six"></i>
-        </button>
+  <div :class="['flex flex-col gap-3 p-4 md:p-6 sm:p-8', headerClass]">
+    <div class="fadeIn flex flex-row items-center justify-between">
+      <div class="flex flex-row gap-2 items-center">
+        <!--<Tag label="Upcoming" class="bg-white border-primary-light-xs"/>-->
+        <Tag label="View on Map" @click="$emit('showMap', true)" variant="green" mode="button" icon="ph-map-trifold"/>
+        <Tag label="Share" variant="peach" mode="button" icon="ph-share-fat"/>
       </div>
 
-      <div class="fadeIn fadeIn-1">
-        <h2 class="font-extrabold text-4xl sm:text-5xl text-zinc-800 tracking-tight outfit leading-tight">{{tripConfig.name}}</h2>
+      <button @click="$emit('show-settings')"
+              class="flex justify-center items-center text-2xl text-zinc-600 cursor-pointer transition hover:text-peach-500 active:text-peach-600 focus:outline-none focus:ring-2 focus:ring-peach-300 rounded-full p-1 -mr-1">
+        <i class="ph ph-gear-six"></i>
+      </button>
+    </div>
+
+    <div class="fadeIn fadeIn-1">
+      <h2 class="font-extrabold text-4xl sm:text-5xl text-zinc-800 tracking-tight outfit leading-tight">
+        {{ tripConfig.name }}</h2>
+    </div>
+
+    <div class="fadeIn mt-2 fadeIn-2">
+      <span class="text-zinc-600 font-semibold">Planning Progress:</span>
+      <div :class="progressBgClass" class="w-full rounded-full h-2 mt-1">
+        <div :class="['h-2 rounded-full transition-all ease', progressClass]"
+             :style="{ width: `${(planningProgress.completed / planningProgress.total) * 100}%` }"></div>
+      </div>
+      <span class="text-sm text-zinc-500 mt-1 block">{{ planningProgress.completed }}/{{ planningProgress.total }} Sections Complete</span>
+    </div>
+
+    <div class="fadeIn fadeIn-3 flex flex-row items-center gap-6 text-zinc-600 font-medium mt-2">
+      <div class="flex gap-2 items-center">
+        <i :class="['ph ph-calendar-dots text-xl', textClass]"></i>
+        <span>{{ formatDateRange(tripConfig.date.start, tripConfig.date.end) }}</span>
       </div>
 
-      <div class="fadeIn mt-2 fadeIn-2">
-        <span class="text-zinc-600 font-semibold">Planning Progress:</span>
-        <div :class="progressBgClass" class="w-full rounded-full h-2 mt-1">
-          <div :class="['h-2 rounded-full transition-all ease', progressClass]" :style="{ width: `${(planningProgress.completed / planningProgress.total) * 100}%` }"></div>
-        </div>
-        <span class="text-sm text-zinc-500 mt-1 block">{{ planningProgress.completed }}/{{ planningProgress.total }} Sections Complete</span>
+      <div class="flex gap-2 items-center">
+        <i :class="['ph ph-map-pin text-xl', textClass]"></i>
+        <span>{{ tripConfig.location }}</span>
       </div>
-
-      <div class="fadeIn fadeIn-3 flex flex-row items-center gap-6 text-zinc-600 font-medium mt-2">
-        <div class="flex gap-2 items-center">
-          <i :class="['ph ph-calendar-dots text-xl', textClass]"></i>
-          <span>{{formatDateRange(tripConfig.date.start, tripConfig.date.end)}}</span>
-        </div>
-
-        <div class="flex gap-2 items-center">
-          <i :class="['ph ph-map-pin text-xl', textClass]"></i>
-          <span>{{tripConfig.location}}</span>
+    </div>
+    <div v-if="onlineCompanions.length > 0" class="flex flex-col gap">
+      <span class="text-zinc-400">Online</span>
+      <div class="flex flex-row gap-1">
+        <div
+            v-for="companion in onlineCompanions"
+            :key="companion.uid"
+        >
+          <img :src="companion.photoURL" class="h-8 w-8 rounded-full" :title="companion.name" alt="">
         </div>
       </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -57,6 +71,10 @@ export default {
       type: Object,
       required: true,
     },
+    onlineCompanions: {
+      type: Array,
+      default: [],
+    }
   },
   emits: ['show-settings', 'showMap'],
   computed: {
@@ -147,11 +165,11 @@ export default {
         return '';
       }
 
-      const monthDayOptions = { month: 'short', day: 'numeric' };
-      const yearOptions = { year: 'numeric' };
+      const monthDayOptions = {month: 'short', day: 'numeric'};
+      const yearOptions = {year: 'numeric'};
 
       const startMonthDay = new Intl.DateTimeFormat('en-US', monthDayOptions).format(start);
-      const endDay = new Intl.DateTimeFormat('en-US', { day: 'numeric' }).format(end);
+      const endDay = new Intl.DateTimeFormat('en-US', {day: 'numeric'}).format(end);
       const year = new Intl.DateTimeFormat('en-US', yearOptions).format(end);
 
       if (startDate === endDate) {
@@ -159,7 +177,7 @@ export default {
       }
 
       if (start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear()) {
-        return `${startMonthDay.split(' ')[0]} ${new Intl.DateTimeFormat('en-US', { day: 'numeric' }).format(start)} - ${endDay}, ${year}`;
+        return `${startMonthDay.split(' ')[0]} ${new Intl.DateTimeFormat('en-US', {day: 'numeric'}).format(start)} - ${endDay}, ${year}`;
       }
 
       const startFull = new Intl.DateTimeFormat('en-US', monthDayOptions).format(start);
@@ -168,8 +186,16 @@ export default {
       if (start.getFullYear() === end.getFullYear()) {
         return `${startFull} - ${endFull}, ${year}`;
       } else {
-        const startFullYear = new Intl.DateTimeFormat('en-US', {month: 'short', day: 'numeric', year: 'numeric'}).format(start);
-        const endFullYear = new Intl.DateTimeFormat('en-US', {month: 'short', day: 'numeric', year: 'numeric'}).format(end);
+        const startFullYear = new Intl.DateTimeFormat('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric'
+        }).format(start);
+        const endFullYear = new Intl.DateTimeFormat('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric'
+        }).format(end);
         return `${startFullYear} - ${endFullYear}`;
       }
     },

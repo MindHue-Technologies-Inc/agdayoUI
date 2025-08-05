@@ -207,8 +207,6 @@ export async function POST({ request }: { request: Request }): Promise<Response>
         
         The current date is ${CURRENT_DATE_TIME}.
         
-        Always suggest activity locations that are nearby to each other.
-        
         Your response MUST be ONLY a JSON object matching the provided schema. DO NOT include any conversational text, preambles, or markdown formatting (e.g., \`\`\`json). Just the raw JSON object.
         
         Example JSON Structure for your final output:`

@@ -125,7 +125,6 @@ import People from "./components/People.vue";
 import ToastContainer from "../../UI/ToastContainer.vue";
 import Toast from "../../UI/Toast.vue";
 import Anchor from "../../UI/Anchor.vue";
-import {auth} from "../../../lib/firebase/client.ts";
 
 
 
@@ -247,6 +246,7 @@ const friendRequestCancelled = () => {
 const logoutUser = async () => {
   try {
     // -- 1. SIGN OUT FROM FIREBASE CLIENT SDK
+    const { auth } = await import("../../../lib/firebase/client.js");
     await auth.signOut()
     console.log('FIREBASE CLIENT-SIDE SIGN OUT SUCCESSFUL')
 
