@@ -5,6 +5,25 @@
         <!--<Tag label="Upcoming" class="bg-white border-primary-light-xs"/>-->
         <Tag label="View on Map" @click="$emit('showMap', true)" variant="green" mode="button" icon="ph-map-trifold"/>
         <Tag label="Share" variant="peach" mode="button" icon="ph-share-fat"/>
+        <div class="flex flex-row gap-1">
+          <div
+              v-for="(companion, index) in onlineCompanions"
+              :key="companion.uid"
+          >
+            <img v-if="companion.photoURL" :src="companion.photoURL" :class="`h-8 w-8 rounded-full fadeIn fadeIn-${index}`" :title="companion.name" alt="">
+            <div v-else
+                 :title="companion.name"
+                 :class="['flex items-center justify-center ',
+                         'text-xl rounded-full ',
+                         'bg-none',
+                         'bg-zinc-200 aspect-square border-2 border-zinc-300',
+                         'overflow-hidden h-8 w-8',
+                         `fadeIn fadeIn-${index}`]"
+            >
+              <i class="ph ph-user"></i>
+            </div>
+          </div>
+        </div>
       </div>
 
       <button @click="$emit('show-settings')"
@@ -36,17 +55,6 @@
       <div class="flex gap-2 items-center">
         <i :class="['ph ph-map-pin text-xl', textClass]"></i>
         <span>{{ tripConfig.location }}</span>
-      </div>
-    </div>
-    <div v-if="onlineCompanions.length > 0" class="flex flex-col gap">
-      <span class="text-zinc-400">Online</span>
-      <div class="flex flex-row gap-1">
-        <div
-            v-for="companion in onlineCompanions"
-            :key="companion.uid"
-        >
-          <img :src="companion.photoURL" class="h-8 w-8 rounded-full" :title="companion.name" alt="">
-        </div>
       </div>
     </div>
   </div>
