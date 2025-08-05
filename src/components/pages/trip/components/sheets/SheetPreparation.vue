@@ -137,7 +137,6 @@ export default {
         { label: 'Documents', value: 'Documents' },
         { label: 'Packing', value: 'Packing' },
         { label: 'Essentials', value: 'Essentials' },
-        { label: 'For Albert', value: 'For Albert' },
       ],
 
       preparationsChecklist: [...this.modelValue.preparationsChecklist],

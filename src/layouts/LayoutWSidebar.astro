@@ -2,6 +2,7 @@
 import "../styles/global.css"
 import Footer from "../components/UI/Footer.vue"
 import Sidebar from "../components/UI/Sidebar.vue"
+import { ClientRouter } from "astro:transitions";
 ---
 <!doctype html>
 <html lang="en">
@@ -31,12 +32,13 @@ import Sidebar from "../components/UI/Sidebar.vue"
     />
     <title>Agdayo Traveling App</title>
     <slot name="head"></slot>
+    <ClientRouter />
   </head>
   
   <!-- BODY -->
   <body class="outfit relative text-zinc-900 flex flex-col min-h-screen bg-cover bg-center bg-no-repeat">
-    <Sidebar client:only/>
+    <Sidebar client:load/>
     <slot class="flex-grow" />
-    <Footer client:only class="pb-16 lg:pb-4" />
+    <Footer class="pb-16 lg:pb-4" />
   </body>
 </html>

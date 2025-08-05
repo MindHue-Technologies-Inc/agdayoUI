@@ -1,40 +1,38 @@
 <template>
-  <transition name="fade" appear>
-    <div class="grow mt-8 md:mt-16">
-      <div class="max-w-4xl ">
-        <div class="flex items-center justify-between mb-8">
-          <h1 class="font-extrabold text-4xl sm:text-5xl text-zinc-800 tracking-tight outfit leading-tight">
-            My Trips
-          </h1>
-          <Button variant="primary" @click="redirect('/create-trip')">
-            <i class="ph ph-plus text-lg mr-1"></i> New Trip
-          </Button>
-        </div>
+  <div class="fadeIn grow mt-8 md:mt-16">
+    <div class="max-w-4xl ">
+      <div class="flex items-center justify-between mb-8">
+        <h1 class="font-extrabold text-4xl sm:text-5xl text-zinc-800 tracking-tight outfit leading-tight">
+          My Trips
+        </h1>
+        <Button variant="primary" @click="redirect('/create-trip')">
+          <i class="ph ph-plus text-lg mr-1"></i> New Trip
+        </Button>
+      </div>
 
-        <div class="flex flex-col gap-6">
+      <div class="flex flex-col gap-6">
 
-          <template v-if="trips.length > 0">
-            <TripCard :trips="sortedTrips"></TripCard>
-          </template>
+        <template v-if="trips.length > 0">
+          <TripCard :trips="sortedTrips"></TripCard>
+        </template>
 
-          <template v-else-if="isLoading">
-            <div class="flex items-center justify-center w-full h-[32rem]">
-              <Spinner label="Loading your trips"/>
-            </div>
-          </template>
+        <template v-else-if="isLoading">
+          <div class="flex items-center justify-center w-full h-[32rem]">
+            <Spinner label="Loading your trips"/>
+          </div>
+        </template>
 
-          <template v-else>
-            <div class="flex flex-col grow items-center justify-center gap-2 h-[32rem]">
-              <i class="ph ph-island text-5xl text-zinc-400"></i>
-              <span class="font-medium text-zinc-400">No Trips</span>
-            </div>
-          </template>
-
-        </div>
+        <template v-else>
+          <div class="flex flex-col grow items-center justify-center gap-2 h-[32rem]">
+            <i class="ph ph-island text-5xl text-zinc-400"></i>
+            <span class="font-medium text-zinc-400">No Trips</span>
+          </div>
+        </template>
 
       </div>
+
     </div>
-  </transition>
+  </div>
 </template>
 
 <script>
@@ -64,7 +62,7 @@ export default {
 
   computed: {
     sortedTrips() {
-      return this.trips.toSorted((a,b) => {
+      return this.trips.toSorted((a, b) => {
         return a.date.start.localeCompare(b.date.start)
       })
     },
@@ -90,8 +88,8 @@ export default {
       }
     },
 
-    redirect(address){
-      window.location.href=address
+    redirect(address) {
+      window.location.href = address
     },
   },
 
@@ -106,5 +104,6 @@ export default {
 .outfit {
   font-family: 'Outfit', sans-serif;
 }
+
 /* Ensure your custom-scrollbar class is defined elsewhere for overflow-x-auto styling */
 </style>

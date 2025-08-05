@@ -3,11 +3,18 @@ import Layout from "../../layouts/LayoutWSidebar.astro"
 import Main from "../../components/layout/Main.vue"
 import Topbar from "../../components/UI/Topbar.vue"
 export const prerender = false;
+
+// Get the user data that the middleware attached to `Astro.locals`
+// This is now the definitive source for user information.
+const user = Astro.locals.user;
+
+// Pass the user's photo URL to the Topbar component
+const userPhotoURL = user?.photoURL || null;
 ---
 
 <Layout>
   <Main>
-    <Topbar title="Expenses" client:only/>
+    <Topbar title="Expenses" photoURL={userPhotoURL} client:load />
     <div class="flex flex-col items-center justify-center w-full h-full">
       <span class="text-2xl font-bold">We're still working on it!</span>
     </div>

@@ -5,55 +5,54 @@
     </div>
   </template>
   <template v-else>
-    <transition name="fade" appear>
 
-      <div class="grow mt-8 md:mt-16 fadeIn" v-if="tripConfig.name">
-        <!-- PAYMENT BUTTON -->
-        <!--<PaymentButton description="Premium Subscription" :amount="999"/>-->
+    <div class="grow mt-8 md:mt-16 fadeIn" v-if="tripConfig.name">
+      <!-- PAYMENT BUTTON -->
+      <!--<PaymentButton description="Premium Subscription" :amount="999"/>-->
 
-        <!-- MAIN CARD -->
-        <Card :customClass='cardClass + " max-w-4xl mx-auto p-0! overflow-hidden rounded-4xl bg-white"'>
-          <!-- TRIP HEADER -->
-          <TripDetailsHeader
-              :trip-config="tripConfig"
-              :planning-progress="progressOfPlanning"
-              @show-settings="settingsShowSheet = true"
-              @show-map="mapShowSheet = true"
-          />
+      <!-- MAIN CARD -->
+      <Card :customClass='cardClass + " max-w-4xl mx-auto p-0! overflow-hidden rounded-4xl bg-white"'>
+        <!-- TRIP HEADER -->
+        <TripDetailsHeader
+            :online-companions="onlineCompanions"
+            :trip-config="tripConfig"
+            :planning-progress="progressOfPlanning"
+            @show-settings="settingsShowSheet = true"
+            @show-map="mapShowSheet = true"
+        />
 
-          <!-- TRIP SECTION -->
-          <TripSections
+        <!-- TRIP SECTION -->
+        <TripSections
 
-              @show-accommodation="accommodationShowSheet=true"
-              @show-budget="budgetShowSheet=true"
-              @show-companions="companionsShowSheet=true"
-              @show-preparation="preparationShowSheet=true"
-              @show-roles="rolesShowSheet=true"
-              @show-transportation="transportationShowSheet=true"
+            @show-accommodation="accommodationShowSheet=true"
+            @show-budget="budgetShowSheet=true"
+            @show-companions="companionsShowSheet=true"
+            @show-preparation="preparationShowSheet=true"
+            @show-roles="rolesShowSheet=true"
+            @show-transportation="transportationShowSheet=true"
 
-              :preparation="preparation"
-              :budget="budget"
-              :accommodation="accommodation"
-              :companions="companions"
-              :roles="roles"
-              :transportation="transportation"
+            :preparation="preparation"
+            :budget="budget"
+            :accommodation="accommodation"
+            :companions="companions"
+            :roles="roles"
+            :transportation="transportation"
 
-          />
+        />
 
-          <!-- DAY PLANS -->
-          <ActivityTimeline
-              :trip-config="tripConfig"
-              :activities="activities"
+        <!-- DAY PLANS -->
+        <ActivityTimeline
+            :trip-config="tripConfig"
+            :activities="activities"
 
-              @show-add-activity="addActivityShowSheet=true"
-              @show-day-note="dayNoteShowSheet=true"
-              @show-view-activity="showViewActivitySheet"
-          />
-        </Card>
-        <!-- END OF MAIN CARD -->
-        <div id="fuck"></div>
-      </div>
-    </transition>
+            @show-add-activity="addActivityShowSheet=true"
+            @show-day-note="dayNoteShowSheet=true"
+            @show-view-activity="showViewActivitySheet"
+        />
+      </Card>
+      <!-- END OF MAIN CARD -->
+      <div id="fuck"></div>
+    </div>
   </template>
 
 
@@ -72,9 +71,11 @@
   </ToastContainer>
 
 
-  <SheetTripSettings v-model:showSheet="settingsShowSheet" v-model="settings" @save="saveSettings" @delete="deleteTrip"/>
+  <SheetTripSettings v-model:showSheet="settingsShowSheet" v-model="settings" @save="saveSettings"
+                     @delete="deleteTrip"/>
   <SheetPreparation v-model:showSheet="preparationShowSheet" v-model="preparation"/>
-  <SheetAccom v-model:showSheet="accommodationShowSheet" @update:showSheet="accommodationShowSheet" v-model="accommodation" />
+  <SheetAccom v-model:showSheet="accommodationShowSheet" @update:showSheet="accommodationShowSheet"
+              v-model="accommodation"/>
   <SheetCompanions
       @companion-added="companionAdded"
       @companion-removed="companionRemoved"
@@ -87,7 +88,8 @@
   <SheetBudget v-model:showSheet="budgetShowSheet" v-model="budget"/>
   <SheetTransportation v-model:showSheet="transportationShowSheet" v-model="transportation"/>
   <SheetRoles v-model:showSheet="rolesShowSheet" v-model="roles"/>
-  <SheetAddActivity v-model:showSheet="addActivityShowSheet" :dateRange="tripConfig.date" v-model="addActivity" @activity-saved="addNewActivity"/>
+  <SheetAddActivity v-model:showSheet="addActivityShowSheet" :dateRange="tripConfig.date" v-model="addActivity"
+                    @activity-saved="addNewActivity"/>
   <SheetEditActivity
       v-model:showSheet="editActivityShowSheet"
       :dateRange="tripConfig.date"
@@ -117,22 +119,9 @@ import TripDetailsHeader from "./components/TripDetailsHeader.vue";
 import TripSections from "./components/TripSections.vue";
 import ActivityTimeline from "./components/ActivityTimeline.vue";
 import {
-    useDbStore,
-    setName,
-    setLocation,
-    setDate,
-    setTheme,
-    setPreparation,
-    setCompanions,
-    setAccommodation,
-    setBudget,
-    setTransportation,
-    setRoles,
-    setActivities,
-    setPlanningProgress,
-    removeTrip,
+  useDbStore,
 
-} from "../../../stores/db.js";
+} from "@/stores/db.js";
 
 
 // Sheets
@@ -183,10 +172,6 @@ export default {
   },
 
   props: {
-    index: {
-      type: Number,
-      required: false,
-    },
     tripId: {
       type: String,
       required: true
@@ -205,6 +190,7 @@ export default {
 
   data() {
     return {
+      unsubscribeFromTripListener: null,
       user: {},
       dangerToast: {
         message: '',
@@ -293,8 +279,7 @@ export default {
       addActivity: {
         showSheet: false,
       },
-      activities: [
-      ],
+      activities: [],
       editActivity: {
         showSheet: false,
       },
@@ -319,6 +304,9 @@ export default {
         completed: 1, // Example: based on 4/7 sections complete
         total: 7,
       },
+
+      onlineCompanions: [],
+      unsubscribeFromPresenceListener: null,
     }
   },
   computed: {
@@ -334,7 +322,6 @@ export default {
       ];
 
       const completed = conditions.filter(Boolean).length;
-      const total = conditions.length;
 
       return {
         completed: completed,
@@ -428,7 +415,7 @@ export default {
         const jsonResponse = await response.json()
 
         // -- GET THE INDEX OF THE OLD ACTIVITY
-        const indexOfOriginal = this.activities.findIndex(activity=>{
+        const indexOfOriginal = this.activities.findIndex(activity => {
           return activity.id === jsonResponse?.updatedActivity?.id
         })
 
@@ -466,7 +453,7 @@ export default {
         // -- SUCCESS TOAST
         this.successToast.message = jsonResponse.message
 
-        this.activities = this.activities.filter(activity=>activity.id !== id)
+        this.activities = this.activities.filter(activity => activity.id !== id)
       } catch (error) {
         console.error(error)
       }
@@ -479,7 +466,7 @@ export default {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({...activity, tripId:this.tripId})
+          body: JSON.stringify({...activity, tripId: this.tripId})
         })
 
         if (!response.ok) {
@@ -539,7 +526,7 @@ export default {
       try {
         this.accommodation = payload?.trip?.accommodation ? payload.trip.accommodation : this.accommodation
         this.accommodation.location = payload.trip.location
-        this.accommodation.dates = { start:payload.trip.start_date, end:payload.trip.end_date }
+        this.accommodation.dates = {start: payload.trip.start_date, end: payload.trip.end_date}
       } catch (err) {
         console.error(err)
       }
@@ -547,7 +534,7 @@ export default {
 
     initSettings(payload) {
       this.settings.trip.name = payload.trip.name
-      this.settings.trip.date = { start:payload.trip.start_date, end:payload.trip.end_date }
+      this.settings.trip.date = {start: payload.trip.start_date, end: payload.trip.end_date}
       this.settings.trip.theme = payload.trip.theme
       this.settings.trip.location = payload.trip.location
     },
@@ -565,7 +552,7 @@ export default {
       this.activities = payload.trip.activities
     },
 
-    async saveSettings(payload){
+    async saveSettings(payload) {
       try {
         this.tripConfig.name = payload.name ?? this.tripConfig.name;
         this.tripConfig.location = payload.location ?? this.tripConfig.location;
@@ -623,7 +610,7 @@ export default {
 
     setAccommodation(data) {
       try {
-        const accommodation = data.accommodations.sort((a,b)=>a.createdAt._seconds - b.createdAt._seconds)[data.accommodations.length - 1]
+        const accommodation = data.accommodations.sort((a, b) => a.createdAt._seconds - b.createdAt._seconds)[data.accommodations.length - 1]
         this.accommodation = {
           ...accommodation,
           dates: {
@@ -667,14 +654,116 @@ export default {
       this.setBudget(data)
       this.setCompanions(data)
       this.setOwnerUid(data)
-    }
+    },
+
+    updateTripDataFromSnapshot(data) {
+      console.log(data)
+    },
+
+    // === NEW METHODS FOR REAL-TIME PRESENCE ===
+    /**
+     * Creates or updates the user's presence document.
+     * This indicates the user is online.
+     * @async
+     */
+    async setPresence() {
+      if (!this.user?.uid) return;
+      const {doc} = await import('firebase/firestore')
+      const {firestore} = await import('../../../lib/firebase/client.ts')
+      const userDocRef = doc(firestore, `trips/${this.tripId}/onlineUsers`, this.user.uid);
+      try {
+        const {setDoc} = await import ('firebase/firestore')
+        await setDoc(userDocRef, {
+          uid: this.user.uid,
+          name: this.user.displayName || `User-${this.user.uid.substring(0, 5)}`,
+          photoURL: this.user.photoURL || null,
+          lastActive: new Date().toISOString()
+        });
+      } catch (e) {
+        console.error("Error setting presence:", e);
+      }
+    },
+    /**
+     * Deletes the user's presence document.
+     * This should be called when the user navigates away.
+     * @async
+     */
+    async removePresence() {
+      if (!this.user?.uid) return;
+      const {doc} = await import('firebase/firestore')
+      const {firestore} = await import('../../../lib/firebase/client.ts')
+      const userDocRef = doc(firestore, `trips/${this.tripId}/onlineUsers`, this.user.uid);
+      try {
+
+        const {deleteDoc} = await import('firebase/firestore')
+        await deleteDoc(userDocRef);
+      } catch (e) {
+        console.error("Error removing presence:", e);
+      }
+    },
+    /**
+     * Sets up the real-time listener for the list of online users.
+     */
+    async setupPresenceListener() {
+      if (!this.tripId) return;
+
+      const {collection, onSnapshot} = await import('firebase/firestore')
+      const {firestore} = await import('../../../lib/firebase/client.ts')
+      const onlineUsersCollectionRef = collection(firestore, `trips/${this.tripId}/onlineUsers`);
+      this.unsubscribeFromPresenceListener = onSnapshot(onlineUsersCollectionRef, (querySnapshot) => {
+        const users = [];
+        querySnapshot.forEach((doc) => {
+          users.push({ id: doc.id, ...doc.data() });
+        });
+        this.onlineCompanions = users;
+      }, (error) => {
+        console.error("Error listening to online users:", error);
+      });
+    },
   },
 
   async mounted() {
     await this.fetchTrip()
     await this.fetchUser()
-
     this.isLoading = false
+
+    const {doc, onSnapshot} = await import('firebase/firestore')
+    const {firestore} = await import('../../../lib/firebase/client.ts')
+
+    // -- SET UP REAL TIME LISTENER FOR THE TRIP DOCUMENT
+    const tripRef = doc(firestore, 'trips', this.tripId)
+    this.unsubscribeFromTripListener = onSnapshot(tripRef, async (docSnap) => {
+      if (docSnap.exists()) {
+        await this.fetchTrip()
+      } else {
+        console.log('Trip document does not exists')
+      }
+    }, (error) => {
+      console.error("Error listening to trip document:", error);
+      this.dangerToast.message = 'Error fetching real-time data.';
+    })
+
+    // === NEW: SETUP REAL-TIME PRESENCE ===
+    if (this.user?.uid) {
+      await this.setPresence();
+      await this.setupPresenceListener();
+    }
+
+    // Clean up by destroying instances and removing event listeners
+    document.addEventListener('astro:before-swap', () => {
+      // Clean up both listeners and remove the presence document
+      if (this.unsubscribeFromTripListener) {
+        this.unsubscribeFromTripListener();
+      }
+      if (this.unsubscribeFromPresenceListener) {
+        this.unsubscribeFromPresenceListener();
+      }
+      this.removePresence();
+    }, { once: true })
+  },
+
+  unmounted() {
+
   }
 }
 </script>
