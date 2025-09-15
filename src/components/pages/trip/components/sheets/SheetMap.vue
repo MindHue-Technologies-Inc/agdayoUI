@@ -139,7 +139,9 @@ const initMapAndMarkers = async () => {
 
   // -- CALCULATE INITIAL MAP CENTER AND BOUNDS
   let bounds = new google.maps.LatLngBounds();
-  activitiesWithCoords.forEach(activity => {
+  activitiesWithCoords
+      .sort((a,b)=>a.datetime.localeCompare(b.datetime))
+      .forEach(activity => {
     try {
       bounds.extend(new google.maps.LatLng(activity.coordinates.latitude, activity.coordinates.longitude));
     } catch (e) {

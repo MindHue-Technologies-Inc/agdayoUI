@@ -4,7 +4,6 @@
       <div class="flex items-center justify-between w-full mb-6">
         <div class="flex gap-2 items-center justify-center text-3xl text-zinc-800">
           <i class="ph ph-users"></i> <span class="font-bold">Trip Companions</span>
-          <Tag label="+ Add More" mode="button" @click="addCompanionRow" />
         </div>
         <button @click="$emit('update:showSheet', false)" class="text-zinc-500 hover:text-zinc-700 transition">
           <i class="ph ph-x text-2xl"></i>

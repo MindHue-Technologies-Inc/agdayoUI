@@ -80,6 +80,7 @@ import TripCard from "../../UI/TripCard.vue";
 import ActiveTripCard from "../../UI/ActiveTripCard.vue";
 import Spinner from "../../UI/Spinner.vue";
 import AgdayoCard from "../../UI/AgdayoCard.vue";
+import PhotoUI from "@/components/UI/PhotoUI.vue";
 
 defineOptions({
   name: 'ActiveTrips'
@@ -87,6 +88,7 @@ defineOptions({
 
 const trips = ref([]);
 const isLoading = ref<boolean>(true);
+
 
 // COMPUTED STATES
 const activeTrips = computed(()=>{

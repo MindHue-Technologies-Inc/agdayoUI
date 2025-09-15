@@ -3,7 +3,7 @@
     <label v-if="label" :for="id" class="text-zinc-900 text-sm font-medium">
       {{ label }}
     </label>
-    <input
+    <textarea
         :id="id"
         :type="type"
         :value="modelValue"

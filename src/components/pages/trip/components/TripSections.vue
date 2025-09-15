@@ -1,6 +1,20 @@
 <template>
   <div class="flex flex-row gap-4 py-4 sm:py-6 px-4 md:px-6 overflow-x-auto custom-scrollbar bg-zinc-50 border-t border-b border-zinc-100">
     <AdvSquareCard
+        iconName="ph-users"
+        cardName="Companions"
+        :tagName="`${companions.length} Travelers`"
+        tagVariant="purple"
+        @card-click="$emit('show-companions')"
+    />
+    <AdvSquareCard
+        iconName="ph-wallet"
+        cardName="Budget"
+        :tagName="`${formatCurrency(budget.totalBudget)} Budget`"
+        tagVariant="red"
+        @card-click="$emit('show-budget')"
+    />
+    <AdvSquareCard
         iconName="ph-suitcase"
         cardName="Preparations"
         :tagName="`${preparation.preparationsChecklist.length} Tasks`"
@@ -12,20 +26,6 @@
         :tagName="`${accommodation?.numberOfRooms} ${accommodation?.numberOfRooms > 1 ? 'Rooms' : 'Room'}`"
         tagVariant="orange"
         @card-click="$emit('show-accommodation')"
-    />
-    <AdvSquareCard
-        iconName="ph-wallet"
-        cardName="Budget"
-        :tagName="`${formatCurrency(budget.totalBudget)} Budget`"
-        tagVariant="red"
-        @card-click="$emit('show-budget')"
-    />
-    <AdvSquareCard
-        iconName="ph-users"
-        cardName="Companions"
-        :tagName="`${companions.length} Travelers`"
-        tagVariant="purple"
-        @card-click="$emit('show-companions')"
     />
     <!--<AdvSquareCard-->
     <!--    iconName="ph-bus"-->

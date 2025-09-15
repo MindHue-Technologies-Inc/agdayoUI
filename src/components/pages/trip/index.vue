@@ -19,6 +19,7 @@
             :planning-progress="progressOfPlanning"
             @show-settings="settingsShowSheet = true"
             @show-map="mapShowSheet = true"
+            @copy-to-clipboard="copyUrlToClipboard"
         />
 
         <!-- TRIP SECTION -->
@@ -360,6 +361,20 @@ export default {
     },
   },
   methods: {
+    copyUrlToClipboard() {
+      try {
+        const url = window.location.href;
+        navigator.clipboard.writeText(url).then(() => {
+          this.successToast.message = 'URL copied to clipboard!';
+        }).catch(err => {
+          throw new Error(err);
+        });
+      } catch (err) {
+        console.error('Failed to copy URL:', err);
+        this.dangerToast.message = 'Failed to copy URL. Please try again.';
+      }
+    },
+
     showViewActivitySheet(activity) {
       this.selectedActivityShowSheet = true
       this.selectedActivity.activity = activity
@@ -656,10 +671,6 @@ export default {
       this.setOwnerUid(data)
     },
 
-    updateTripDataFromSnapshot(data) {
-      console.log(data)
-    },
-
     // === NEW METHODS FOR REAL-TIME PRESENCE ===
     /**
      * Creates or updates the user's presence document.
@@ -675,7 +686,7 @@ export default {
         const {setDoc} = await import ('firebase/firestore')
         await setDoc(userDocRef, {
           uid: this.user.uid,
-          name: this.user.displayName || `User-${this.user.uid.substring(0, 5)}`,
+          name: this.user.displayName || this.user.email,
           photoURL: this.user.photoURL || null,
           lastActive: new Date().toISOString()
         });
@@ -727,7 +738,7 @@ export default {
     await this.fetchUser()
     this.isLoading = false
 
-    const {doc, onSnapshot} = await import('firebase/firestore')
+    const {doc, onSnapshot, collection} = await import('firebase/firestore')
     const {firestore} = await import('../../../lib/firebase/client.ts')
 
     // -- SET UP REAL TIME LISTENER FOR THE TRIP DOCUMENT
@@ -743,22 +754,55 @@ export default {
       this.dangerToast.message = 'Error fetching real-time data.';
     })
 
+    // Listener for Activities subcollection
+    const activitiesRef = collection(firestore, `trips/${this.tripId}/activities`);
+    this.unsubscribeFromActivitiesListener = onSnapshot(activitiesRef, async (querySnapshot) => {
+      await this.fetchTrip()
+    });
+
+    // Listener for Preparation subcollection
+    const preparationRef = collection(firestore, `trips/${this.tripId}/preparation`);
+    this.unsubscribeFromPreparationListener = onSnapshot(preparationRef, async (querySnapshot) => {
+      await this.fetchTrip()
+    });
+
+    // Listener for Accommodations subcollection
+    const accommodationsRef = collection(firestore, `trips/${this.tripId}/accommodations`);
+    this.unsubscribeFromAccommodationsListener = onSnapshot(accommodationsRef, async (querySnapshot) => {
+      await this.fetchTrip()
+    });
+
+    // Listener for Budget subcollection
+    const budgetRef = collection(firestore, `trips/${this.tripId}/budget`);
+    this.unsubscribeFromBudgetListener = onSnapshot(budgetRef, async (querySnapshot) => {
+      await this.fetchTrip()
+    });
+
+    // Listener for Companions subcollection
+    const companionsRef = collection(firestore, `trips/${this.tripId}/companions`);
+    this.unsubscribeFromCompanionsListener = onSnapshot(companionsRef, async (querySnapshot) => {
+      await this.fetchTrip()
+    });
+
     // === NEW: SETUP REAL-TIME PRESENCE ===
     if (this.user?.uid) {
       await this.setPresence();
       await this.setupPresenceListener();
+      window.addEventListener('beforeunload', this.removePresence);
     }
 
     // Clean up by destroying instances and removing event listeners
     document.addEventListener('astro:before-swap', () => {
       // Clean up both listeners and remove the presence document
-      if (this.unsubscribeFromTripListener) {
-        this.unsubscribeFromTripListener();
-      }
-      if (this.unsubscribeFromPresenceListener) {
-        this.unsubscribeFromPresenceListener();
-      }
+      if (this.unsubscribeFromTripListener) this.unsubscribeFromTripListener();
+      if (this.unsubscribeFromActivitiesListener) this.unsubscribeFromActivitiesListener();
+      if (this.unsubscribeFromPreparationListener) this.unsubscribeFromPreparationListener();
+      if (this.unsubscribeFromAccommodationsListener) this.unsubscribeFromAccommodationsListener();
+      if (this.unsubscribeFromBudgetListener) this.unsubscribeFromBudgetListener();
+      if (this.unsubscribeFromCompanionsListener) this.unsubscribeFromCompanionsListener();
+      if (this.unsubscribeFromPresenceListener) this.unsubscribeFromPresenceListener();
       this.removePresence();
+      window.removeEventListener('beforeunload', this.removePresence);
     }, { once: true })
   },
 

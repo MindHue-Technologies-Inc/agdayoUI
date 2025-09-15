@@ -150,7 +150,7 @@ export const POST = async ({request, locals}:{request:Request, locals:locals}) =
       },
       planningProgress: {
         completed: 0,
-        total: 7,
+        total: 5,
       },
       overallBudget: 0, // Use nullish coalescing for default 0
       currency: 'PHP',
