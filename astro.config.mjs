@@ -3,6 +3,9 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from "@tailwindcss/vite";
 import vue from '@astrojs/vue';
 import node from '@astrojs/node';
+import vercelServerless from '@astrojs/vercel/serverless';
+
+import vercel from '@astrojs/vercel';
 
 // https://astro.build/config
 export default defineConfig({
@@ -21,7 +24,5 @@ export default defineConfig({
   
   integrations: [vue()],
 
-  adapter: node({
-    mode: 'standalone'
-  })
+  adapter: vercelServerless()
 });
