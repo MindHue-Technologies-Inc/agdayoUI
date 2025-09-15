@@ -80,7 +80,6 @@ export default {
         }
 
         this.trips = await response.json()
-        console.log(this.trips)
       } catch (error) {
         console.error(error)
       } finally {

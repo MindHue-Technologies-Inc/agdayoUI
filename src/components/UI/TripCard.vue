@@ -75,10 +75,6 @@ export default {
       const endDate = new Date(dateEnd)
       endDate.setDate(endDate.getDate() + 1);
 
-      console.log(currentDate)
-      console.log(startDate)
-      console.log(endDate)
-
       if ( currentDate < startDate) return 'Upcoming'
       if ( startDate <= currentDate && currentDate < endDate ) return 'Active'
       if ( endDate < currentDate ) return 'Completed'

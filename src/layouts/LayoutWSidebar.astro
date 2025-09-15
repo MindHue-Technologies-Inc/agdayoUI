@@ -3,10 +3,29 @@ import "../styles/global.css"
 import Footer from "../components/UI/Footer.vue"
 import Sidebar from "../components/UI/Sidebar.vue"
 import { ClientRouter } from "astro:transitions";
+import {getCache, setCache} from "../cache/page-cache";
+
+const currentUrl = Astro.url.pathname;
+
+// Check if a cached version of the page exists
+let cachedContent = getCache(currentUrl);
+
+// If the page is in the cache, we can return it immediately
+if (cachedContent) {
+  return new Response(cachedContent, {
+    headers: {
+      'Content-Type': 'text/html',
+      'X-Cache-Status': 'HIT', // A custom header to indicate a cache hit
+    },
+  });
+}
+
+// If not, we let the page render as usual. We'll capture the output later.
 ---
 <!doctype html>
 <html lang="en">
   <head>
+    <link rel="apple-touch-icon" href="/favicon.png">
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WTLV7R88E8"></script>
     <meta name="google-site-verification" content="dGOrBniNsY0dn6m2QE6j8LNB7LXqm5CZ2_ZR0nnxXPE" />
     <script>
