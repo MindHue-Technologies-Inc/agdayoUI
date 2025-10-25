@@ -4,6 +4,7 @@ import Footer from "../components/UI/Footer.vue"
 import Sidebar from "../components/UI/Sidebar.vue"
 import { ClientRouter } from "astro:transitions";
 import {getCache, setCache} from "../cache/page-cache";
+import 'leaflet/dist/leaflet.css';
 
 const currentUrl = Astro.url.pathname;
 

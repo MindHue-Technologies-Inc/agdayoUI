@@ -22,6 +22,7 @@
     "firebase": "^12.0.0",
     "firebase-admin": "^13.4.0",
     "jwt-decode": "^4.0.0",
+    "leaflet": "^1.9.4",
     "nanostores": "^1.0.1",
     "philippines": "^1.0.0",
     "random-js": "^2.1.0",
