@@ -35,6 +35,6 @@ const userPhotoURL = user?.photoURL || null;
 
   <Main>
     <Topbar title="Agdayo AI" photoURL={userPhotoURL} client:load />
-    <AI client:load/>
+    <AI client:only/>
   </Main>
 </Layout>

@@ -161,7 +161,7 @@ async function callAstroPlacesApi(query: string,
                                   location_bias?: string,
                                   place_type?: string): Promise<any> {
   const ASTRO_PLACES_API_URL = process.env.NODE_ENV === 'production'
-      ? 'https://agdayo.mindhue.tech/api/v2/maps-places' // Replace with your deployed URL
+      ? 'https://agdayo-ui.vercel.app/api/v2/maps-places' // Replace with your deployed URL
       : 'http://localhost:4321/api/v2/maps-places'; // Ensure this matches your dev server port
 
   const allResponses = []
@@ -193,6 +193,8 @@ async function callAstroPlacesApi(query: string,
 export async function POST({ request }: { request: Request }): Promise<Response> {
   try {
     const { prompt, currentActivities }: GenerateItineraryRequestBody = await request.json();
+
+    console.log(prompt, currentActivities)
 
     // -- INITIAL PROMPT FOR GEMINI
     // Include strong instructions about real locations and using the tool
@@ -328,6 +330,8 @@ export async function POST({ request }: { request: Request }): Promise<Response>
 
         // Wait for all tool calls at once
         const allToolOutput = await Promise.all(toolPromises);
+        //
+        console.log("output tool all", allToolOutput)
 
         // Send results back to Gemini in one shot
         currentResponse = await chatSession.sendMessage({

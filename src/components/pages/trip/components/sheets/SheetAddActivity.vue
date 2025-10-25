@@ -45,13 +45,30 @@
           </div>
         </div>
 
-        <Input
-            id="addActivityLocation"
-            v-model="localActivity.location"
-            placeholder="e.g., Mines View Park, Baguio City"
-            label="Location"
-            icon="ph-map-pin"
-        />
+        <div class="relative">
+          <Input
+              id="addActivityLocation"
+              v-model="localActivity.location"
+              placeholder="e.g., Mines View Park, Baguio City"
+              label="Location"
+              icon="ph-map-pin"
+              @input="searchLocations"
+          />
+
+          <ul
+              v-if="suggestions.length > 0"
+              class="absolute z-30 bg-white border border-zinc-200 rounded-md shadow-md w-full mt-1 max-h-48 overflow-y-auto"
+          >
+            <li
+                v-for="(item, idx) in suggestions"
+                :key="idx"
+                @click="selectSuggestion(item)"
+                class="px-3 py-2 hover:bg-zinc-100 cursor-pointer text-sm"
+            >
+              {{ item.display_name }}
+            </li>
+          </ul>
+        </div>
 
         <div class="flex flex-col gap-4">
           <label for="addActivityBudget" class="ml-6 text-sm font-medium text-zinc-900">
@@ -179,6 +196,8 @@ export default {
     return {
       b0ss: null,
       error: '',
+      suggestions: [],
+      searchTimeout: null,
       // localActivity will be either a new empty object or a copy of the activity being edited
       currencies: currencyData,
       localActivity: this.getInitialActivityState(),
@@ -333,7 +352,40 @@ export default {
       // Emit the *modified* localActivity object
       this.$emit('activity-saved', this.localActivityFormat);
       this.handleSheetClose(); // Close the sheet after saving
-    }
+    },
+
+    async searchLocations(e) {
+      const query = e.target.value.trim();
+      clearTimeout(this.searchTimeout);
+
+      if (!query) {
+        this.suggestions = [];
+        return;
+      }
+
+      // debounce requests to avoid API spam
+      this.searchTimeout = setTimeout(async () => {
+        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&addressdetails=1&limit=5`;
+        try {
+          const res = await fetch(url, {
+            headers: { 'User-Agent': 'YourAppName/1.0' }, // Nominatim requires this
+          });
+          const data = await res.json();
+          this.suggestions = data;
+        } catch (err) {
+          console.error('Failed to fetch location suggestions', err);
+        }
+      }, 300);
+    },
+
+    selectSuggestion(item) {
+      this.localActivity.location = item.display_name;
+      this.localActivity.coordinates = {
+        latitude: parseFloat(item.lat),
+        longitude: parseFloat(item.lon),
+      };
+      this.suggestions = [];
+    },
   }
 }
 </script>
