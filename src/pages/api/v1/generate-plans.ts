@@ -285,11 +285,10 @@ export async function POST({ request }: { request: Request }): Promise<Response>
 
     let theLoopStopper = true
 
-
     // Loop to handle tool calls until Gemini provides a final text response
     while (theLoopStopper) {
       console.log('CURRENT RESPONSE', currentResponse.candidates)
-      const candidate = currentResponse.candidates?.[0];
+      const candidate:any = currentResponse.candidates?.[0];
       console.log('CANDIDATE', candidate?.content?.parts)
 
       if (!candidate || !candidate.content || !candidate.content.parts || candidate.content.parts.length === 0) {
@@ -299,64 +298,46 @@ export async function POST({ request }: { request: Request }): Promise<Response>
       const parts = candidate.content.parts;
       console.log('FIRST PART', parts)
 
-      const allToolOutput = []
+      // Collect tool calls and text parts separately
+      const toolCalls = parts.filter(p => p.functionCall);
+      const textParts = parts.filter(p => p.text);
 
-      for (let firstPart of parts) {
-        if (firstPart.functionCall) {
-          // --- Gemini wants to call a tool ---
-          const functionCall = firstPart.functionCall;
-          const functionName = functionCall.name;
-          const functionArgs = functionCall.args;
-
-          console.log("FUNCTION", functionCall, functionName, functionArgs)
-
-          console.log(`\nGemini requested function call: ${functionName}`);
-          console.log(`Arguments: ${JSON.stringify(functionArgs)}`);
-
-          if (functionName === "find_places_nearby") {
-            const { query, location_bias, place_type } = functionArgs;
-
-            // Call your Astro API route that wraps Google Places API
-            const toolOutput = await callAstroPlacesApi(query, location_bias, place_type);
-
-            // Check for errors from your internal API
-            if (toolOutput.status === 'error') {
-              console.error("Error from internal Astro Places API:", toolOutput.message);
-              // Send an error response back to Gemini so it knows the tool failed
-              currentResponse = await chatSession.sendMessage({
-                message: JSON.stringify({ error: toolOutput.message || 'Failed to find places.' })
-              });
-            } else {
-              // Send the successful tool output back to Gemini
-              console.log(`Tool output for ${functionName}:`, JSON.stringify(toolOutput.places, null, 2));
-              // currentResponse = await chatSession.sendMessage({
-              //   message: JSON.stringify(toolOutput)
-              // });
-
-              allToolOutput.push(toolOutput)
-            }
-          } else {
-            // Handle unknown function calls (shouldn't happen if functionDeclarations are strict)
-            console.warn(`Gemini requested an unknown function: ${functionName}`);
-            currentResponse = await chatSession.sendMessage({
-              message: "Unknown function requested."
-            });
-          }
-        } else if (firstPart.text) {
-          // --- Gemini provided a text response (hopefully the final JSON) ---
-          geminiResponse = firstPart.text; // This is the final JSON string
-          console.log('GEMINI RESPONSE', geminiResponse)
-          theLoopStopper = false; // Exit the loop
-        } else {
-          // Unexpected response format
-          console.error("Unexpected Gemini response format:", candidate);
-          throw new Error("Gemini returned an unexpected response format.");
-        }
+      // --- If Gemini already produced a text response (hopefully final JSON) ---
+      if (textParts.length > 0) {
+        geminiResponse = textParts.map(tp => tp.text).join("\n");
+        console.log('GEMINI RESPONSE', geminiResponse)
+        theLoopStopper = false;
+        break;
       }
 
-      currentResponse = await chatSession.sendMessage({
-        message: JSON.stringify(allToolOutput)
-      })
+      // --- Handle tool calls in parallel ---
+      if (toolCalls.length > 0) {
+        console.log(`Gemini requested ${toolCalls.length} tool calls`);
+
+        // Map calls to promises
+        const toolPromises = toolCalls.map(async (toolCall) => {
+          const { name: functionName, args: functionArgs } = toolCall.functionCall!;
+          if (functionName === "find_places_nearby") {
+            const { query, location_bias, place_type } = functionArgs;
+            return await callAstroPlacesApi(query, location_bias, place_type);
+          } else {
+            console.warn(`Unknown function requested: ${functionName}`);
+            return { status: "error", message: "Unknown function requested." };
+          }
+        });
+
+        // Wait for all tool calls at once
+        const allToolOutput = await Promise.all(toolPromises);
+
+        // Send results back to Gemini in one shot
+        currentResponse = await chatSession.sendMessage({
+          message: JSON.stringify(allToolOutput)
+        });
+      } else {
+        // Unexpected response format
+        console.error("Unexpected Gemini response format:", candidate);
+        throw new Error("Gemini returned an unexpected response format.");
+      }
     }
 
 
