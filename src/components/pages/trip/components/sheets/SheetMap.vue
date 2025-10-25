@@ -24,10 +24,10 @@
           <div
               v-for="(activity, index) in activities"
               :key="index"
-              class="flex-shrink-0 w-60 p-3 rounded-xl border border-zinc-200 bg-white hover:bg-zinc-100 cursor-pointer transition flex gap-2"
+              class="flex-shrink-0 w-60 p-3 rounded-xl border border-zinc-200 bg-white hover:bg-zinc-100 cursor-pointer transition flex items-center gap-3"
               @click="focusActivity(activity)"
           >
-            <span class="flex-shrink-0 text-zinc-500 font-medium">{{ index + 1 }}</span>
+            <span class="flex-shrink-0 text-zinc-500 text-3xl font-medium">{{ index + 1 }}</span>
 
             <div class="flex flex-col min-w-0"> <!-- ensures ellipsis works -->
               <div
