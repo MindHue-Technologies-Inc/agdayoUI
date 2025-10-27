@@ -1,13 +1,13 @@
-import { adminDb } from "../../../../lib/firebase/server.ts";
+import { adminDb } from "@/core/lib/firebase/server.ts";
 import type { APIRoute } from "astro";
-import type {locals} from "../../../../types/locals.ts";
+import type {locals} from "@/core/types/locals.ts";
 import {FieldValue, Filter} from "firebase-admin/firestore";
 import {
   unauthorizedResponse,
   serverErrorResponse,
   notFoundResponse,
   badRequestResponse
-} from "../../../../responses/responses.ts";
+} from "@/core/responses/responses.ts";
 
 export const prerender = false;
 
