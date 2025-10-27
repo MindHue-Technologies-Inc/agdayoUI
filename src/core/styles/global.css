@@ -1,0 +1,545 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Zain:ital,wght@0,200;0,300;0,400;0,700;0,800;0,900;1,300;1,400&display=swap');
+@import "tailwindcss";
+
+/* ANIMATIONS */
+
+/* Optional: Add some basic fade-in or subtle animations for a smoother feel */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fadeIn {
+  animation: fadeIn 0.6s ease forwards;
+  opacity: 0; /* Start invisible */
+}
+
+.fadeIn-1 { animation-delay: 0.1s; }
+.fadeIn-2 { animation-delay: 0.2s; }
+.fadeIn-3 { animation-delay: 0.3s; }
+.fadeIn-4 { animation-delay: 0.4s; }
+.fadeIn-5 { animation-delay: 0.5s; }
+.fadeIn-6 { animation-delay: 0.6s; }
+.fadeIn-7 { animation-delay: 0.7s; }
+.fadeIn-8 { animation-delay: 0.8s; }
+.fadeIn-9 { animation-delay: 0.9s; }
+.fadeIn-10 { animation-delay: 0.10s; }
+/* img { animation-delay: 0.5s; } */
+
+@font-face {
+  font-family: 'Matatas One';
+  src: url('/fonts/matatas_one.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@theme {
+  /* peach scale */
+  --color-peach-50:  #FFF6F3;
+  --color-peach-100: #FFEAE5;
+  --color-peach-200: #FDD3C7;
+  --color-peach-300: #FBB5A3;
+  --color-peach-400: #F59B89;
+  --color-peach-500: #F0A693; /* base */
+  --color-peach-600: #E28D7A;
+  --color-peach-700: #C87063;
+  --color-peach-800: #A45651;
+  --color-peach-900: #7C3D3A;
+  --color-peach-950: #4E2221;
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+body {
+  background-image: url('/images/light-bg.jpg');
+  background-size: cover;           /* Scale image to cover entire body */
+  background-position: center;      /* Center the image */
+  background-repeat: no-repeat;     /* Prevent tiling */
+  background-attachment: fixed;     /* Optional: creates a parallax effect */
+  min-height: 100vh;
+}
+
+.baybayin {
+  font-family: 'Matatas One', sans-serif;
+}
+
+.outfit {
+  font-family: "Outfit", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.zain {
+  font-family: "Zain", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+/* === Text Shadow - Peach (Primary) === */
+.text-shadow-primary-xs   { text-shadow: 1px 1px 0 #B77B6C; }
+.text-shadow-primary-sm   { text-shadow: 2px 2px 0 #B77B6C; }
+.text-shadow-primary-md   { text-shadow: 4px 4px 0 #B77B6C; }
+.text-shadow-primary-lg   { text-shadow: 6px 6px 0 #B77B6C; }
+.text-shadow-primary-xl   { text-shadow: 8px 8px 0 #B77B6C; }
+
+/* === Text Shadow - Peach (LIGHT) === */
+.text-shadow-primary-light-xs   { text-shadow: 1px 1px 0 #F1E3E0; }
+.text-shadow-primary-light-sm   { text-shadow: 2px 2px 0 #F1E3E0; }
+.text-shadow-primary-light-md   { text-shadow: 4px 4px 0 #F1E3E0; }
+.text-shadow-primary-light-lg   { text-shadow: 6px 6px 0 #F1E3E0; }
+.text-shadow-primary-light-xl   { text-shadow: 8px 8px 0 #F1E3E0; }
+
+/* === Text Shadow - Peach (Primary) - Dark === */
+.text-shadow-primary-dark-xs    { text-shadow: 1px 1px 0 #995F52; }
+.text-shadow-primary-dark-sm    { text-shadow: 2px 2px 0 #995F52; }
+.text-shadow-primary-dark-md    { text-shadow: 4px 4px 0 #995F52; }
+.text-shadow-primary-dark-lg    { text-shadow: 6px 6px 0 #995F52; }
+.text-shadow-primary-dark-xl    { text-shadow: 8px 8px 0 #995F52; }
+
+
+/* === Text Shadow - Zinc (Secondary) === */
+.text-shadow-secondary-xs   { text-shadow: 1px 1px 0 #d4d4d8; }
+.text-shadow-secondary-sm   { text-shadow: 2px 2px 0 #d4d4d8; }
+.text-shadow-secondary-md   { text-shadow: 4px 4px 0 #d4d4d8; }
+.text-shadow-secondary-lg   { text-shadow: 6px 6px 0 #d4d4d8; }
+.text-shadow-secondary-xl   { text-shadow: 8px 8px 0 #d4d4d8; }
+
+/* === Text Shadow - Zinc (LIGHT) === */
+.text-shadow-secondary-light-xs   { text-shadow: 1px 1px 0 #F2F2F4; }
+.text-shadow-secondary-light-sm   { text-shadow: 2px 2px 0 #F2F2F4; }
+.text-shadow-secondary-light-md   { text-shadow: 4px 4px 0 #F2F2F4; }
+.text-shadow-secondary-light-lg   { text-shadow: 6px 6px 0 #F2F2F4; }
+.text-shadow-secondary-light-xl   { text-shadow: 8px 8px 0 #F2F2F4; }
+
+/* === Text Shadow - Zinc (Secondary) - Dark === */
+.text-shadow-secondary-dark-xs    { text-shadow: 1px 1px 0 #3F3F46; }
+.text-shadow-secondary-dark-sm    { text-shadow: 2px 2px 0 #3F3F46; }
+.text-shadow-secondary-dark-md    { text-shadow: 4px 4px 0 #3F3F46; }
+.text-shadow-secondary-dark-lg    { text-shadow: 6px 6px 0 #3F3F46; }
+.text-shadow-secondary-dark-xl    { text-shadow: 8px 8px 0 #3F3F46; }
+
+
+/* === Text Shadow - Rose (Danger) === */
+.text-shadow-danger-xs   { text-shadow: 1px 1px 0 #E11D48; }
+.text-shadow-danger-sm   { text-shadow: 2px 2px 0 #E11D48; }
+.text-shadow-danger-md   { text-shadow: 4px 4px 0 #E11D48; }
+.text-shadow-danger-lg   { text-shadow: 6px 6px 0 #E11D48; }
+.text-shadow-danger-xl   { text-shadow: 8px 8px 0 #E11D48; }
+
+/* === Text Shadow - Rose (LIGHT) === */
+.text-shadow-danger-light-xs   { text-shadow: 1px 1px 0 #FDE9ED; }
+.text-shadow-danger-light-sm   { text-shadow: 2px 2px 0 #FDE9ED; }
+.text-shadow-danger-light-md   { text-shadow: 4px 4px 0 #FDE9ED; }
+.text-shadow-danger-light-lg   { text-shadow: 6px 6px 0 #FDE9ED; }
+.text-shadow-danger-light-xl   { text-shadow: 8px 8px 0 #FDE9ED; }
+
+/* === Text Shadow - Rose (Danger) - Dark === */
+.text-shadow-danger-dark-xs    { text-shadow: 1px 1px 0 #9F1239; }
+.text-shadow-danger-dark-sm    { text-shadow: 2px 2px 0 #9F1239; }
+.text-shadow-danger-dark-md    { text-shadow: 4px 4px 0 #9F1239; }
+.text-shadow-danger-dark-lg    { text-shadow: 6px 6px 0 #9F1239; }
+.text-shadow-danger-dark-xl    { text-shadow: 8px 8px 0 #9F1239; }
+
+
+/* === Text Shadow - Emerald (Success) === */
+.text-shadow-success-xs   { text-shadow: 1px 1px 0 #10B981; }
+.text-shadow-success-sm   { text-shadow: 2px 2px 0 #10B981; }
+.text-shadow-success-md   { text-shadow: 4px 4px 0 #10B981; }
+.text-shadow-success-lg   { text-shadow: 6px 6px 0 #10B981; }
+.text-shadow-success-xl   { text-shadow: 8px 8px 0 #10B981; }
+
+/* === Text Shadow - Emerald (LIGHT) ===
+.text-shadow-success-light-xs   { text-shadow: 1px 1px 0 #E6FAF2; }
+.text-shadow-success-light-sm   { text-shadow: 2px 2px 0 #E6FAF2; }
+.text-shadow-success-light-md   { text-shadow: 4px 4px 0 #E6FAF2; }
+.text-shadow-success-light-lg   { text-shadow: 6px 6px 0 #E6FAF2; }
+.text-shadow-success-light-xl   { text-shadow: 8px 8px 0 #E6FAF2; }
+
+/* === Text Shadow - Emerald (Success) - Dark === */
+.text-shadow-success-dark-xs    { text-shadow: 1px 1px 0 #047857; }
+.text-shadow-success-dark-sm    { text-shadow: 2px 2px 0 #047857; }
+.text-shadow-success-dark-md    { text-shadow: 4px 4px 0 #047857; }
+.text-shadow-success-dark-lg    { text-shadow: 6px 6px 0 #047857; }
+.text-shadow-success-dark-xl    { text-shadow: 8px 8px 0 #047857; }
+
+
+/* === Text Shadow - Sky (Info) === */
+.text-shadow-info-xs   { text-shadow: 1px 1px 0 #0EA5E9; }
+.text-shadow-info-sm   { text-shadow: 2px 2px 0 #0EA5E9; }
+.text-shadow-info-md   { text-shadow: 4px 4px 0 #0EA5E9; }
+.text-shadow-info-lg   { text-shadow: 6px 6px 0 #0EA5E9; }
+.text-shadow-info-xl   { text-shadow: 8px 8px 0 #0EA5E9; }
+
+/* === Text Shadow - Sky (LIGHT) === */
+.text-shadow-info-light-xs   { text-shadow: 1px 1px 0 #E0F2FE; }
+.text-shadow-info-light-sm   { text-shadow: 2px 2px 0 #E0F2FE; }
+.text-shadow-info-light-md   { text-shadow: 4px 4px 0 #E0F2FE; }
+.text-shadow-info-light-lg   { text-shadow: 6px 6px 0 #E0F2FE; }
+.text-shadow-info-light-xl   { text-shadow: 8px 8px 0 #E0F2FE; }
+
+/* === Text Shadow - Sky (Info) - Dark === */
+.text-shadow-info-dark-xs    { text-shadow: 1px 1px 0 #0369A1; }
+.text-shadow-info-dark-sm    { text-shadow: 2px 2px 0 #0369A1; }
+.text-shadow-info-dark-md    { text-shadow: 4px 4px 0 #0369A1; }
+.text-shadow-info-dark-lg    { text-shadow: 6px 6px 0 #0369A1; }
+.text-shadow-info-dark-xl    { text-shadow: 8px 8px 0 #0369A1; }
+
+
+/* === Text Shadow - Amber (Warning) === */
+.text-shadow-warning-xs   { text-shadow: 1px 1px 0 #F59E0B; }
+.text-shadow-warning-sm   { text-shadow: 2px 2px 0 #F59E0B; }
+.text-shadow-warning-md   { text-shadow: 4px 4px 0 #F59E0B; }
+.text-shadow-warning-lg   { text-shadow: 6px 6px 0 #F59E0B; }
+.text-shadow-warning-xl   { text-shadow: 8px 8px 0 #F59E0B; }
+
+/* === Text Shadow - Amber (LIGHT) === */
+.text-shadow-warning-light-xs   { text-shadow: 1px 1px 0 #FEF3C7; }
+.text-shadow-warning-light-sm   { text-shadow: 2px 2px 0 #FEF3C7; }
+.text-shadow-warning-light-md   { text-shadow: 4px 4px 0 #FEF3C7; }
+.text-shadow-warning-light-lg   { text-shadow: 6px 6px 0 #FEF3C7; }
+.text-shadow-warning-light-xl   { text-shadow: 8px 8px 0 #FEF3C7; }
+
+/* === Text Shadow - Amber (Warning) - Dark === */
+.text-shadow-warning-dark-xs    { text-shadow: 1px 1px 0 #B45309; }
+.text-shadow-warning-dark-sm    { text-shadow: 2px 2px 0 #B45309; }
+.text-shadow-warning-dark-md    { text-shadow: 4px 4px 0 #B45309; }
+.text-shadow-warning-dark-lg    { text-shadow: 6px 6px 0 #B45309; }
+.text-shadow-warning-dark-xl    { text-shadow: 8px 8px 0 #B45309; }
+
+/* === Peach (Primary) === */
+.shadow-primary-xs   { box-shadow: 1px 1px 0 0 #B77B6C; }
+.shadow-primary-sm   { box-shadow: 2px 2px 0 0 #B77B6C; }
+.shadow-primary-md   { box-shadow: 4px 4px 0 0 #B77B6C; }
+.shadow-primary-lg   { box-shadow: 6px 6px 0 0 #B77B6C; }
+.shadow-primary-xl   { box-shadow: 8px 8px 0 0 #B77B6C; }
+.shadow-primary-inset { box-shadow: inset 2px 2px 0 0 #B77B6C; }
+.shadow-primary-soft { box-shadow: 0 4px 12px rgba(183, 123, 108, 0.25); }
+
+/* === Peach (LIGHT) === */
+.shadow-primary-light-xs   { box-shadow: 1px 1px 0 0 #F1E3E0; }
+.shadow-primary-light-sm   { box-shadow: 2px 2px 0 0 #F1E3E0; }
+.shadow-primary-light-md   { box-shadow: 4px 4px 0 0 #F1E3E0; }
+.shadow-primary-light-lg   { box-shadow: 6px 6px 0 0 #F1E3E0; }
+.shadow-primary-light-xl   { box-shadow: 8px 8px 0 0 #F1E3E0; }
+.shadow-primary-light-inset { box-shadow: inset 2px 2px 0 0 #F1E3E0; }
+.shadow-primary-light-soft { box-shadow: 0 4px 12px rgba(183, 123, 108, 0.25); } /* Note: Soft shadow usually uses the base color for consistent feel */
+
+/* === Zinc (Secondary) === */
+.shadow-secondary-xs   { box-shadow: 1px 1px 0 0 #d4d4d8; }
+.shadow-secondary-sm   { box-shadow: 2px 2px 0 0 #d4d4d8; }
+.shadow-secondary-md   { box-shadow: 4px 4px 0 0 #d4d4d8; }
+.shadow-secondary-lg   { box-shadow: 6px 6px 0 0 #d4d4d8; }
+.shadow-secondary-xl   { box-shadow: 8px 8px 0 0 #d4d4d8; }
+.shadow-secondary-inset { box-shadow: inset 2px 2px 0 0 #d4d4d8; }
+.shadow-secondary-soft { box-shadow: 0 4px 12px rgba(63, 63, 70, 0.25); }
+
+/* === Zinc (LIGHT) === */
+.shadow-secondary-light-xs   { box-shadow: 1px 1px 0 0 #F2F2F4; } /* Lighter zinc */
+.shadow-secondary-light-sm   { box-shadow: 2px 2px 0 0 #F2F2F4; }
+.shadow-secondary-light-md   { box-shadow: 4px 4px 0 0 #F2F2F4; }
+.shadow-secondary-light-lg   { box-shadow: 6px 6px 0 0 #F2F2F4; }
+.shadow-secondary-light-xl   { box-shadow: 8px 8px 0 0 #F2F2F4; }
+.shadow-secondary-light-inset { box-shadow: inset 2px 2px 0 0 #F2F2F4; }
+.shadow-secondary-light-soft { box-shadow: 0 4px 12px rgba(212, 212, 216, 0.25); } /* Soft shadow usually uses the base color for consistency */
+
+/* === Rose (Danger) === */
+.shadow-danger-xs   { box-shadow: 1px 1px 0 0 #E11D48; }
+.shadow-danger-sm   { box-shadow: 2px 2px 0 0 #E11D48; }
+.shadow-danger-md   { box-shadow: 4px 4px 0 0 #E11D48; }
+.shadow-danger-lg   { box-shadow: 6px 6px 0 0 #E11D48; }
+.shadow-danger-xl   { box-shadow: 8px 8px 0 0 #E11D48; }
+.shadow-danger-inset { box-shadow: inset 2px 2px 0 0 #E11D48; }
+.shadow-danger-soft { box-shadow: 0 4px 12px rgba(225, 29, 72, 0.25); }
+
+/* === Rose (LIGHT) === */
+.shadow-danger-light-xs   { box-shadow: 1px 1px 0 0 #FDE9ED; } /* Lighter rose */
+.shadow-danger-light-sm   { box-shadow: 2px 2px 0 0 #FDE9ED; }
+.shadow-danger-light-md   { box-shadow: 4px 4px 0 0 #FDE9ED; }
+.shadow-danger-light-lg   { box-shadow: 6px 6px 0 0 #FDE9ED; }
+.shadow-danger-light-xl   { box-shadow: 8px 8px 0 0 #FDE9ED; }
+.shadow-danger-light-inset { box-shadow: inset 2px 2px 0 0 #FDE9ED; }
+.shadow-danger-light-soft { box-shadow: 0 4px 12px rgba(225, 29, 72, 0.15); } /* Soft shadow based on base color, but possibly lighter for 'light' */
+
+/* === Emerald (Success) === */
+.shadow-success-xs   { box-shadow: 1px 1px 0 0 #10B981; }
+.shadow-success-sm   { box-shadow: 2px 2px 0 0 #10B981; }
+.shadow-success-md   { box-shadow: 4px 4px 0 0 #10B981; }
+.shadow-success-lg   { box-shadow: 6px 6px 0 0 #10B981; }
+.shadow-success-xl   { box-shadow: 8px 8px 0 0 #10B981; }
+.shadow-success-inset { box-shadow: inset 2px 2px 0 0 #10B981; }
+.shadow-success-soft { box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25); }
+
+/* === Emerald (LIGHT) === */
+.shadow-success-light-xs   { box-shadow: 1px 1px 0 0 #E6FAF2; } /* Lighter emerald */
+.shadow-success-light-sm   { box-shadow: 2px 2px 0 0 #E6FAF2; }
+.shadow-success-light-md   { box-shadow: 4px 4px 0 0 #E6FAF2; }
+.shadow-success-light-lg   { box-shadow: 6px 6px 0 0 #E6FAF2; }
+.shadow-success-light-xl   { box-shadow: 8px 8px 0 0 #E6FAF2; }
+.shadow-success-light-inset { box-shadow: inset 2px 2px 0 0 #E6FAF2; }
+.shadow-success-light-soft { box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15); } /* Soft shadow based on base color, possibly lighter for 'light' */
+
+/* === Emerald (Success) - Dark === */
+.shadow-success-dark-xs    { box-shadow: 1px 1px 0 0 #047857; }
+.shadow-success-dark-sm    { box-shadow: 2px 2px 0 0 #047857; }
+.shadow-success-dark-md    { box-shadow: 4px 4px 0 0 #047857; }
+.shadow-success-dark-lg    { box-shadow: 6px 6px 0 0 #047857; }
+.shadow-success-dark-xl    { box-shadow: 8px 8px 0 0 #047857; }
+.shadow-success-dark-inset { box-shadow: inset 2px 2px 0 0 #047857; }
+.shadow-success-dark-soft  { box-shadow: 0 4px 12px rgba(4, 120, 87, 0.25); }
+
+
+/* === Sky (Info) === */
+.shadow-info-xs   { box-shadow: 1px 1px 0 0 #0EA5E9; }
+.shadow-info-sm   { box-shadow: 2px 2px 0 0 #0EA5E9; }
+.shadow-info-md   { box-shadow: 4px 4px 0 0 #0EA5E9; }
+.shadow-info-lg   { box-shadow: 6px 6px 0 0 #0EA5E9; }
+.shadow-info-xl   { box-shadow: 8px 8px 0 0 #0EA5E9; }
+.shadow-info-inset { box-shadow: inset 2px 2px 0 0 #0EA5E9; }
+.shadow-info-soft { box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25); }
+
+/* === Sky (LIGHT) === */
+.shadow-info-light-xs   { box-shadow: 1px 1px 0 0 #E0F2FE; } /* Lighter sky */
+.shadow-info-light-sm   { box-shadow: 2px 2px 0 0 #E0F2FE; }
+.shadow-info-light-md   { box-shadow: 4px 4px 0 0 #E0F2FE; }
+.shadow-info-light-lg   { box-shadow: 6px 6px 0 0 #E0F2FE; }
+.shadow-info-light-xl   { box-shadow: 8px 8px 0 0 #E0F2FE; }
+.shadow-info-light-inset { box-shadow: inset 2px 2px 0 0 #E0F2FE; }
+.shadow-info-light-soft { box-shadow: 0 4px 12px rgba(14, 165, 233, 0.15); } /* Soft shadow based on base color, possibly lighter for 'light' */
+
+/* === Amber (Warning) === */
+.shadow-warning-xs   { box-shadow: 1px 1px 0 0 #F59E0B; }
+.shadow-warning-sm   { box-shadow: 2px 2px 0 0 #F59E0B; }
+.shadow-warning-md   { box-shadow: 4px 4px 0 0 #F59E0B; }
+.shadow-warning-lg   { box-shadow: 6px 6px 0 0 #F59E0B; }
+.shadow-warning-xl   { box-shadow: 8px 8px 0 0 #F59E0B; }
+.shadow-warning-inset { box-shadow: inset 2px 2px 0 0 #F59E0B; }
+.shadow-warning-soft { box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25); }
+
+/* === Amber (LIGHT) === */
+.shadow-warning-light-xs   { box-shadow: 1px 1px 0 0 #FEF3C7; } /* Lighter amber */
+.shadow-warning-light-sm   { box-shadow: 2px 2px 0 0 #FEF3C7; }
+.shadow-warning-light-md   { box-shadow: 4px 4px 0 0 #FEF3C7; }
+.shadow-warning-light-lg   { box-shadow: 6px 6px 0 0 #FEF3C7; }
+.shadow-warning-light-xl   { box-shadow: 8px 8px 0 0 #FEF3C7; }
+.shadow-warning-light-inset { box-shadow: inset 2px 2px 0 0 #FEF3C7; }
+.shadow-warning-light-soft { box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15); } /* Soft shadow based on base color, possibly lighter for 'light' */
+
+/* === Peach (Primary) - Dark === */
+.shadow-primary-dark-xs    { box-shadow: 1px 1px 0 0 #995F52; }
+.shadow-primary-dark-sm    { box-shadow: 2px 2px 0 0 #995F52; }
+.shadow-primary-dark-md    { box-shadow: 4px 4px 0 0 #995F52; }
+.shadow-primary-dark-lg    { box-shadow: 6px 6px 0 0 #995F52; }
+.shadow-primary-dark-xl    { box-shadow: 8px 8px 0 0 #995F52; }
+.shadow-primary-dark-inset { box-shadow: inset 2px 2px 0 0 #995F52; }
+.shadow-primary-dark-soft  { box-shadow: 0 4px 12px rgba(153, 95, 82, 0.25); }
+
+/* === Zinc (Secondary) - Dark === */
+.shadow-secondary-dark-xs    { box-shadow: 1px 1px 0 0 #3F3F46; }
+.shadow-secondary-dark-sm    { box-shadow: 2px 2px 0 0 #3F3F46; }
+.shadow-secondary-dark-md    { box-shadow: 4px 4px 0 0 #3F3F46; }
+.shadow-secondary-dark-lg    { box-shadow: 6px 6px 0 0 #3F3F46; }
+.shadow-secondary-dark-xl    { box-shadow: 8px 8px 0 0 #3F3F46; }
+.shadow-secondary-dark-inset { box-shadow: inset 2px 2px 0 0 #3F3F46; }
+.shadow-secondary-dark-soft  { box-shadow: 0 4px 12px rgba(63, 63, 70, 0.25); }
+
+/* === Rose (Danger) - Dark === */
+.shadow-danger-dark-xs    { box-shadow: 1px 1px 0 0 #9F1239; }
+.shadow-danger-dark-sm    { box-shadow: 2px 2px 0 0 #9F1239; }
+.shadow-danger-dark-md    { box-shadow: 4px 4px 0 0 #9F1239; }
+.shadow-danger-dark-lg    { box-shadow: 6px 6px 0 0 #9F1239; }
+.shadow-danger-dark-xl    { box-shadow: 8px 8px 0 0 #9F1239; }
+.shadow-danger-dark-inset { box-shadow: inset 2px 2px 0 0 #9F1239; }
+.shadow-danger-dark-soft  { box-shadow: 0 4px 12px rgba(159, 18, 57, 0.25); }
+
+/* === Sky (Info) - Dark === */
+.shadow-info-dark-xs    { box-shadow: 1px 1px 0 0 #0369A1; }
+.shadow-info-dark-sm    { box-shadow: 2px 2px 0 0 #0369A1; }
+.shadow-info-dark-md    { box-shadow: 4px 4px 0 0 #0369A1; }
+.shadow-info-dark-lg    { box-shadow: 6px 6px 0 0 #0369A1; }
+.shadow-info-dark-xl    { box-shadow: 8px 8px 0 0 #0369A1; }
+.shadow-info-dark-inset { box-shadow: inset 2px 2px 0 0 #0369A1; }
+.shadow-info-dark-soft  { box-shadow: 0 4px 12px rgba(3, 105, 161, 0.25); }
+
+/* === Amber (Warning) - Dark === */
+.shadow-warning-dark-xs    { box-shadow: 1px 1px 0 0 #B45309; }
+.shadow-warning-dark-sm    { box-shadow: 2px 2px 0 0 #B45309; }
+.shadow-warning-dark-md    { box-shadow: 4px 4px 0 0 #B45309; }
+.shadow-warning-dark-lg    { box-shadow: 6px 6px 0 0 #B45309; }
+.shadow-warning-dark-xl    { box-shadow: 8px 8px 0 0 #B45309; }
+.shadow-warning-dark-inset { box-shadow: inset 2px 2px 0 0 #B45309; }
+.shadow-warning-dark-soft  { box-shadow: 0 4px 12px rgba(180, 83, 9, 0.25); }
+
+
+/* === Peach (Primary) === */
+.border-primary-xs   { border: 1px solid #B77B6C; }
+.border-primary-sm   { border: 2px solid #B77B6C; }
+.border-primary-md   { border: 4px solid #B77B6C; }
+
+/* === Peach (LIGHT) === */
+.border-primary-light-xs   { border: 1px solid #F1E3E0; }
+.border-primary-light-sm   { border: 2px solid #F1E3E0; }
+.border-primary-light-md   { border: 4px solid #F1E3E0; }
+
+/* === Zinc (Secondary) === */
+.border-secondary-xs   { border: 1px solid #d4d4d8; }
+.border-secondary-sm   { border: 2px solid #d4d4d8; }
+.border-secondary-md   { border: 4px solid #d4d4d8; }
+
+/* === Zinc (LIGHT) === */
+.border-secondary-light-xs { border: 1px solid #F2F2F4; } /* Lighter zinc */
+.border-secondary-light-sm { border: 2px solid #F2F2F4; }
+.border-secondary-light-md { border: 4px solid #F2F2F4; }
+
+/* === Rose (Danger) === */
+.border-danger-xs   { border: 1px solid #E11D48; }
+.border-danger-sm   { border: 2px solid #E11D48; }
+.border-danger-md   { border: 4px solid #E11D48; }
+
+/* === Rose (LIGHT) === */
+.border-danger-light-xs { border: 1px solid #FDE9ED; } /* Lighter rose */
+.border-danger-light-sm { border: 2px solid #FDE9ED; }
+.border-danger-light-md { border: 4px solid #FDE9ED; }
+
+/* === Emerald (Success) === */
+.border-success-xs   { border: 1px solid #10B981; }
+.border-success-sm   { border: 2px solid #10B981; }
+.border-success-md   { border: 4px solid #10B981; }
+
+/* === Emerald (LIGHT) === */
+.border-success-light-xs { border: 1px solid #E6FAF2; } /* Lighter emerald */
+.border-success-light-sm { border: 2px solid #E6FAF2; }
+.border-success-light-md { border: 4px solid #E6FAF2; }
+
+/* === Emerald (Success) - Dark === */
+.border-success-dark-xs { border: 1px solid #047857; }
+.border-success-dark-sm { border: 2px solid #047857; }
+.border-success-dark-md { border: 4px solid #047857; }
+
+
+/* === Sky (Info) === */
+.border-info-xs   { border: 1px solid #0EA5E9; }
+.border-info-sm   { border: 2px solid #0EA5E9; }
+.border-info-md   { border: 4px solid #0EA5E9; }
+
+/* === Sky (LIGHT) === */
+.border-info-light-xs { border: 1px solid #E0F2FE; } /* Lighter sky */
+.border-info-light-sm { border: 2px solid #E0F2FE; }
+.border-info-light-md { border: 4px solid #E0F2FE; }
+
+/* === Amber (Warning) === */
+.border-warning-xs   { border: 1px solid #F59E0B; }
+.border-warning-sm   { border: 2px solid #F59E0B; }
+.border-warning-md   { border: 4px solid #F59E0B; }
+
+/* === Amber (LIGHT) === */
+.border-warning-light-xs { border: 1px solid #FEF3C7; } /* Lighter amber */
+.border-warning-light-sm { border: 2px solid #FEF3C7; }
+.border-warning-light-md { border: 4px solid #FEF3C7; }
+
+/* === Peach (Primary) - Dark === */
+.border-primary-dark-xs { border: 1px solid #995F52; } /* ~Peach 700 */
+.border-primary-dark-sm { border: 2px solid #995F52; }
+.border-primary-dark-md { border: 4px solid #995F52; }
+
+/* === Zinc (Secondary) - Dark === */
+.border-secondary-dark-xs { border: 1px solid #3F3F46; } /* ~Zinc 700 */
+.border-secondary-dark-sm { border: 2px solid #3F3F46; }
+.border-secondary-dark-md { border: 4px solid #3F3F46; }
+
+/* === Rose (Danger) - Dark === */
+.border-danger-dark-xs { border: 1px solid #9F1239; } /* ~Rose 800 */
+.border-danger-dark-sm { border: 2px solid #9F1239; }
+.border-danger-dark-md { border: 4px solid #9F1239; }
+
+/* === Sky (Info) - Dark === */
+.border-info-dark-xs { border: 1px solid #0369A1; } /* ~Sky 800 */
+.border-info-dark-sm { border: 2px solid #0369A1; }
+.border-info-dark-md { border: 4px solid #0369A1; }
+
+/* === Amber (Warning) - Dark === */
+.border-warning-dark-xs { border: 1px solid #B45309; } /* ~Amber 800 */
+.border-warning-dark-sm { border: 2px solid #B45309; }
+.border-warning-dark-md { border: 4px solid #B45309; }
+
+
+
+
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  height: 6px; /* Adjust thickness */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f0f0f0; /* Light gray track */
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #ccc; /* Darker gray thumb */
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #999; /* Even darker on hover */
+}
+
+.fade-enter-active,
+.fade-leave-active,
+.fade-appear-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to,
+.fade-appear-from {
+  opacity: 0;
+}
+
+.fade-enter-to,
+.fade-leave-from,
+.fade-appear-to {
+  opacity: 1;
+}
+
+.toast-leave-active {
+  transition: opacity 0.2s ease, transform 0.5s ease;
+}
+
+.toast-enter-active {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.toast-enter-from,
+.toast-leave-to {
+  opacity: 0;
+  transform: translateX(100px);
+}
+
+.toast-enter-to,
+.toast-leave-from {
+  opacity: 1;
+  transform: translateX(0px);
+}
+
+.no-scroll {
+  overflow: hidden;
+}

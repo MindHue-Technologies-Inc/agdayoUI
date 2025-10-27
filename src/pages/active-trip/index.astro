@@ -1,9 +1,9 @@
 ---
-import Layout from "../../layouts/LayoutWSidebar.astro"
-import Main from "../../components/layout/Main.vue"
-import Topbar from "../../components/UI/Topbar.vue"
-import ActiveTrips from "../../components/pages/active-trip/index.vue" // Note: This refers to index.vue
-import Spinner from "../../components/UI/Spinner.vue";
+import Layout from "@/shared/layouts/LayoutWSidebar.astro"
+import Main from "@/shared/layouts/Main.vue"
+import Topbar from "@/shared/components/UI/Topbar.vue"
+import ActiveTrips from "@/trip_execution/pages/index.vue" // Note: This refers to index.vue
+import Spinner from "@/shared/components/UI/Spinner.vue";
 export const prerender = false
 
 // Get the user data that the middleware attached to `Astro.locals`
