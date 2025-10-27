@@ -2,7 +2,6 @@
 import { defineConfig } from 'astro/config';
 import tailwindcss from "@tailwindcss/vite";
 import vue from '@astrojs/vue';
-import node from '@astrojs/node';
 import vercel from '@astrojs/vercel/serverless';
 
 // https://astro.build/config
@@ -26,6 +25,6 @@ export default defineConfig({
     webAnalytics: {
       enabled: true,
     },
-    maxDuration: 8,
+    maxDuration: 300,
   }),
 });
