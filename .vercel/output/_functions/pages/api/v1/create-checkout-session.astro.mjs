@@ -1,6 +1,6 @@
 export { renderers } from '../../../renderers.mjs';
 
-const API_KEY = "sk_test_J9svPxrwUb7vjNLTQYYJLut7";
+const API_KEY = "";
 const PAYMONGO_BASE_URL = "https://api.paymongo.com/v1";
 const AUTH_HEADER = `Basic ${Buffer.from(API_KEY).toString("base64")}`;
 const DEFAULT_HEADERS = {
