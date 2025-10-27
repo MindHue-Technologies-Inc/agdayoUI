@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro";
-import { adminAuth } from "../../../../lib/firebase/server.ts";
+import { adminAuth } from "@/core/lib/firebase/server.ts";
 
 export const prerender = false;
 

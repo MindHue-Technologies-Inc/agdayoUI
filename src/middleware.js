@@ -1,6 +1,6 @@
 import { defineMiddleware, sequence } from "astro:middleware";
-import { adminAuth } from "./lib/firebase/server.js";
-import { setCache, getCache, deleteCache } from "./cache/simple-cache.js";
+import { adminAuth } from "./core/lib/firebase/server.ts";
+import { setCache, getCache, deleteCache } from "./core/cache/simple-cache.ts";
 
 const SESSION_CACHE_MAX_AGE_SECONDS = 60
 

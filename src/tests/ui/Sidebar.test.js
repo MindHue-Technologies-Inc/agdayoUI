@@ -2,7 +2,7 @@
 // Sidebar.test.js
 import { mount } from '@vue/test-utils';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import Sidebar from '../../components/UI/Sidebar.vue';
+import Sidebar from '@/shared/components/UI/Sidebar.vue';
 
 // Mock dependencies
 vi.mock('../../stores/auth', () => ({
@@ -57,7 +57,7 @@ describe('Sidebar.vue', () => {
   });
 
   it('calls the logout method when the logout button is clicked', async () => {
-    const { apiRequest } = await import('../../fetch.js');
+    const { apiRequest } = await import('@/core/fetch.js');
     apiRequest.mockResolvedValue({ ok: true, json: () => Promise.resolve({}) });
 
     const wrapper = mount(Sidebar);
