@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro";
-import { adminAuth, adminDb } from "../../../../lib/firebase/server.ts";
+import { adminAuth, adminDb } from "@/core/lib/firebase/server.ts";
 export const prerender = false;
 
 export const POST: APIRoute = async ({ request }) => {

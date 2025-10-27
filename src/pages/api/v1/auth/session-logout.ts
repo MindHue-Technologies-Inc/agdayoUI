@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
-import { adminAuth } from "../../../../lib/firebase/server.ts";
-import { getCache, setCache, deleteCache } from "../../../../cache/simple-cache.ts";
+import { adminAuth } from "@/core/lib/firebase/server.ts";
+import { getCache, setCache, deleteCache } from "@/core/cache/simple-cache.ts";
 
 export const prerender = false;
 

@@ -1,6 +1,6 @@
 // -- IMPORT TYPES
-import type { PaymongoCheckoutSessionResponse, PaymongoRequestBody } from "../../../types/paymongo-types.ts"
-import { paymongoFetch } from "../../../paymongo.ts"
+import type { PaymongoCheckoutSessionResponse, PaymongoRequestBody } from "@/core/types/paymongo-types.ts"
+import { paymongoFetch } from "@/core/paymongo.ts"
 
 export const prerender = false;
 

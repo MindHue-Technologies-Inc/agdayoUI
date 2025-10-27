@@ -1,8 +1,8 @@
 
 import type { APIRoute } from "astro";
-import { adminDb } from "../../../../lib/firebase/server.ts";
-import type {ActivityUpdateData, ActivityWriteData} from "../../../../types/trip-activity.ts";
-import type { locals } from "../../../../types/locals.ts";
+import { adminDb } from "@/core/lib/firebase/server.ts";
+import type {ActivityUpdateData, ActivityWriteData} from "@/core/types/trip-activity.ts";
+import type { locals } from "@/core/types/locals.ts";
 import { FieldValue } from "firebase-admin/firestore";
 
 export const prerender = false;

@@ -1,4 +1,4 @@
-import { adminDb } from "../../../../lib/firebase/server.ts";
+import { adminDb } from "@/core/lib/firebase/server.ts";
 import type { APIRoute } from "astro";
 import {
   badRequestResponse,
@@ -6,8 +6,8 @@ import {
   serverErrorResponse,
   unauthorizedResponse,
   forbiddenResponse,
-} from "../../../../responses/responses.ts";
-import type { locals } from "../../../../types/locals.ts";
+} from "@/core/responses/responses.ts";
+import type { locals } from "@/core/types/locals.ts";
 import {FieldValue} from "firebase-admin/firestore";
 
 export const prerender = false;
