@@ -1,8 +1,8 @@
 ---
-import Layout from "../../layouts/LayoutWSidebar.astro"
-import Main from "../../components/layout/Main.vue"
-import Topbar from "../../components/UI/Topbar.vue"
-import TripPage from "../../components/pages/trip/index.vue"
+import Layout from "@/shared/layouts/LayoutWSidebar.astro"
+import Main from "@/shared/layouts/Main.vue"
+import Topbar from "@/shared/components/UI/Topbar.vue"
+import TripPage from "@/trip-details/pages/index.vue"
 const { trip } = Astro.params;
 export const prerender = false;
 
