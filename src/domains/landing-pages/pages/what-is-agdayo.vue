@@ -31,8 +31,8 @@
 </template>
 
 <script setup>
-import Button from "../../UI/Button.vue";
-import Card from "../../UI/Card.vue";
+import Button from "@/shared/components/UI/Button.vue";
+import Card from "@/shared/components/UI/Card.vue";
 
 // -- Redirect to login
 const goToLogin = () => {
