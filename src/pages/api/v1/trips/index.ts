@@ -1,7 +1,7 @@
-import { adminAuth, adminDb } from "@/lib/firebase/server.ts";
-import type { locals } from "@/types/locals.ts";
+import { adminAuth, adminDb } from "@/core/lib/firebase/server.ts";
+import type { locals } from "@/core/types/locals.ts";
 import { FieldValue } from "firebase-admin/firestore";
-import type {ActivityWriteData} from "@/types/trip-activity.ts";
+import type {ActivityWriteData} from "@/core/types/trip-activity.ts";
 
 export const prerender = false;
 

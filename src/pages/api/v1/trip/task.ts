@@ -1,9 +1,9 @@
-import { adminDb } from "../../../../lib/firebase/server.ts";
+import { adminDb } from "@/core/lib/firebase/server.ts";
 import type { APIRoute } from "astro";
-import type {locals} from "../../../../types/locals.ts";
-import type { TaskWriteData } from "../../../../types/trip-task.ts";
+import type {locals} from "@/core/types/locals.ts";
+import type { TaskWriteData } from "@/core/types/trip-task.ts";
 import {FieldValue} from "firebase-admin/firestore";
-import {unauthorizedResponse, serverErrorResponse, notFoundResponse} from "../../../../responses/responses.ts";
+import {unauthorizedResponse, serverErrorResponse, notFoundResponse} from "@/core/responses/responses.ts";
 
 export const prerender = false;
 
