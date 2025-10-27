@@ -1,0 +1,192 @@
+{
+	"version": 3,
+	"routes": [
+		{
+			"handle": "filesystem"
+		},
+		{
+			"src": "^/_astro/(.*)$",
+			"headers": {
+				"cache-control": "public, max-age=31536000, immutable"
+			},
+			"continue": true
+		},
+		{
+			"src": "^/_server-islands/([^/]+?)/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/_image/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/404/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/active-trip/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/ai/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/v1/active-trips/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/v1/activity/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/v1/auth/register/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/v1/auth/register-using-google/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/v1/auth/session-login/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/v1/auth/session-logout/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/v1/create-checkout-session/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/v1/friendship/accepted/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/v1/friendship/pending/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/v1/friendship/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/v1/generate-plans/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/v1/generate-trip/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/v1/geo-location/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/v1/get-user-status/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/v1/maps-places/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/v1/me/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/v1/trip/accommodations/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/v1/trip/budget/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/v1/trip/companions/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/v1/trip/task/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/v1/trip/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/v1/trips/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/v1/users/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/v2/generate-places/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/v2/maps-places/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/build-profile/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/create-trip/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/expenses/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/features/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/login/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/register/otp/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/register/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/subscribe/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/trips/([^/]+?)/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/trips/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/user-profile/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/what-is-agdayo/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/.*$",
+			"dest": "_render",
+			"status": 404
+		}
+	]
+}

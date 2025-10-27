@@ -64,7 +64,7 @@
 </template>
 
 <script setup>
-import Card from "../../UI/Card.vue";
+import Card from "@/shared/components/UI/Card.vue";
 </script>
 
 <style scoped>
