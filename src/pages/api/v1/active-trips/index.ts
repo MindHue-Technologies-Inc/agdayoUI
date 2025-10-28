@@ -133,7 +133,7 @@ export const GET = async ({ locals }: { url: URL, request: Request, locals: loca
     });
 
     // Resolve all promises to get the full list of trips with their subcollections
-    const tripsWithActivities: TripReturnData[] = await Promise.all(tripsWithSubcollectionsPromises);
+    const tripsWithActivities = await Promise.all(tripsWithSubcollectionsPromises);
 
     // --- 4. SORT THE FINAL RESULTS CLIENT-SIDE ---
     // The query can't sort on 'date.start' because the 'where' clause is on 'date.end'.
