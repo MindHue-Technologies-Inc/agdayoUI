@@ -1,0 +1,5 @@
+import{_ as s}from"./_plugin-vue_export-helper.DlAUqK2U.js";import{c as n,l as o,n as i,o as d}from"./runtime-core.esm-bundler.Db96a2QS.js";const u={name:"Link",props:{href:{type:String,required:!0},target:{type:String,default:"_self"},rel:{type:String,default:""},disabled:{type:Boolean,default:!1},customClass:{type:String,default:""}},computed:{baseClasses(){return`
+        text-blue-400 dark:text-blue-100
+        hover:underline transition-colors duration-200
+        cursor-pointer
+      `},relAttr(){return this.target==="_blank"&&!this.rel?"noopener noreferrer":this.rel}},methods:{handleClick(t){this.disabled&&(t.preventDefault(),t.stopImmediatePropagation?.())}}},c=["href","target","rel"];function f(t,a,e,h,m,r){return d(),n("a",{href:e.disabled?void 0:e.href,target:e.target,rel:r.relAttr,class:i([r.baseClasses,e.disabled?"pointer-events-none opacity-60 cursor-not-allowed":"",e.customClass]),onClick:a[0]||(a[0]=(...l)=>r.handleClick&&r.handleClick(...l))},[o(t.$slots,"default")],10,c)}const _=s(u,[["render",f]]);export{_ as A};
