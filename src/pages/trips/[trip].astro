@@ -17,6 +17,6 @@ const userPhotoURL = user?.photoURL || null;
 <Layout>
   <Main>
     <Topbar title="Trip" photoURL={userPhotoURL} client:load />
-    <TripPage trip-id={trip} client:load/>
+    <TripPage trip-id={trip} client:only/>
   </Main>
 </Layout>

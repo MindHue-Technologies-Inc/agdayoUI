@@ -153,12 +153,12 @@
 
 <script>
 import Sheet from "@/shared/components/UI/Sheet.vue";
-import Tag from "@/shared/components/UI/Tag.vue"; // Keep if used for internal display, not essential for the form
+import Tag from "@/shared/components/UI/Tag.vue";
 import Button from "@/shared/components/UI/Button.vue";
 import Input from "@/shared/components/UI/Input.vue";
 import Select from "@/shared/components/UI/Select.vue";
 import AdvInput from "@/shared/components/UI/AdvInput.vue";
-import currencyData from "@/shared/json/currencies.json"
+import currencyData from "@/shared/json/currencies.json";
 import Select2 from "@/shared/components/UI/SelectSimple.vue";
 
 export default {
@@ -173,222 +173,219 @@ export default {
   },
 
   props: {
-    showSheet: {
-      type: Boolean,
-      default: false,
-    },
-
-    dateRange: {
-      type: Object,
-      required: true,
-    },
-
-    // modelValue now expects an object: { showSheet: boolean, activity: object | null }
-    // If activity is an object, it's edit mode. If null, it's add mode.
+    showSheet: { type: Boolean, default: false },
+    dateRange: { type: Object, required: true },
     modelValue: {
       type: Object,
       default: () => ({ showSheet: false, activity: null }),
       required: true,
-    }
+    },
   },
 
   data() {
     return {
-      b0ss: null,
-      error: '',
+      error: "",
       suggestions: [],
       searchTimeout: null,
-      // localActivity will be either a new empty object or a copy of the activity being edited
+      autocompleteService: null,
+      placesService: null,
       currencies: currencyData,
       localActivity: this.getInitialActivityState(),
       activityIcons: [
-        'ph-bus', 'ph-coffee', 'ph-tree', 'ph-bowl-food', 'ph-palette', 'ph-bed',
-        'ph-pizza', 'ph-airplane', 'ph-car', 'ph-train', 'ph-bicycle', 'ph-camera',
-        'ph-map-pin', 'ph-shopping-bag', 'ph-storefront', 'ph-swimming-pool',
-        'ph-mountains', 'ph-tent', 'ph-binoculars', 'ph-campfire', 'ph-first-aid',
-        'ph-currency-circle-dollar', 'ph-calendar', 'ph-sparkle', 'ph-sun', 'ph-moon',
-        'ph-globe-hemisphere-east', 'ph-gift', 'ph-ticket', 'ph-book-open',
-        'ph-microphone-stage', 'ph-park', 'ph-compass', 'ph-cloud-sun',
-        'ph-cloud-rain', 'ph-wifi-high', 'ph-device-mobile', 'ph-user-list',
-        'ph-cookie', 'ph-question',
-      ]
+        "ph-bus", "ph-coffee", "ph-tree", "ph-bowl-food", "ph-palette", "ph-bed",
+        "ph-pizza", "ph-airplane", "ph-car", "ph-train", "ph-bicycle", "ph-camera",
+        "ph-map-pin", "ph-shopping-bag", "ph-storefront", "ph-swimming-pool",
+        "ph-mountains", "ph-tent", "ph-binoculars", "ph-campfire", "ph-first-aid",
+        "ph-currency-circle-dollar", "ph-calendar", "ph-sparkle", "ph-sun", "ph-moon",
+        "ph-globe-hemisphere-east", "ph-gift", "ph-ticket", "ph-book-open",
+        "ph-microphone-stage", "ph-park", "ph-compass", "ph-cloud-sun",
+        "ph-cloud-rain", "ph-wifi-high", "ph-device-mobile", "ph-user-list",
+        "ph-cookie", "ph-question",
+      ],
     };
   },
 
+  mounted() {
+    this.loadGoogleMapsScript();
+  },
+
   computed: {
-    // Determines if the component is in "edit" mode
     isEditing() {
-      // An activity exists and has an ID (meaning it's not a fresh, unsaved activity)
       return this.modelValue.activity && this.modelValue.activity.id;
     },
-    activityDateTimeSummary() {
-      const parts = [];
-      if (this.localActivity.time) {
-        parts.push(`at ${this.localActivity.time}`);
-      }
-      if (this.localActivity.date) {
-        parts.push(`on ${this.localActivity.date}`);
-      }
-      return parts.length > 0 ? parts.join(' ') : 'Set time & date';
-    },
-    activityBudgetSummary() {
-      if (this.localActivity.cost > 0) {
-        const formatter = new Intl.NumberFormat(this.getLocale(), {
-          style: 'currency',
-          currency: this.localActivity.costCurrency,
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        });
-        let summary = formatter.format(this.localActivity.cost);
-        if (this.localActivity.costNote) {
-          summary += ` (${this.localActivity.costNote})`;
-        }
-        return summary;
-      }
-      return 'Enter estimated cost';
-    },
     localActivityFormat() {
-      return {...this.localActivity, datetime:`${this.localActivity.date}T${this.localActivity.time}:00`}
+      return {
+        ...this.localActivity,
+        datetime: `${this.localActivity.date}T${this.localActivity.time}:00`,
+      };
     },
     days() {
       const dates = [];
       const startDate = new Date(this.dateRange.start);
       const endDate = new Date(this.dateRange.end);
       const locale = this.getLocale();
-
       let currentDate = new Date(this.dateRange.start);
       let dayCounter = 1;
 
       while (currentDate <= endDate) {
-        const year = currentDate.getFullYear()
-        const month = (currentDate.getMonth() + 1) < 10 ? `0${currentDate.getMonth() + 1}` : `${currentDate.getMonth() + 1}`
-        const day = currentDate.getDate() < 10 ? `0${currentDate.getDate()}` : `${currentDate.getDate()}`
-        const isoDate = `${year}-${month}-${day}`;
+        const isoDate = currentDate.toISOString().split("T")[0];
         const formattedDate = new Intl.DateTimeFormat(locale, {
-          weekday: 'short',
-          month: 'short',
-          day: 'numeric',
+          weekday: "short",
+          month: "short",
+          day: "numeric",
         }).format(currentDate);
-
         dates.push({ value: isoDate, label: `Day ${dayCounter} (${formattedDate})` });
-
         currentDate.setDate(currentDate.getDate() + 1);
         dayCounter++;
       }
-      console.log(dates)
+
       return dates;
     },
-    selectedIconSummary() {
-      // Replaces 'ph-' prefix for cleaner summary
-      const iconText = this.localActivity.iconName ? this.localActivity.iconName.replace('ph-', '').replace('-', ' ') : 'Choose an icon';
-      // Capitalize first letter of each word
-      return iconText.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-    }
   },
 
   watch: {
-    // Watch modelValue.showSheet to reset form or load data when sheet opens/closes
-    'modelValue.showSheet': {
-      immediate: true, // Run immediately on component mount
-      handler(newVal) {
-        if (newVal) {
-          // If a specific activity object is passed, create a DEEP copy to avoid direct mutation
-          if (this.modelValue.activity) {
-            this.localActivity = JSON.parse(JSON.stringify(this.modelValue.activity));
-          } else {
-            // Otherwise, reset to initial state for a new activity
-            this.localActivity = this.getInitialActivityState();
-          }
-        }
-      }
-    },
-
-    'localActivity.title': {
+    "modelValue.showSheet": {
       immediate: true,
       handler(newVal) {
-        this.localActivity.name = newVal
-      }
-    }
+        if (newVal) {
+          this.localActivity = this.modelValue.activity
+              ? JSON.parse(JSON.stringify(this.modelValue.activity))
+              : this.getInitialActivityState();
+        }
+      },
+    },
   },
 
   methods: {
     getLocale() {
-      return navigator.language || 'en-US';
+      return navigator.language || "en-US";
     },
+
     getInitialActivityState() {
-      // Returns a fresh, empty activity object for adding a new one
       return {
-        name: '',
-        time: '',
-        date: '',
-        location: '',
+        name: "",
+        time: "",
+        date: "",
+        location: "",
         cost: 0,
-        costCurrency: 'PHP',
-        costNote: '',
-        description: '',
-        iconName: '', // Selected icon class, e.g., 'ph-bus'
+        costCurrency: "PHP",
+        costNote: "",
+        description: "",
+        iconName: "",
       };
     },
+
     selectIcon(iconClass) {
       this.localActivity.iconName = iconClass;
     },
+
     handleSheetClose() {
-      // Emits the update to close the sheet. Also resets localActivity on close.
-      this.$emit('update:showSheet', false);
-      this.localActivity = this.getInitialActivityState(); // Reset form on close
+      this.$emit("update:showSheet", false);
+      this.localActivity = this.getInitialActivityState();
     },
+
     cancelActivity() {
-      this.handleSheetClose(); // Simply close and reset
+      this.handleSheetClose();
     },
+
     saveActivity() {
-      if (!this.localActivity.title.trim()) {
-        this.error = 'Activity name is required!'; // Basic validation
+      if (!this.localActivity.title?.trim()) {
+        this.error = "Activity name is required!";
         return;
       }
       if (!this.localActivity.time || !this.localActivity.date) {
-        this.error = 'Please select date and time';
+        this.error = "Please select date and time";
         return;
       }
-      // Emit the *modified* localActivity object
-      this.$emit('activity-saved', this.localActivityFormat);
-      this.handleSheetClose(); // Close the sheet after saving
+      this.$emit("activity-saved", this.localActivityFormat);
+      this.handleSheetClose();
+    },
+
+    /** ------------------------------
+     * GOOGLE MAPS AUTOCOMPLETE
+     * ------------------------------ */
+    loadGoogleMapsScript() {
+      const GOOGLE_MAPS_API = import.meta.env.PUBLIC_MAP_API_KEY;
+
+      // If already loaded, initialize immediately
+      if (window.google && window.google.maps) {
+        this.initGoogleServices();
+        return;
+      }
+
+      // Prevent duplicate script loading
+      const existingScript = document.querySelector("#google-maps-script");
+      if (existingScript) {
+        existingScript.addEventListener("load", () => this.initGoogleServices());
+        return;
+      }
+
+      // Inject Google Maps script
+      const script = document.createElement("script");
+      script.id = "google-maps-script";
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API}&libraries=places`;
+      script.async = true;
+      script.defer = true;
+      script.onload = () => this.initGoogleServices();
+      document.head.appendChild(script);
+    },
+
+    initGoogleServices() {
+      try {
+        this.autocompleteService = new google.maps.places.AutocompleteService();
+        this.placesService = new google.maps.places.PlacesService(document.createElement("div"));
+      } catch (err) {
+        console.error("Failed to initialize Google Maps services:", err);
+      }
     },
 
     async searchLocations(e) {
       const query = e.target.value.trim();
       clearTimeout(this.searchTimeout);
 
-      if (!query) {
+      if (!query || !this.placesService) {
         this.suggestions = [];
         return;
       }
 
-      // debounce requests to avoid API spam
-      this.searchTimeout = setTimeout(async () => {
-        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&addressdetails=1&limit=5`;
-        try {
-          const res = await fetch(url, {
-            headers: { 'User-Agent': 'YourAppName/1.0' }, // Nominatim requires this
-          });
-          const data = await res.json();
-          this.suggestions = data;
-        } catch (err) {
-          console.error('Failed to fetch location suggestions', err);
-        }
+      // debounce to avoid API spam
+      this.searchTimeout = setTimeout(() => {
+        this.placesService.textSearch(
+            {
+              query,
+              region: "ph", // optional: restrict to PH results
+            },
+            (results, status) => {
+              if (status === google.maps.places.PlacesServiceStatus.OK && results?.length) {
+                this.suggestions = results.map((r) => ({
+                  place_id: r.place_id,
+                  display_name: `${r.name}${r.formatted_address ? `, ${r.formatted_address}` : ""}`,
+                  location: r.geometry?.location || null,
+                }));
+              } else {
+                this.suggestions = [];
+              }
+            }
+        );
       }, 300);
     },
 
     selectSuggestion(item) {
       this.localActivity.location = item.display_name;
-      this.localActivity.coordinates = {
-        latitude: parseFloat(item.lat),
-        longitude: parseFloat(item.lon),
-      };
+
+      if (item.location) {
+        this.localActivity.coordinates = {
+          latitude: item.location.lat(),
+          longitude: item.location.lng(),
+        };
+      }
+
       this.suggestions = [];
     },
   }
-}
+};
 </script>
+
 
 <style scoped>
 /* Custom scrollbar styles */
