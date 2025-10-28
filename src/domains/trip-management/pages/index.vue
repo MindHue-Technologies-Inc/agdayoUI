@@ -63,7 +63,7 @@ export default {
   computed: {
     sortedTrips() {
       return this.trips.toSorted((a, b) => {
-        return a.date.start.localeCompare(b.date.start)
+        return b.date.start.localeCompare(a.date.start)
       })
     },
 

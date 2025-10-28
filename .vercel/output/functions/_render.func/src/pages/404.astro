@@ -1,0 +1,52 @@
+---
+import Layout from "@/shared/layouts/LayoutWSidebar.astro"
+import Main from "@/shared/layouts/Main.vue"
+import Button from "@/shared/components/UI/Button.vue"; // Assuming you have a Button component
+import Anchor from "@/shared/components/UI/Anchor.vue"; // Assuming you have an Anchor component
+export const prerender = false;
+---
+
+<Layout>
+  <Main>
+    <div class="flex flex-col items-center justify-center w-full h-full min-h-[calc(100vh-theme(spacing.20))] px-4 py-16 text-center">
+      <h1 class="fadeIn fadeIn-1 text-9xl font-extrabold text-zinc-300 dark:text-zinc-700 select-none">
+        404
+      </h1>
+      <h2 class="fadeIn fadeIn-2 text-4xl font-bold text-zinc-800 dark:text-zinc-100 mt-4 mb-6">
+        Page Not Found
+      </h2>
+      <p class="fadeIn fadeIn-3 text-lg text-zinc-600 dark:text-zinc-300 max-w-prose mb-8">
+        Oops! It looks like the page you're looking for doesn't exist. It might have been moved or deleted.
+      </p>
+
+      <div class="fadeIn fadeIn-4 flex flex-col sm:flex-row gap-4 items-center">
+        <Button onclick="window.history.back()" variant="primary">
+          Go Back
+        </Button>
+        <Anchor href="/active-trip" variant="secondary">
+          Go to Homepage
+        </Anchor>
+      </div>
+
+    </div>
+  </Main>
+</Layout>
+
+<style is:global>
+    /* Optional: Add some basic fade-in or subtle animations for a smoother feel */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fadeIn {
+        animation: fadeIn 0.8s ease-out forwards;
+        opacity: 0; /* Start invisible */
+    }
+
+    .fadeIn-1 { animation-delay: 0.1s; }
+    .fadeIn-2 { animation-delay: 0.2s; }
+    .fadeIn-3 { animation-delay: 0.3s; }
+    .fadeIn-4 { animation-delay: 0.4s; }
+    /* img { animation-delay: 0.5s; } */
+</style>
