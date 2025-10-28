@@ -1,1 +1,0 @@
-import{a as i}from"./index.BSdFiPHn.js";const s=typeof window<"u",e=s?localStorage.getItem("auth"):null,n=e?JSON.parse(e):{user:{id:"01JS51EW7Q52ASMDGPXP39FZAE"},token:null,isAuthenticated:!1,loading:!1},a=i(n);s&&a.subscribe(t=>{localStorage.setItem("auth",JSON.stringify(t))});function u(t,o){a.set({user:t,token:o,isAuthenticated:!0,loading:!1})}export{u as l,a as u};
