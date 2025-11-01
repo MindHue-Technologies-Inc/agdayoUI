@@ -2,7 +2,7 @@
   <div class="flex flex-col ">
     <span class="fadeIn outfit text-white">Ride the waves in paradise <span class="baybayin text-[#00FFA6]">Siargao</span></span>
 
-    <span class="fadeIn fadeIn-1 text-9xl zain font-black text-[#00FFA6] my-shadow -mt-4">Siargao</span>
+    <span class="fadeIn fadeIn-1 text-9xl zain font-black text-[#00FFA6] my-shadow">Siargao</span>
 
     <div class="fadeIn fadeIn-2 w-[36rem] text-zinc-300 ">
       <p class="leading-5">

@@ -13,30 +13,16 @@ export function useCreateTrip() {
   const btnLoading = ref(false)
   const unsubscribeFromDbStore = ref(null)
 
+  // -- HELPERS --
+  const showWarning = (message: string) => {
+    warningToast.value.message = message;
+  };
+
   // -- ACTIONS --
-  const validateName = () => {
-    if (!name.value) {
-      warningToast.value.message = "Please Enter the Trip Name";
-      return false
-    }
-    return true
-  }
-
-  const validateLocation = () => {
-    if (!location.value) {
-      warningToast.value.message = "Please Enter a Location"
-      return false
-    }
-    return true
-  }
-
-  const validateDate = () => {
-    if (!date.value.start && !date.value.end) {
-      warningToast.value.message = "Please Enter a Date Range"
-      return false
-    }
-    return true
-  }
+  // -- VALIDATION --
+  const validateName = () => !!name.value || (showWarning("Please Enter the Trip Name"), false);
+  const validateLocation = () => !!location.value || (showWarning("Please Enter a Location"), false);
+  const validateDate = () => (date.value.start && date.value.end) || (showWarning("Please Enter a Date Range"), false);
 
   const saveTrip = async () => {
     // -- 1. VALIDATE INPUTS
@@ -66,6 +52,7 @@ export function useCreateTrip() {
       if (!response.ok) {
         const error = await response.json()
         console.error('Something went wrong', error.message)
+        throw new Error(error)
       }
 
       // -- 4. GET THE ID OF THE NEWLY CREATED TRIP
@@ -75,6 +62,8 @@ export function useCreateTrip() {
 
     } catch (err) {
       console.error(err)
+    } finally {
+      btnLoading.value = false
     }
   }
 

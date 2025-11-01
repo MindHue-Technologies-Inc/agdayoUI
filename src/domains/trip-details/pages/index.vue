@@ -424,7 +424,8 @@ export default {
         if (!response.ok) {
           const error = await response.json()
           console.error('Error updating an activity:', error.message)
-          throw new Error(`Error updating an activity: ${error.message}`)
+          this.dangerToast.message = `Error updating an activity: ${error.message}`
+          return
         }
 
         const jsonResponse = await response.json()
@@ -460,7 +461,8 @@ export default {
 
         if (!response.ok) {
           const error = await response.json()
-          throw new Error(`Error delete activity: ${error.message}`)
+          this.dangerToast.message = `Error delete activity: ${error.message}`
+          return
         }
 
         const jsonResponse = await response.json()
@@ -487,7 +489,8 @@ export default {
         if (!response.ok) {
           const error = await response.json()
           console.error('Error saving activity:', error.message)
-          throw new Error(`Error saving activity: ${error.message}`)
+          this.dangerToast.message = `Error saving activity: ${error.message}`
+          return
         }
 
         const jsonResponse = await response.json()
@@ -634,7 +637,14 @@ export default {
           }
         }
       } catch (error) {
-        console.log(error)
+        const accommodation = data.accommodations.sort((a, b) => a.createdAt._seconds - b.createdAt._seconds)[data.accommodations.length - 1]
+        this.accommodation = {
+          ...accommodation,
+          dates: {
+            start: new Date(data.date.start),
+            end: new Date(data.date.end)
+          }
+        }
       }
     },
 
@@ -734,6 +744,7 @@ export default {
   },
 
   async mounted() {
+    let firstLoad = true
     await this.fetchTrip()
     await this.fetchUser()
     this.isLoading = false
@@ -745,7 +756,7 @@ export default {
     const tripRef = doc(firestore, 'trips', this.tripId)
     this.unsubscribeFromTripListener = onSnapshot(tripRef, async (docSnap) => {
       if (docSnap.exists()) {
-        await this.fetchTrip()
+        if (!firstLoad) await this.fetchTrip()
       } else {
         console.log('Trip document does not exists')
       }
@@ -757,31 +768,31 @@ export default {
     // Listener for Activities subcollection
     const activitiesRef = collection(firestore, `trips/${this.tripId}/activities`);
     this.unsubscribeFromActivitiesListener = onSnapshot(activitiesRef, async (querySnapshot) => {
-      await this.fetchTrip()
+      if (!firstLoad) await this.fetchTrip()
     });
 
     // Listener for Preparation subcollection
     const preparationRef = collection(firestore, `trips/${this.tripId}/preparation`);
     this.unsubscribeFromPreparationListener = onSnapshot(preparationRef, async (querySnapshot) => {
-      await this.fetchTrip()
+      if (!firstLoad) await this.fetchTrip()
     });
 
     // Listener for Accommodations subcollection
     const accommodationsRef = collection(firestore, `trips/${this.tripId}/accommodations`);
     this.unsubscribeFromAccommodationsListener = onSnapshot(accommodationsRef, async (querySnapshot) => {
-      await this.fetchTrip()
+      if (!firstLoad) await this.fetchTrip()
     });
 
     // Listener for Budget subcollection
     const budgetRef = collection(firestore, `trips/${this.tripId}/budget`);
     this.unsubscribeFromBudgetListener = onSnapshot(budgetRef, async (querySnapshot) => {
-      await this.fetchTrip()
+      if (!firstLoad) await this.fetchTrip()
     });
 
     // Listener for Companions subcollection
     const companionsRef = collection(firestore, `trips/${this.tripId}/companions`);
     this.unsubscribeFromCompanionsListener = onSnapshot(companionsRef, async (querySnapshot) => {
-      await this.fetchTrip()
+      if (!firstLoad) await this.fetchTrip()
     });
 
     // === NEW: SETUP REAL-TIME PRESENCE ===
@@ -804,6 +815,10 @@ export default {
       this.removePresence();
       window.removeEventListener('beforeunload', this.removePresence);
     }, { once: true })
+
+    setTimeout(()=>{
+      firstLoad = false
+    }, 3000)
   },
 
   unmounted() {

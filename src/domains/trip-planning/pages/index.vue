@@ -34,12 +34,10 @@
   <ToastContainer>
     <Toast
         :variant="'error'"
-        ref="dangerToast"
         :message="dangerToast.message"
     />
     <Toast
         :variant="'warning'"
-        ref="warningToast"
         :message="warningToast.message"
     />
   </ToastContainer>

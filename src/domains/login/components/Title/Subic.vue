@@ -4,7 +4,7 @@
     <span class="fadeIn outfit text-white">Plan your trip to <span class="baybayin text-[#C6FB9F]">Subic</span></span>
 
     <!-- TITLE -->
-    <span class="fadeIn fadeIn-1 text-9xl zain font-black text-[#C6FB9F] my-shadow -mt-4">Subic</span>
+    <span class="fadeIn fadeIn-1 text-9xl zain font-black text-[#C6FB9F] my-shadow">Subic</span>
 
     <!-- DESCRIPTION -->
     <div class="fadeIn fadeIn-2 w-[36rem] text-zinc-300 ">

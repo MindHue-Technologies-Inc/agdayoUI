@@ -192,16 +192,41 @@ export default {
       currencies: currencyData,
       localActivity: this.getInitialActivityState(),
       activityIcons: [
-        "ph-bus", "ph-coffee", "ph-tree", "ph-bowl-food", "ph-palette", "ph-bed",
-        "ph-pizza", "ph-airplane", "ph-car", "ph-train", "ph-bicycle", "ph-camera",
-        "ph-map-pin", "ph-shopping-bag", "ph-storefront", "ph-swimming-pool",
-        "ph-mountains", "ph-tent", "ph-binoculars", "ph-campfire", "ph-first-aid",
-        "ph-currency-circle-dollar", "ph-calendar", "ph-sparkle", "ph-sun", "ph-moon",
-        "ph-globe-hemisphere-east", "ph-gift", "ph-ticket", "ph-book-open",
-        "ph-microphone-stage", "ph-park", "ph-compass", "ph-cloud-sun",
-        "ph-cloud-rain", "ph-wifi-high", "ph-device-mobile", "ph-user-list",
-        "ph-cookie", "ph-question",
-      ],
+        // 🌴 Travel & Adventure
+        "ph-airplane", "ph-island", "ph-sailboat", "ph-mountains", "ph-tent",
+        "ph-campfire", "ph-compass", "ph-map-pin", "ph-globe-hemisphere-east",
+
+        // 🚗 Transport
+        "ph-bus", "ph-car", "ph-train", "ph-bicycle", "ph-boat", "ph-taxi",
+
+        // 🏨 Accommodation & Rest
+        "ph-bed", "ph-house", "ph-suitcase", "ph-door",
+
+        // ☕ Food & Hangouts
+        "ph-coffee", "ph-bowl-food", "ph-pizza", "ph-beer-bottle", "ph-ice-cream",
+        "ph-cake", "ph-cookie", "ph-wine", "ph-shopping-bag", "ph-storefront",
+
+        // 🎨 Fun & Experiences
+        "ph-camera", "ph-palette", "ph-ticket", "ph-gift", "ph-microphone-stage",
+        "ph-music-notes", "ph-park", "ph-swimming-pool", "ph-sun", "ph-moon",
+
+        // 📅 Planning & Organization
+        "ph-calendar", "ph-list-checks", "ph-clipboard-text", "ph-clock",
+        "ph-map-trifold", "ph-suitcase-simple",
+
+        // 💬 Social / Friends
+        "ph-users-three", "ph-user-list", "ph-chat-circle-text", "ph-handshake",
+        "ph-heart", "ph-thumbs-up",
+
+        // 🌧️ Weather / Conditions
+        "ph-cloud-sun", "ph-cloud-rain", "ph-sparkle",
+
+        // 💰 Budgeting / Logistics
+        "ph-currency-circle-dollar", "ph-wallet", "ph-credit-card", "ph-first-aid",
+
+        // ❓ Misc
+        "ph-question",
+      ]
     };
   },
 

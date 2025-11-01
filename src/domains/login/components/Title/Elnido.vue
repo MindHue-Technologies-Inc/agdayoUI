@@ -4,7 +4,7 @@
     <span class="fadeIn outfit text-white">Plan your trip to <span class="baybayin text-[#F2FF67]">El Nido</span></span>
 
     <!-- TITLE -->
-    <span class="fadeIn fadeIn-1 text-9xl zain font-black text-[#F2FF67] my-shadow -mt-4">El Nido</span>
+    <span class="fadeIn fadeIn-1 text-9xl zain font-black text-[#F2FF67] my-shadow">El Nido</span>
 
     <!-- DESCRIPTION -->
     <div class="fadeIn fadeIn-2 w-[36rem] text-zinc-300 ">
