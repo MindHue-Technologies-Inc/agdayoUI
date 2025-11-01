@@ -4,7 +4,7 @@
     <span class="fadeIn outfit text-white">Plan your trip to <span class="baybayin text-[#FFFFFF]">Makati</span></span>
 
     <!-- TITLE -->
-    <span class="fadeIn fadeIn-1 text-9xl zain font-black text-[#FFFFFF] my-shadow -mt-4">Makati</span>
+    <span class="fadeIn fadeIn-1 text-9xl zain font-black text-[#FFFFFF] my-shadow">Makati</span>
 
     <!-- DESCRIPTION -->
     <div class="fadeIn fadeIn-2 w-[36rem] text-zinc-300 ">

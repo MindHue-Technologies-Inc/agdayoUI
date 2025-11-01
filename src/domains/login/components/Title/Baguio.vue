@@ -4,7 +4,7 @@
     <span class="fadeIn outfit text-white">Plan your trip to <span class="baybayin text-[#F8B02B]">Baguio</span></span>
 
     <!-- TITLE -->
-    <span class="fadeIn fadeIn-1 text-9xl zain font-black text-[#F8B02B] my-shadow -mt-4">Baguio</span>
+    <span class="fadeIn fadeIn-1 text-9xl zain font-black text-[#F8B02B] my-shadow">Baguio</span>
 
     <!-- DESCRIPTION -->
     <div class="fadeIn fadeIn-2 w-[36rem] text-zinc-300 ">

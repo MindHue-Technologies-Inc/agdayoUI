@@ -2,7 +2,7 @@
   <div class="flex flex-col ">
     <span class="fadeIn outfit text-white">Discover the Queen City of the South <span class="baybayin text-[#FFEF95]">Cebu</span></span>
 
-    <span class="fadeIn fadeIn-1 text-9xl zain font-black text-[#FFEF95] my-shadow -mt-4">Cebu</span>
+    <span class="fadeIn fadeIn-1 text-9xl zain font-black text-[#FFEF95] my-shadow">Cebu</span>
 
     <div class="fadeIn fadeIn-2 w-[36rem] text-zinc-300 ">
       <p class="leading-5">
