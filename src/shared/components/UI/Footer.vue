@@ -1,7 +1,7 @@
 <template>
   <footer class="flex flex-col gap-10 bottom-0 w-full text-center text-sm text-zinc-500 py-4">
     <p>
-      &copy; {{ currentYear }} MindHue Technologies Inc. All rights reserved.
+      &copy; {{ currentYear }} Jan Albert Sobreo All rights reserved.
       <!--<Anchor href="/subscribe" class="text-blue-500 hover:underline">Subscribe</Anchor> |-->
       <!--<Anchor href="" @click="logoutUser" class="text-blue-500 hover:underline">Logout</Anchor>-->
     </p>

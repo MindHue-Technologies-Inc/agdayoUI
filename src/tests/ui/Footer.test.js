@@ -10,6 +10,6 @@ describe('Footer.vue', () => {
     const currentYear = new Date().getFullYear();
 
     expect(wrapper.find('footer').exists()).toBe(true);
-    expect(wrapper.text()).toContain(`© ${currentYear} MindHue Technologies Inc. All rights reserved.`);
+    expect(wrapper.text()).toContain(`© ${currentYear} Jan Albert Sobreo All rights reserved.`);
   });
 });

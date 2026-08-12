@@ -1,6 +1,6 @@
 <template>
   <div class="flex items-center justify-between text-[#BEBEBE] text-[12px]">
-    <span>© MindHue Technologies {{ year }}  </span>
+    <span>© Jan Albert Sobreo {{ year }}  </span>
 
     <!-- CREDITS -->
     <span>{{ credits }}</span>

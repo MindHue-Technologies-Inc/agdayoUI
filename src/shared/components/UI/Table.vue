@@ -284,7 +284,7 @@
 import Input from './Input.vue';
 import Button from './Button.vue';
 import Select from './Select.vue';
-import { formatLongDate } from '@/core/utils/dateUtils.js';
+import { formatLongDate } from '@/shared/utils/dateUtils.js';
 
 export default {
   name: 'EditableTransactionTable',
