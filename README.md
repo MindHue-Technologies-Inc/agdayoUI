@@ -15,7 +15,7 @@ Pull requests are welcome! For major changes, please open an issue first to disc
 
 ## 📜 License
 
-MIT License © 2025 MindHue Technologies Incorporated
+MIT License © 2026 Jan Albert Sobreo
 
 ## Payload
 
